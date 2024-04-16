@@ -1,0 +1,17 @@
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Service.deps.json
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Service.dll
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Service.pdb
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Data.dll
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Model.dll
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Data.pdb
+D:\OriginalScan\ScanApp.Service\bin\Debug\net8.0\ScanApp.Model.pdb
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.csproj.AssemblyReference.cache
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.GeneratedMSBuildEditorConfig.editorconfig
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.AssemblyInfoInputs.cache
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.AssemblyInfo.cs
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.csproj.CoreCompileInputs.cache
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp..A68BBB08.Up2Date
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.dll
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\refint\ScanApp.Service.dll
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ScanApp.Service.pdb
+D:\OriginalScan\ScanApp.Service\obj\Debug\net8.0\ref\ScanApp.Service.dll

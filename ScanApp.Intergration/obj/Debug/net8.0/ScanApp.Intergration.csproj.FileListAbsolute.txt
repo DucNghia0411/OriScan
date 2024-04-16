@@ -1,0 +1,15 @@
+D:\OriginalScan\ScanApp.Intergration\bin\Debug\net8.0\ScanApp.Intergration.deps.json
+D:\OriginalScan\ScanApp.Intergration\bin\Debug\net8.0\ScanApp.Intergration.dll
+D:\OriginalScan\ScanApp.Intergration\bin\Debug\net8.0\ScanApp.Intergration.pdb
+D:\OriginalScan\ScanApp.Intergration\bin\Debug\net8.0\ScanApp.Model.dll
+D:\OriginalScan\ScanApp.Intergration\bin\Debug\net8.0\ScanApp.Model.pdb
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.csproj.AssemblyReference.cache
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.GeneratedMSBuildEditorConfig.editorconfig
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.AssemblyInfoInputs.cache
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.AssemblyInfo.cs
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.csproj.CoreCompileInputs.cache
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp..CE05D76D.Up2Date
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.dll
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\refint\ScanApp.Intergration.dll
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ScanApp.Intergration.pdb
+D:\OriginalScan\ScanApp.Intergration\obj\Debug\net8.0\ref\ScanApp.Intergration.dll

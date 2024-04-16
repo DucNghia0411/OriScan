@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resource\Icons\document.png" />
+    <None Remove="Resource\Icons\play.png" />
+    <None Remove="Resource\Icons\submit.png" />
+    <None Remove="Resource\Images\addscanicon.png" />
+    <None Remove="Resource\Images\completeicon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Notification.Wpf" Version="8.0.0" />
+    <PackageReference Include="NTwain" Version="3.7.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScanApp.Common\ScanApp.Common.csproj" />
+    <ProjectReference Include="..\ScanApp.Intergration\ScanApp.Intergration.csproj" />
+    <ProjectReference Include="..\ScanApp.Service\ScanApp.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Icons\document.png" />
+    <Resource Include="Resource\Icons\play.png" />
+    <Resource Include="Resource\Icons\submit.png" />
+    <Resource Include="Resource\Images\addscanicon.png" />
+    <Resource Include="Resource\Images\completeicon.png" />
+  </ItemGroup>
+
+</Project>
