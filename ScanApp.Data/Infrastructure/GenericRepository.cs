@@ -14,9 +14,11 @@ namespace ScanApp.Data.Infrastructure
     {
         private readonly ScanContext _context;
 
-        public GenericRepository() 
+        public GenericRepository
+        (
+            ScanContext context
+        ) 
         {
-            ScanContext context = new ScanContext();
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 

@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notification.Wpf;
+using ScanApp.Data.Infrastructure.Interface;
+using ScanApp.Data.Infrastructure;
 using ScanApp.Intergration.ApiClients;
 using ScanApp.Intergration.Constracts;
 using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Windows;
+using ScanApp.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace OriginalScan
 {
@@ -16,6 +20,7 @@ namespace OriginalScan
     public partial class App : Application
     {
         public static IHost? _host { get; private set; }
+        private string _connectionString = @"Data Source=D:\GitLab\OriScan\OriginalScan\scan.db";
 
         public App()
         {
@@ -24,7 +29,10 @@ namespace OriginalScan
                 _host = Host.CreateDefaultBuilder()
                     .ConfigureServices((context, services) =>
                     {
+                        services.AddDbContext<ScanContext>(options => options.UseSqlite(_connectionString));
                         services.AddSingleton<MainWindow>();
+                        services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+                        services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
                         services.AddTransient<ITransferApiClient, TransferApiClient>();
                         services.AddTransient<INotificationManager, NotificationManager>();
                     }).Build();

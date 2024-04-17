@@ -30,9 +30,9 @@ namespace OriginalScan.Views
     {
         private readonly IBatchService _batchService;
 
-        public BatchWindow()
+        public BatchWindow(ScanContext context)
         {
-            _batchService = new BatchService();
+            _batchService = new BatchService(context);
             InitializeComponent();
             GetBatches();
         }

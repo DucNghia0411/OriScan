@@ -12,9 +12,9 @@ namespace ScanApp.Data.Infrastructure
     {
         private readonly ScanContext _context;
 
-        public UnitOfWork ()
+        public UnitOfWork (ScanContext context)
         {
-            _context = new ScanContext ();
+            _context = context;
         }
 
         public virtual async Task SaveChanges()

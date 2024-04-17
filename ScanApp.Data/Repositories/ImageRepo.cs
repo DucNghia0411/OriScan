@@ -13,11 +13,6 @@ namespace ScanApp.Data.Repositories
 
     public class ImageRepo : GenericRepository<Image>, IImageRepo
     {
-        private readonly ScanContext _context;
-
-        public ImageRepo()
-        {
-            _context = new ScanContext();
-        }
+        public ImageRepo(ScanContext context) : base(context) { }
     }
 }

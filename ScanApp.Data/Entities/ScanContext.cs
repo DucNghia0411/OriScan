@@ -23,7 +23,7 @@ public partial class ScanContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        string connectionString = @"Data Source=D:\OriginalScan\OriginalScan\scan.db";
+        string connectionString = @"Data Source=D:\GitLab\OriScan\OriginalScan\scan.db";
         optionsBuilder.UseSqlite(connectionString);
     }
 

@@ -15,13 +15,12 @@ namespace ScanApp.Service.Services
     public class BatchService : IBatchService
     {
         private readonly IBatchRepo _batchRepo;
-        private readonly ScanContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-
-        public BatchService() 
+        public BatchService(ScanContext context) 
         {
-            _batchRepo = new BatchRepo();
-            _context = new ScanContext();
+            _batchRepo = new BatchRepo(context);
+            _unitOfWork = new UnitOfWork(context);
         }
 
         public async Task<int> Create(BatchCreateRequest request)
@@ -36,8 +35,12 @@ namespace ScanApp.Service.Services
                     CreatedDate = request.CreatedDate
                 };
 
-                await _context.Batches.AddAsync(batch);
-                await _context.SaveChangesAsync();
+                //await _context.Batches.AddAsync(batch);
+                //await _context.SaveChangesAsync();
+
+                await _batchRepo.AddAsync(batch);
+                await _unitOfWork.SaveChanges();
+                int result = batch.Id;
                 return batch.Id;
             }
             catch (Exception)

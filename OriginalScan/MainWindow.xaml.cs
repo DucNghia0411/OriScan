@@ -6,6 +6,7 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
+using ScanApp.Data.Entities;
 using ScanApp.Intergration.ApiClients;
 using ScanApp.Intergration.Constracts;
 using System;
@@ -43,10 +44,14 @@ namespace OriginalScan
         public ObservableCollection<BitmapImage> listImages = new ObservableCollection<BitmapImage>();
         private DateTime _scanTime;
         private readonly ITransferApiClient _transferApiClient;
-
-        public MainWindow()
+        private readonly ScanContext _context;
+        public MainWindow
+        (
+            ScanContext context
+        )
         {
             InitializeComponent();
+            _context = context;
             scannedImages = new List<Bitmap>();
             DataContext = this;
             CreateSession();
@@ -287,7 +292,7 @@ namespace OriginalScan
         {
             try
             {
-                BatchWindow batchWindow = new BatchWindow();
+                BatchWindow batchWindow = new BatchWindow(_context);
                 batchWindow.ShowDialog();
             }
             catch (Exception ex)

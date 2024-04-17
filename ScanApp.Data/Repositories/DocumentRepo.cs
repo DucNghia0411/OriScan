@@ -13,11 +13,6 @@ namespace ScanApp.Data.Repositories
 
     public class DocumentRepo : GenericRepository<Document>, IDocumentRepo
     {
-        private readonly ScanContext _context;
-
-        public DocumentRepo()
-        {
-            _context = new ScanContext();
-        }
+        public DocumentRepo(ScanContext context) : base(context) { }
     }
 }

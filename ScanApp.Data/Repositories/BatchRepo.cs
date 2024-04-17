@@ -13,11 +13,6 @@ namespace ScanApp.Data.Repositories
 
     public class BatchRepo : GenericRepository<Batch>, IBatchRepo
     {
-        private readonly ScanContext _context;
-
-        public BatchRepo()
-        {
-            _context = new ScanContext();
-        }
+        public BatchRepo(ScanContext context) : base(context) { }
     }
 }
