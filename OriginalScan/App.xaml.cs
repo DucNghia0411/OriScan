@@ -20,7 +20,6 @@ namespace OriginalScan
     public partial class App : Application
     {
         public static IHost? _host { get; private set; }
-        private string _connectionString = @"Data Source=D:\GitLab\OriScan\OriginalScan\scan.db";
 
         public App()
         {
@@ -29,7 +28,7 @@ namespace OriginalScan
                 _host = Host.CreateDefaultBuilder()
                     .ConfigureServices((context, services) =>
                     {
-                        services.AddDbContext<ScanContext>(options => options.UseSqlite(_connectionString));
+                        services.AddDbContext<ScanContext>();
                         services.AddSingleton<MainWindow>();
                         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
                         services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
