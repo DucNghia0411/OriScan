@@ -284,12 +284,12 @@
                              FontSize="14"
                              IsEnabled="False"/>
 
-                    <Button Content="Tạo mới tài liệu" 
+                    <Button x:Name="btnCreateDocument" Content="Tạo mới tài liệu" 
                             HorizontalAlignment="Left"
                             Margin="570,15,0,0" 
                             VerticalAlignment="Top"
                             Style="{StaticResource ButtonStyle}" 
-                            Width="150"/>
+                            Width="150" Click="btnCreateDocument_Click"/>
                 </Grid>
             </Grid>
         </Grid>
