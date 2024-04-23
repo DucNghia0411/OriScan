@@ -68,7 +68,6 @@ namespace OriginalScan
             string filepath = Path.Combine(userFolderPath, "Log_TimeCheck", "ServiceLog_" + DateTime.Now.Date.ToShortDateString().Replace('/', '_') + ".txt");
             if (!File.Exists(filepath))
             {
-                // Create a file to write to.   
                 using (StreamWriter sw = File.CreateText(filepath))
                 {
                     sw.WriteLine(Message);

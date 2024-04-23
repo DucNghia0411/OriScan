@@ -45,6 +45,7 @@ namespace OriginalScan
         private DateTime _scanTime;
         private readonly ITransferApiClient _transferApiClient;
         private readonly ScanContext _context;
+
         public MainWindow
         (
             ScanContext context

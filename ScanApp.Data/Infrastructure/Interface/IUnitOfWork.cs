@@ -8,6 +8,12 @@ namespace ScanApp.Data.Infrastructure.Interface
 {
     public interface IUnitOfWork
     {
-        Task SaveChanges();
+        void CreateTransaction();
+
+        void Commit();
+
+        void Rollback();
+
+        Task Save();
     }
 }

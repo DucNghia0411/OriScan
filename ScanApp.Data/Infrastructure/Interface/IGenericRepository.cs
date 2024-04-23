@@ -9,21 +9,30 @@ namespace ScanApp.Data.Infrastructure.Interface
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T?> GetByIdAsync(int id);
-        Task<IEnumerable<T>> GetTopListAsync(Expression<Func<T, bool>> expression, int total);
-        Task<T?> LastOrDefaultAsync(Expression<Func<T, bool>> expression, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null);
-        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression);
-        Task<T?> FirstOrDefaultIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
-        Task<T> FirstAsync(Expression<Func<T, bool>> expression);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> ListAsync(Expression<Func<T, bool>> expression);
-        Task<IEnumerable<T>> ListIncludeAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
-        Task<int> CountAsync(Expression<Func<T, bool>> expression);
+
+        Task<T?> GetByIdAsync(int id);
+
         Task AddAsync(T entity);
+
         Task AddRangeAsync(IEnumerable<T> entities);
+
         void Update(T entity);
+
         void UpdateRange(IEnumerable<T> entities);
-        void Remove(T entity);
-        void RemoveRange(IEnumerable<T> entities);
+
+        Task DeleteAsync(int id);
+
+        void DeleteRange(IEnumerable<T> entities);
+
+        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
+
+        Task<T?> LastOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
+
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includeProperties);
+
+        Task<IEnumerable<T>> GetTopAsync(Expression<Func<T, bool>> expression, int total, params Expression<Func<T, object>>[] includeProperties);
+
+        Task<int> CountAsync(Expression<Func<T, bool>> expression);
     }
 }

@@ -35,12 +35,9 @@ namespace ScanApp.Service.Services
                     CreatedDate = request.CreatedDate
                 };
 
-                //await _context.Batches.AddAsync(batch);
-                //await _context.SaveChangesAsync();
-
                 await _batchRepo.AddAsync(batch);
-                await _unitOfWork.SaveChanges();
-                int result = batch.Id;
+                await _unitOfWork.Save();
+
                 return batch.Id;
             }
             catch (Exception)
