@@ -23,6 +23,7 @@ namespace OriginalScan.Views
         public CreateDocumentWindow()
         {
             InitializeComponent();
+            this.ResizeMode = ResizeMode.NoResize;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
