@@ -1,4 +1,6 @@
-﻿using ScanApp.Common.Settings;
+﻿using FontAwesome5;
+using Notification.Wpf;
+using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Requests.Batch;
 using ScanApp.Service.Constracts;
@@ -29,10 +31,12 @@ namespace OriginalScan.Views
     public partial class BatchWindow : Window
     {
         private readonly IBatchService _batchService;
+        private readonly NotificationManager _notificationManager;
 
         public BatchWindow(ScanContext context)
         {
             _batchService = new BatchService(context);
+            _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
         }
@@ -72,6 +76,28 @@ namespace OriginalScan.Views
 
                 Directory.CreateDirectory(path);
 
+                Batch? existBatch = await _batchService.FirstOrDefault(x => x.BatchName.Trim().ToUpper() == txtBatchName.Text.Trim().ToUpper());
+
+                if(existBatch != null)
+                {
+                    var duplicateNoti = new NotificationContent
+                    {
+                        Title = "Thông báo!",
+                        Message = $"Tên gói bị trùng lặp.",
+                        Type = NotificationType.Warning,
+                        Icon = new SvgAwesome()
+                        {
+                            Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                            Height = 25,
+                            Foreground = new SolidColorBrush(Colors.Black)
+                        },
+                        Background = new SolidColorBrush(Colors.Yellow),
+                        Foreground = new SolidColorBrush(Colors.Black),
+                    };
+                    _notificationManager.Show(duplicateNoti);
+                    return;
+                }
+
                 BatchCreateRequest request = new BatchCreateRequest()
                 {
                     BatchName = txtBatchName.Text,
@@ -81,12 +107,42 @@ namespace OriginalScan.Views
                 };
 
                 int batchId = await _batchService.Create(request);
-                System.Windows.Forms.MessageBox.Show($"Tạo gói mới thành công với mã {batchId}!", "Thông báo!");
+
+                var successNoti = new NotificationContent
+                {
+                    Title = "Thành công!",
+                    Message = $"Tạo gói mới thành công với mã {batchId}.",
+                    Type = NotificationType.Success,
+                    Icon = new SvgAwesome()
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Check,
+                        Height = 25,
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    },
+                    Background = new SolidColorBrush(Colors.Green),
+                    Foreground = new SolidColorBrush(Colors.White),
+                };
+                _notificationManager.Show(successNoti);
+
                 GetBatches();
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show($"Tạo gói mới thất bại! Có lỗi: {ex.Message}", "Thông báo!");
+                var errorNoti = new NotificationContent
+                {
+                    Title = "Lỗi!",
+                    Message = $"Tạo gói mới thất bại! Có lỗi: {ex.Message}",
+                    Type = NotificationType.Error,
+                    Icon = new SvgAwesome()
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Times,
+                        Height = 25,
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    },
+                    Background = new SolidColorBrush(Colors.Red),
+                    Foreground = new SolidColorBrush(Colors.White),
+                };
+                _notificationManager.Show(errorNoti);
                 return;
             }
         }

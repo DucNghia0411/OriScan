@@ -7,6 +7,7 @@ using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,16 @@ namespace ScanApp.Service.Services
         {
             _batchRepo = new BatchRepo(context);
             _unitOfWork = new UnitOfWork(context);
+        }
+
+        public async Task<IEnumerable<Batch>> Get(Expression<Func<Batch, bool>> predicate)
+        {
+            return await _batchRepo.GetAsync(predicate);
+        }
+
+        public async Task<Batch?> FirstOrDefault(Expression<Func<Batch, bool>> predicate)
+        {
+            return await _batchRepo.FirstOrDefaultAsync(predicate);
         }
 
         public async Task<int> Create(BatchCreateRequest request)
