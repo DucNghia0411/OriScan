@@ -5,6 +5,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -101,13 +102,23 @@ namespace OriginalScan.Views
 
             foreach (Batch batch in batches)
             {
+                string formattedCreatedDate = "";
+
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(batch.CreatedDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate)
+                    || DateTime.TryParseExact(batch.CreatedDate, "dd-MMM-yy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedCreatedDate = createdDate.ToString("M/d/yyyy h:mm:ss tt");
+                }
+
                 var obj = new
                 {
                     Id = batch.Id,
                     BatchName = batch.BatchName,
-                    BatchPath = $"{userFolderPath}\\{batch.BatchPath}",
+                    BatchPath = batch.BatchPath,
                     Note = batch.Note,
-                    CreatedDate = batch.CreatedDate
+                    CreatedDate = formattedCreatedDate
                 };
                 return_data.Add(obj);
             }
