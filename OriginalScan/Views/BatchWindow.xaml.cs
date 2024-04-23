@@ -81,7 +81,7 @@ namespace OriginalScan.Views
                 };
 
                 int batchId = await _batchService.Create(request);
-                System.Windows.Forms.MessageBox.Show($"Tạo gói mới thành công! Id: {batchId}", "Thông báo!");
+                System.Windows.Forms.MessageBox.Show($"Tạo gói mới thành công với mã {batchId}!", "Thông báo!");
                 GetBatches();
             }
             catch (Exception ex)
@@ -93,8 +93,11 @@ namespace OriginalScan.Views
 
         private async void GetBatches()
         {
-            List<object> return_data = new List<object>();
+            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            userFolderPath = userFolderPath.Replace("/", "\\");
+
             IEnumerable<Batch> batches = await _batchService.GetAll();
+            List<object> return_data = new List<object>();
 
             foreach (Batch batch in batches)
             {
@@ -102,7 +105,7 @@ namespace OriginalScan.Views
                 {
                     Id = batch.Id,
                     BatchName = batch.BatchName,
-                    BatchPath = batch.BatchPath,
+                    BatchPath = $"{userFolderPath}\\{batch.BatchPath}",
                     Note = batch.Note,
                     CreatedDate = batch.CreatedDate
                 };

@@ -110,11 +110,44 @@
                     <ListView x:Name="lstvBatches">
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding Id}" 
+                                                Width="250">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="#"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn DisplayMemberBinding="{Binding BatchName}" 
                                                 Width="250">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Tên gói"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding BatchPath}" 
+                                                Width="250">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Đường dẫn"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Note}" 
+                                                Width="150">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Ghi chú"
                                                        FontSize="14"
                                                        Foreground="Black"
                                                        FontWeight="Bold"></TextBlock>
@@ -130,17 +163,6 @@
                                                        Foreground="Black"
                                                        FontWeight="Bold"
                                                        TextAlignment="Center"></TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.HeaderTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Note}" 
-                                                Width="150">
-                                    <GridViewColumn.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="Ghi chú"
-                                                       FontSize="14"
-                                                       Foreground="Black"
-                                                       FontWeight="Bold"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
