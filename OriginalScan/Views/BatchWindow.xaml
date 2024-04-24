@@ -245,15 +245,13 @@
             <Grid Grid.Row="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.1*"/>
+                        <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1.1*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
+
                     </Grid.ColumnDefinitions>
                     <Label Content="Gói hiện tại:" 
-                           HorizontalAlignment="Right" 
-                           Margin="0,0,5,10" 
+                           HorizontalAlignment="Left" 
+                           Margin="10,0,5,10" 
                            VerticalAlignment="Center"
                            FontSize="14"
                            Grid.Column="0"
@@ -261,34 +259,34 @@
 
                     <TextBox x:Name="txtCurrentBatch"
                              HorizontalAlignment="Left" 
-                             Margin="0,0,0,10" 
+                             Margin="100,0,0,10" 
                              TextWrapping="Wrap" 
                              VerticalAlignment="Center" 
                              Width="150"
                              Height="25"
                              FontWeight="Bold"
                              FontSize="14"
-                             Grid.Column="1"
+                             Grid.Column="0"
                              IsEnabled="False"/>
 
                     <Label Content="Tài liệu hiện tại:" 
-                           HorizontalAlignment="Right" 
-                           Margin="0,0,5,10" 
+                           HorizontalAlignment="Left" 
+                           Margin="275,0,5,10" 
                            VerticalAlignment="Center"
                            FontSize="14"
-                           Grid.Column="2"
+                           Grid.Column="0"
                            FontWeight="Bold"/>
 
                     <TextBox x:Name="txtCurrentDocument"
                              HorizontalAlignment="Left" 
-                             Margin="0,0,0,10" 
+                             Margin="390,0,0,10" 
                              TextWrapping="Wrap" 
                              VerticalAlignment="Center" 
                              Width="150"
                              Height="25"
                              FontWeight="Bold"
                              FontSize="14"
-                             Grid.Column="3"
+                             Grid.Column="0"
                              IsEnabled="False"/>
 
                     <Button x:Name="btnCreateDocument" Content="Tạo mới tài liệu" 
