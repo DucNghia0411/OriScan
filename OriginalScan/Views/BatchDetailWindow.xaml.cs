@@ -22,7 +22,6 @@ namespace OriginalScan.Views
         public BatchDetailWindow()
         {
             InitializeComponent();
-            this.ResizeMode = ResizeMode.NoResize;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
