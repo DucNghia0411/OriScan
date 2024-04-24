@@ -1,4 +1,5 @@
 ﻿using FontAwesome5;
+using Microsoft.EntityFrameworkCore;
 using Notification.Wpf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
@@ -34,10 +35,12 @@ namespace OriginalScan.Views
     public partial class BatchWindow : Window
     {
         private readonly IBatchService _batchService;
+        private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
         public BatchWindow(ScanContext context)
         {
+            _context = context;
             _batchService = new BatchService(context);
             _notificationManager = new NotificationManager();
             InitializeComponent();
@@ -210,8 +213,8 @@ namespace OriginalScan.Views
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
                 _batchService.SetBatch(selectedBatch);
 
-                BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
-                batchDetailWindow.ShowDialog();
+                /*BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
+                batchDetailWindow.ShowDialog();*/
             }
             catch (Exception ex)
             {
@@ -242,6 +245,73 @@ namespace OriginalScan.Views
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.MessageBox.Show("Deleted!");
+        }
+
+        private void btnView_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Windows.Controls.Button? btn = sender as System.Windows.Controls.Button;
+                if (btn == null)
+                {
+                    return;
+                }
+
+                System.Windows.Controls.ListViewItem listViewItem = FindAncestor<System.Windows.Controls.ListViewItem>(btn);
+
+                if (listViewItem == null)
+                {
+                    return;
+                }
+
+                lstvBatches.SelectedItem = listViewItem.DataContext;
+
+                if (lstvBatches.SelectedItem == null)
+                {
+                    return;
+                }
+
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
+
+
+                _batchService.SetBatch(selectedBatch);
+
+                BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService);
+                batchDetailWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                var errorNoti = new NotificationContent
+                {
+                    Title = "Lỗi!",
+                    Message = $"Có lỗi: {ex.Message}",
+                    Type = NotificationType.Error,
+                    Icon = new SvgAwesome()
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Times,
+                        Height = 25,
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    },
+                    Background = new SolidColorBrush(Colors.Red),
+                    Foreground = new SolidColorBrush(Colors.White),
+                };
+                _notificationManager.Show(errorNoti);
+                return;
+            }
+        }
+
+        private T FindAncestor<T>(DependencyObject current) where T : DependencyObject
+        {
+            do
+            {
+                if (current is T ancestor)
+                {
+                    return ancestor;
+                }
+                current = VisualTreeHelper.GetParent(current);
+            }
+            while (current != null);
+            return null;
         }
     }
 }

@@ -131,7 +131,7 @@
                     <ListView  x:Name="lstvBatches" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1" MouseDoubleClick="lstvBatches_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="65" >
+                                <GridViewColumn Width="60" >
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock x:Name="textBlock" Text="#"
@@ -181,7 +181,7 @@
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn DisplayMemberBinding="{Binding Note}" 
-                                                Width="250">
+                                                Width="200">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ghi chú"
@@ -205,10 +205,13 @@
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="100">
+                                <GridViewColumn Width="150">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button x:Name="btnView" Background="Transparent" BorderThickness="0" Click="btnView_Click">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/eye.png" />
+                                                </Button>
                                                 <Button x:Name="btnEdit" Click="btnEdit_Click" Background="Transparent" BorderThickness="0">
                                                     <Image Width="15" Height="15" Source="/Resource/Icons/edit.png" />
                                                 </Button>
