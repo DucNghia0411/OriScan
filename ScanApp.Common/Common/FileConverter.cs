@@ -44,7 +44,6 @@ namespace ScanApp.Common.Common
             {
                 throw;
             }
-
         }
     }
 }

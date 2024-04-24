@@ -36,6 +36,7 @@ namespace OriginalScan
                         services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
                         services.AddTransient<ITransferApiClient, TransferApiClient>();
                         services.AddSingleton<IBatchService, BatchService>();
+                        services.AddSingleton<IDocumentService, DocumentService>();
                         services.AddTransient<INotificationManager, NotificationManager>();
                     }).Build();
             }

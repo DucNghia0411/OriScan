@@ -3,6 +3,7 @@ using Notification.Wpf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
 using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
@@ -199,13 +200,38 @@ namespace OriginalScan.Views
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (lstvBatches.SelectedItem == null)
+            try
             {
+                if (lstvBatches.SelectedItem == null)
+                {
+                    return;
+                }
+
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
+                _batchService.SetBatch(selectedBatch);
+
+                BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
+                batchDetailWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                var errorNoti = new NotificationContent
+                {
+                    Title = "Lỗi!",
+                    Message = $"Có lỗi: {ex.Message}",
+                    Type = NotificationType.Error,
+                    Icon = new SvgAwesome()
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Times,
+                        Height = 25,
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    },
+                    Background = new SolidColorBrush(Colors.Red),
+                    Foreground = new SolidColorBrush(Colors.White),
+                };
+                _notificationManager.Show(errorNoti);
                 return;
             }
-
-            BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
-            batchDetailWindow.ShowDialog();
         }
     }
 }
