@@ -189,5 +189,11 @@ namespace OriginalScan.Views
                 notification += "Tên gói không được để trống! \n";
             return notification;
         }
+
+        private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
+        {
+            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow();
+            createDocumentWindow.ShowDialog();
+        }
     }
 }
