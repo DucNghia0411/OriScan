@@ -2,6 +2,7 @@
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
 using ScanApp.Service.Constracts;
 using System;
@@ -18,10 +19,18 @@ namespace ScanApp.Service.Services
         private readonly IBatchRepo _batchRepo;
         private readonly IUnitOfWork _unitOfWork;
 
+        public BatchModel SelectedBatch { get; set; }
+
         public BatchService(ScanContext context) 
         {
             _batchRepo = new BatchRepo(context);
             _unitOfWork = new UnitOfWork(context);
+            SelectedBatch = new BatchModel();
+        }
+
+        public void SetBatch(BatchModel batch)
+        {
+            SelectedBatch = batch;
         }
 
         public async Task<IEnumerable<Batch>> Get(Expression<Func<Batch, bool>> predicate)

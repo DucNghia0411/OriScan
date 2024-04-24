@@ -11,6 +11,8 @@ using System.IO;
 using System.Windows;
 using ScanApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using ScanApp.Service.Constracts;
+using ScanApp.Service.Services;
 
 namespace OriginalScan
 {
@@ -33,6 +35,7 @@ namespace OriginalScan
                         services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
                         services.AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork));
                         services.AddTransient<ITransferApiClient, TransferApiClient>();
+                        services.AddSingleton<IBatchService, BatchService>();
                         services.AddTransient<INotificationManager, NotificationManager>();
                     }).Build();
             }

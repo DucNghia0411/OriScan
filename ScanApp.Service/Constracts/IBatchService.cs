@@ -1,4 +1,5 @@
 ﻿using ScanApp.Data.Entities;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,16 @@ namespace ScanApp.Service.Constracts
 {
     public interface IBatchService
     {
+        BatchModel SelectedBatch { get; set; }
+
+        void SetBatch(BatchModel batch);
+
         Task<Batch?> FirstOrDefault(Expression<Func<Batch, bool>> predicate);
+
         Task<IEnumerable<Batch>> Get(Expression<Func<Batch, bool>> predicate);
+
         Task<int> Create(BatchCreateRequest request);
+
         Task<IEnumerable<Batch>> GetAll();
     }
 }
