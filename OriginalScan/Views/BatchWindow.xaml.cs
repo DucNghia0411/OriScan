@@ -34,11 +34,15 @@ namespace OriginalScan.Views
     public partial class BatchWindow : Window
     {
         private readonly IBatchService _batchService;
+        private readonly IDocumentService _documentService;
         private readonly NotificationManager _notificationManager;
+        private readonly ScanContext _scanContext;
 
         public BatchWindow(ScanContext context)
         {
             _batchService = new BatchService(context);
+            _documentService = new DocumentService(context);
+            _scanContext = context;
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -194,7 +198,7 @@ namespace OriginalScan.Views
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
-            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow();
+            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_scanContext, _batchService);
             createDocumentWindow.ShowDialog();
         }
 
@@ -242,6 +246,14 @@ namespace OriginalScan.Views
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.MessageBox.Show("Deleted!");
+        }
+
+        public async void GetDocumentsByBatch(int batchId)
+        {
+            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            userFolderPath = userFolderPath.Replace("/", "\\");
+
+            IEnumerable<Document> documents = await _documentService.Get(x => x.BatchId == batchId);
         }
     }
 }

@@ -7,6 +7,7 @@ using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,16 @@ namespace ScanApp.Service.Services
         {
             _documentRepo = new DocumentRepo(context);
             _unitOfWork = new UnitOfWork(context);
+        }
+
+        public async Task<IEnumerable<Document>> Get(Expression<Func<Document, bool>> predicate)
+        {
+            return await _documentRepo.GetAsync(predicate);
+        }
+
+        public async Task<Document?> FirstOrDefault(Expression<Func<Document, bool>> predicate)
+        {
+            return await _documentRepo.FirstOrDefaultAsync(predicate);
         }
 
         public async Task<int> Create(DocumentCreateRequest request)

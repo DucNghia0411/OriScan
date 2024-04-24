@@ -1,6 +1,7 @@
 ﻿using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
+using ScanApp.Model.Requests.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace ScanApp.Service.Constracts
 {
     public interface IBatchService
     {
-        BatchModel SelectedBatch { get; set; }
+        BatchModel? SelectedBatch { get; set; }
 
         void SetBatch(BatchModel batch);
 
