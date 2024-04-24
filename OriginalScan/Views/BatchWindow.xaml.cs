@@ -207,5 +207,15 @@ namespace OriginalScan.Views
             BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
             batchDetailWindow.ShowDialog();
         }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show("Edited!");
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.MessageBox.Show("Deleted!");
+        }
     }
 }
