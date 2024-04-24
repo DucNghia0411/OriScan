@@ -113,7 +113,8 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="4*"></RowDefinition>
-                <RowDefinition Height="5*"></RowDefinition>
+                <RowDefinition Height="4*"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
@@ -231,65 +232,72 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="7*"></RowDefinition>
-                    <RowDefinition Height="2*"></RowDefinition>
-                </Grid.RowDefinitions>
+                <GroupBox Header="DANH SÁCH TÀI LIỆU"
+                          FontWeight="Bold"
+                          materialDesign:ColorZoneAssist.Background="#00AE72"
+                          materialDesign:ColorZoneAssist.Foreground="Black"
+                          materialDesign:ColorZoneAssist.Mode="Custom"
+                          BorderThickness="2" 
+                          Margin="10,10,10,10">
+                </GroupBox>
+            </Grid>
 
-                <Grid Grid.Row="0">
-                    <GroupBox Header="DANH SÁCH TÀI LIỆU"
-                        FontWeight="Bold"
-                        materialDesign:ColorZoneAssist.Background="#00AE72"
-                        materialDesign:ColorZoneAssist.Foreground="Black"
-                        materialDesign:ColorZoneAssist.Mode="Custom"
-                        BorderThickness="2" 
-                        Margin="10,10,10,10">
-                    </GroupBox>
-                </Grid>
-
-                <Grid Grid.Row="1">
+            <Grid Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1.1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
                     <Label Content="Gói hiện tại:" 
-                           HorizontalAlignment="Left" 
-                           Margin="10,20,0,0" 
-                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,5,10" 
+                           VerticalAlignment="Center"
                            FontSize="14"
+                           Grid.Column="0"
                            FontWeight="Bold"/>
 
                     <TextBox x:Name="txtCurrentBatch"
                              HorizontalAlignment="Left" 
-                             Margin="102,20,0,0" 
+                             Margin="0,0,0,10" 
                              TextWrapping="Wrap" 
-                             VerticalAlignment="Top" 
+                             VerticalAlignment="Center" 
                              Width="150"
                              Height="25"
                              FontWeight="Bold"
                              FontSize="14"
+                             Grid.Column="1"
                              IsEnabled="False"/>
 
                     <Label Content="Tài liệu hiện tại:" 
-                           HorizontalAlignment="Left" 
-                           Margin="279,20,0,0" 
-                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,5,10" 
+                           VerticalAlignment="Center"
                            FontSize="14"
+                           Grid.Column="2"
                            FontWeight="Bold"/>
 
                     <TextBox x:Name="txtCurrentDocument"
                              HorizontalAlignment="Left" 
-                             Margin="395,20,0,0" 
+                             Margin="0,0,0,10" 
                              TextWrapping="Wrap" 
-                             VerticalAlignment="Top" 
+                             VerticalAlignment="Center" 
                              Width="150"
                              Height="25"
                              FontWeight="Bold"
                              FontSize="14"
+                             Grid.Column="3"
                              IsEnabled="False"/>
 
-                    <Button Content="Tạo mới tài liệu" 
-                            HorizontalAlignment="Left"
-                            Margin="570,15,0,0" 
-                            VerticalAlignment="Top"
+                    <Button x:Name="btnCreateDocument" Content="Tạo mới tài liệu" 
+                            HorizontalAlignment="Center"
+                            Margin="10,0,0,0" 
+                            VerticalAlignment="Center"
+                            Grid.Column="4"
                             Style="{StaticResource ButtonStyle}" 
-                            Width="150"/>
+                            Width="150" Click="btnCreateDocument_Click"/>
                 </Grid>
             </Grid>
         </Grid>
