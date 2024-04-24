@@ -1,5 +1,6 @@
 ﻿using FontAwesome5;
 using Notification.Wpf;
+using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Requests.Batch;
@@ -194,6 +195,17 @@ namespace OriginalScan.Views
         {
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow();
             createDocumentWindow.ShowDialog();
+        }
+
+        private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (lstvBatches.SelectedItem == null)
+            {
+                return;
+            }
+
+            BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
+            batchDetailWindow.ShowDialog();
         }
     }
 }

@@ -127,7 +127,7 @@
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
                     Margin="10,10,10,10">
-                    <ListView  x:Name="lstvBatches" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1">
+                    <ListView  x:Name="lstvBatches" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1" MouseDoubleClick="lstvBatches_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Width="75" >
