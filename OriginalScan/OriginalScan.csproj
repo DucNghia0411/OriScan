@@ -9,7 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Icons\delete.png" />
+    <None Remove="Resource\Icons\diskette.png" />
     <None Remove="Resource\Icons\document.png" />
+    <None Remove="Resource\Icons\edit.png" />
     <None Remove="Resource\Icons\pdf.png" />
     <None Remove="Resource\Icons\play.png" />
     <None Remove="Resource\Icons\submit.png" />
@@ -34,7 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Icons\delete.png" />
+    <Resource Include="Resource\Icons\diskette.png" />
     <Resource Include="Resource\Icons\document.png" />
+    <Resource Include="Resource\Icons\edit.png" />
     <Resource Include="Resource\Icons\pdf.png" />
     <Resource Include="Resource\Icons\play.png" />
     <Resource Include="Resource\Icons\submit.png" />

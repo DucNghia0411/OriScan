@@ -76,7 +76,7 @@
                             Margin="5,15,10,0"
                             Grid.Column="1"
                             Grid.Row="1"
-                            Height="25"
+                            Height="27"
                             FontSize="14"/>
 
                     <Label Content="Ghi chú:" 
@@ -93,7 +93,7 @@
                             Margin="5,15,10,0"
                             Grid.Column="1"
                             Grid.Row="2"
-                            Height="25"
+                            Height="27"
                             FontSize="14"/>
 
                     <Button Content="Tạo mới" 
@@ -127,10 +127,11 @@
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
                     Margin="10,10,10,10">
+
                     <ListView  x:Name="lstvBatches" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1" MouseDoubleClick="lstvBatches_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="75" >
+                                <GridViewColumn Width="65" >
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock x:Name="textBlock" Text="#"
@@ -180,7 +181,7 @@
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn DisplayMemberBinding="{Binding Note}" 
-                                                Width="300">
+                                                Width="250">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ghi chú"
@@ -192,7 +193,7 @@
                                     </GridViewColumn.HeaderTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn DisplayMemberBinding="{Binding CreatedDate}"
-                                                Width="300">
+                                                Width="175">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ngày tạo"
@@ -202,6 +203,21 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="100">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button x:Name="btnEdit" Click="btnEdit_Click" Background="Transparent" BorderThickness="0">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/edit.png" />
+                                                </Button>
+                                                <Button x:Name="btnDelete" Click="btnDelete_Click" Background="Transparent" BorderThickness="0">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/delete.png" />
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <GridView.ColumnHeaderContainerStyle>
@@ -263,7 +279,7 @@
                              TextWrapping="Wrap" 
                              VerticalAlignment="Center" 
                              Width="150"
-                             Height="25"
+                             Height="27"
                              FontWeight="Bold"
                              FontSize="14"
                              Grid.Column="0"
@@ -283,7 +299,7 @@
                              TextWrapping="Wrap" 
                              VerticalAlignment="Center" 
                              Width="150"
-                             Height="25"
+                             Height="27"
                              FontWeight="Bold"
                              FontSize="14"
                              Grid.Column="0"
