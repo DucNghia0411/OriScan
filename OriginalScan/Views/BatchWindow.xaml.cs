@@ -38,6 +38,7 @@ namespace OriginalScan.Views
     public partial class BatchWindow : Window
     {
         private readonly IBatchService _batchService;
+        private readonly IDocumentService _documentService;
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
@@ -45,6 +46,7 @@ namespace OriginalScan.Views
         {
             _context = context;
             _batchService = new BatchService(context);
+            _documentService = new DocumentService(context);
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -287,20 +289,29 @@ namespace OriginalScan.Views
 
                 _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName}?", "Xác nhận", 
                     async () => {
-                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        string folderPath = selectedBatch.BatchPath;
-                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                        Directory.Delete(path, true);
-
-                        var deleteResult = await _batchService.Delete(selectedBatch.Id);
-
-                        if (deleteResult)
+                        try
                         {
-                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                            GetBatches();
-                            txtCurrentBatch.Text = string.Empty;
-                            txtCurrentDocument.Text = string.Empty;
+                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            string folderPath = selectedBatch.BatchPath;
+                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                            Directory.Delete(path, true);
+
+                            var deleteResult = await _batchService.Delete(selectedBatch.Id);
+
+                            if (deleteResult)
+                            {
+                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                                GetBatches();
+                                txtCurrentBatch.Text = string.Empty;
+                                txtCurrentDocument.Text = string.Empty;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            NotificationShow("error", $"Có lỗi: {ex.Message}");
+                            return;
+
                         }
                     }, "OK", () => { }, "Cancel");
 
@@ -312,8 +323,6 @@ namespace OriginalScan.Views
             }
         }
 
-<<<<<<< Updated upstream
-=======
         public async void GetDocumentsByBatch(int batchId)
         {
             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -322,7 +331,6 @@ namespace OriginalScan.Views
             IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
         }
 
->>>>>>> Stashed changes
         private void btnView_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -344,6 +352,11 @@ namespace OriginalScan.Views
                 NotificationShow("error", $"Có lỗi: {ex.Message}");
                 return;
             }
+        }
+
+        private void lstvDocuments_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }
