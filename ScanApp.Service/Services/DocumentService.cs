@@ -70,5 +70,27 @@ namespace ScanApp.Service.Services
         {
             return await _documentRepo.GetAllAsync();
         }
+
+        public async Task<bool> DeleteByBatch(int batchId)
+        {
+            try
+            {
+                IEnumerable<ScanApp.Data.Entities.Document> documents = await Get(x => x.BatchId == batchId);
+
+                if (!documents.Any())
+                {
+                    return false;
+                }
+
+                _documentRepo.DeleteRange(documents);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
     }
 }

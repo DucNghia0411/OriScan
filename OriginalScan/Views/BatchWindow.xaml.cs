@@ -295,10 +295,12 @@ namespace OriginalScan.Views
                 var dataContext = clickedButton.DataContext;
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName}?", "Xác nhận", 
+                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", 
                     async () => {
                         try
                         {
+                            var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
+
                             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                             string folderPath = selectedBatch.BatchPath;
                             string path = System.IO.Path.Combine(userFolderPath, folderPath);

@@ -21,5 +21,7 @@ namespace ScanApp.Service.Constracts
         Task<IEnumerable<Document>> GetAll();
 
         void SetDocument(DocumentModel document);
+
+        Task<bool> DeleteByBatch(int batchId);
     }
 }
