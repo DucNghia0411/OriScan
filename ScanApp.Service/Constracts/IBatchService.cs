@@ -23,5 +23,9 @@ namespace ScanApp.Service.Constracts
         Task<int> Create(BatchCreateRequest request);
 
         Task<IEnumerable<Batch>> GetAll();
+
+        Task<int> Update(BatchUpdateRequest request);
+
+        Task<bool> Delete(int id);
     }
 }

@@ -86,21 +86,7 @@ namespace OriginalScan.Views
 
                 if (existBatch != null)
                 {
-                    var duplicateNoti = new NotificationContent
-                    {
-                        Title = "Thông báo!",
-                        Message = $"Tên gói bị trùng lặp.",
-                        Type = NotificationType.Warning,
-                        Icon = new SvgAwesome()
-                        {
-                            Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
-                            Height = 25,
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        },
-                        Background = new SolidColorBrush(Colors.Yellow),
-                        Foreground = new SolidColorBrush(Colors.Black),
-                    };
-                    _notificationManager.Show(duplicateNoti);
+                    NotificationShow("warning", "Tên gói bị trùng lặp!");
                     return;
                 }
 
@@ -114,41 +100,13 @@ namespace OriginalScan.Views
 
                 int batchId = await _batchService.Create(request);
 
-                var successNoti = new NotificationContent
-                {
-                    Title = "Thành công!",
-                    Message = $"Tạo gói mới thành công với mã {batchId}.",
-                    Type = NotificationType.Success,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Check,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Green),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(successNoti);
+                NotificationShow("success", $"Tạo gói mới thành công với mã {batchId}.");
 
                 GetBatches();
             }
             catch (Exception ex)
             {
-                var errorNoti = new NotificationContent
-                {
-                    Title = "Lỗi!",
-                    Message = $"Tạo gói mới thất bại! Có lỗi: {ex.Message}",
-                    Type = NotificationType.Error,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Times,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Red),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(errorNoti);
+                NotificationShow("error", $"Tạo gói mới thất bại! Có lỗi: {ex.Message}");
                 return;
             }
         }
@@ -195,6 +153,70 @@ namespace OriginalScan.Views
             return notification;
         }
 
+        void NotificationShow(string type, string message)
+        {
+            switch (type) 
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
+        }
+
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow();
@@ -218,33 +240,74 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                var errorNoti = new NotificationContent
-                {
-                    Title = "Lỗi!",
-                    Message = $"Có lỗi: {ex.Message}",
-                    Type = NotificationType.Error,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Times,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Red),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(errorNoti);
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
                 return;
             }
         }
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("Edited!");
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
+
+                var dataContext = clickedButton.DataContext;
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
+
+                _batchService.SetBatch(selectedBatch);
+
+                BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService, true);
+                batchDetailWindow.ShowDialog();
+
+                GetBatches();
+                txtCurrentBatch.Text = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Sửa thất bại! Có lỗi: {ex.Message}");
+                return;
+            }
         }
 
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("Deleted!");
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
+
+                var dataContext = clickedButton.DataContext;
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
+
+                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa gói: {selectedBatch.BatchName}?", "Xác nhận", MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                {
+                    string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string folderPath = selectedBatch.BatchPath;
+                    string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                    Directory.Delete(path, true);
+
+                    var deleteResult = await _batchService.Delete(selectedBatch.Id);
+                    
+                    if (deleteResult)
+                    {
+                        NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                        GetBatches();
+                        txtCurrentBatch.Text = string.Empty;
+                        txtCurrentDocument.Text = string.Empty;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Xóa thất bại! Có lỗi: {ex.Message}");
+                return;
+            }
         }
 
         private void btnView_Click(object sender, RoutedEventArgs e)
@@ -260,26 +323,12 @@ namespace OriginalScan.Views
 
                 _batchService.SetBatch(selectedBatch);
 
-                BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService);
+                BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService, false);
                 batchDetailWindow.ShowDialog();
             }
             catch (Exception ex)
             {
-                var errorNoti = new NotificationContent
-                {
-                    Title = "Lỗi!",
-                    Message = $"Có lỗi: {ex.Message}",
-                    Type = NotificationType.Error,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Times,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Red),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(errorNoti);
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
                 return;
             }
         }

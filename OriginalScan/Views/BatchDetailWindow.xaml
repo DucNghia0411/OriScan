@@ -129,6 +129,14 @@
         </Grid>
 
         <Grid Grid.Row="1">
+            <Button x:Name="btnEdit"
+            Style="{StaticResource ButtonStyle}"
+            Click="CbtnEdit_Click" 
+            Content="Chỉnh sửa" 
+            HorizontalAlignment="Right" 
+            Margin="0,0,130,0" 
+            VerticalAlignment="Center"/>
+            
             <Button x:Name="btnCancelDocument"
             Style="{StaticResource ButtonStyle}"
             Content="Hủy" 

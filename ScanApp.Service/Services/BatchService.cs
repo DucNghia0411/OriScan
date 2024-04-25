@@ -1,4 +1,5 @@
-﻿using ScanApp.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ScanApp.Data.Entities;
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
@@ -69,6 +70,47 @@ namespace ScanApp.Service.Services
         public async Task<IEnumerable<Batch>> GetAll()
         {
             return await _batchRepo.GetAllAsync();
+        }
+
+        public async Task<int> Update(BatchUpdateRequest request)
+        {
+            try
+            {
+                var editBatch = await _batchRepo.GetByIdAsync(request.Id);
+
+                if (editBatch == null)
+                {
+                    return 0;
+                }
+
+                editBatch.BatchName = request.BatchName;
+                editBatch.Note = request.Note;
+
+                _batchRepo.Update(editBatch);
+                await _unitOfWork.Save();
+
+                return editBatch.Id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            try
+            {
+                await _batchRepo.DeleteAsync(id);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
         }
     }
 }
