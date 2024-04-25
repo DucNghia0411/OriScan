@@ -267,6 +267,126 @@
                     BorderThickness="2" 
                     Margin="10,10,10,10">
 
+                    <ListView  x:Name="lstvDocuments" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1" MouseDoubleClick="lstvDocuments_MouseDoubleClick">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="60" >
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="#"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"
+                                                       TextAlignment="Center"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Id}"
+                                                       HorizontalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Width="200">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Tên gói"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"
+                                                       TextAlignment="Center"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DocumentName}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding DocumentPath}" 
+                                                Width="300">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Đường dẫn"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"
+                                                       TextAlignment="Center"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding Note}" 
+                                                Width="200">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Ghi chú"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"
+                                                       TextAlignment="Center"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn DisplayMemberBinding="{Binding CreatedDate}"
+                                                Width="175">
+                                    <GridViewColumn.HeaderTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="Ngày tạo"
+                                                       FontSize="14"
+                                                       Foreground="Black"
+                                                       FontWeight="Bold"
+                                                       TextAlignment="Center"></TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.HeaderTemplate>
+                                </GridViewColumn>
+
+                                <GridViewColumn Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button x:Name="btnView" Background="Transparent" BorderThickness="0" Click="btnView_Click">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/eye.png" />
+                                                </Button>
+                                                <Button x:Name="btnEdit" Click="btnEdit_Click" Background="Transparent" BorderThickness="0">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/edit.png" />
+                                                </Button>
+                                                <Button x:Name="btnDelete" Click="btnDelete_Click" Background="Transparent" BorderThickness="0">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/delete.png" />
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+                            </GridView>
+                        </ListView.View>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                <Setter Property="VerticalContentAlignment" Value="Center" />
+                                <Setter Property="Height" Value="45" />
+                                <Setter Property="Margin" Value="0,5" />
+                                <!--<Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#BFCAE6" />
+                                        <Setter Property="BorderThickness" Value="0" />
+                                    </Trigger>
+                                </Style.Triggers>-->
+
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+
                 </GroupBox>
             </Grid>
 

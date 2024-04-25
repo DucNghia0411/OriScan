@@ -39,12 +39,14 @@ namespace OriginalScan.Views
     {
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
+        private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
-        private readonly ScanContext _scanContext;
 
         public BatchWindow(ScanContext context)
         {
             _batchService = new BatchService(context);
+            _documentService = new DocumentService(context);
+            _context = context;
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -222,7 +224,7 @@ namespace OriginalScan.Views
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
-            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_scanContext, _batchService);
+            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
             createDocumentWindow.ShowDialog();
         }
 
@@ -326,7 +328,7 @@ namespace OriginalScan.Views
             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             userFolderPath = userFolderPath.Replace("/", "\\");
 
-            IEnumerable<Document> documents = await _documentService.Get(x => x.BatchId == batchId);
+            IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
         }
 
         private void btnView_Click(object sender, RoutedEventArgs e)
