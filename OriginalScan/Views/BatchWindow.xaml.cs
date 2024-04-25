@@ -1,6 +1,8 @@
 ﻿using FontAwesome5;
 using Microsoft.EntityFrameworkCore;
 using Notification.Wpf;
+using Notification.Wpf.Classes;
+using NTwain.Data;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
@@ -13,6 +15,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -53,7 +56,7 @@ namespace OriginalScan.Views
             {
                 if (CheckBatchCreateField() != "")
                 {
-                    System.Windows.Forms.MessageBox.Show(CheckBatchCreateField(), "Thông báo!", MessageBoxButtons.OK);
+                    NotificationShow("error", CheckBatchCreateField());
                     return;
                 }
 
@@ -76,7 +79,7 @@ namespace OriginalScan.Views
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show($"Khởi tạo thư mục thất bại! Vui lòng cấp quyền cho hệ thống: {ex.Message}");
+                    NotificationShow("error", $"Khởi tạo thư mục thất bại! Vui lòng cấp quyền cho hệ thống: {ex.Message}");
                     return;
                 }
 
@@ -271,7 +274,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private async void btnDelete_Click(object sender, RoutedEventArgs e)
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -282,26 +285,25 @@ namespace OriginalScan.Views
                 var dataContext = clickedButton.DataContext;
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
-                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa gói: {selectedBatch.BatchName}?", "Xác nhận", MessageBoxButton.OKCancel);
+                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName}?", "Xác nhận", 
+                    async () => {
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string folderPath = selectedBatch.BatchPath;
+                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
 
-                if (result == MessageBoxResult.OK)
-                {
-                    string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string folderPath = selectedBatch.BatchPath;
-                    string path = System.IO.Path.Combine(userFolderPath, folderPath);
+                        Directory.Delete(path, true);
 
-                    Directory.Delete(path, true);
+                        var deleteResult = await _batchService.Delete(selectedBatch.Id);
 
-                    var deleteResult = await _batchService.Delete(selectedBatch.Id);
-                    
-                    if (deleteResult)
-                    {
-                        NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                        GetBatches();
-                        txtCurrentBatch.Text = string.Empty;
-                        txtCurrentDocument.Text = string.Empty;
-                    }
-                }
+                        if (deleteResult)
+                        {
+                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                            GetBatches();
+                            txtCurrentBatch.Text = string.Empty;
+                            txtCurrentDocument.Text = string.Empty;
+                        }
+                    }, "OK", () => { }, "Cancel");
+
             }
             catch (Exception ex)
             {
@@ -310,6 +312,17 @@ namespace OriginalScan.Views
             }
         }
 
+<<<<<<< Updated upstream
+=======
+        public async void GetDocumentsByBatch(int batchId)
+        {
+            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            userFolderPath = userFolderPath.Replace("/", "\\");
+
+            IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
+        }
+
+>>>>>>> Stashed changes
         private void btnView_Click(object sender, RoutedEventArgs e)
         {
             try
