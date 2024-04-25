@@ -8,6 +8,7 @@ using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -51,7 +52,13 @@ namespace OriginalScan.Views
             {
                 var batchModel = _batchService.SelectedBatch;
 
-                var batch = await _batchService.FirstOrDefault(e => e.Id == batchModel.Id);    
+                if (batchModel == null)
+                {
+                    NotificationShow("error", "Không nhận được thông tin gói tài liệu.");
+                    return;
+                }
+
+                var batch = await _batchService.FirstOrDefault(e => e.Id == batchModel.Id);
 
                 if (batch != null)
                 {
@@ -168,7 +175,7 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private async void CbtnEdit_Click(object sender, RoutedEventArgs e)
+        private void CbtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBatchField() != "")
             {
@@ -183,30 +190,28 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.OKCancel);
+                _notificationManager.ShowButtonWindow($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận",
+                    async () => {
+                        BatchUpdateRequest request = new BatchUpdateRequest()
+                        {
+                            Id = _currentBatch.Id,
+                            BatchName = txtBatchName.Text,
+                            Note = txtNote.Text
+                        };
 
-                if (result == MessageBoxResult.OK)
-                {
-                    BatchUpdateRequest request = new BatchUpdateRequest()
-                    {
-                        Id = _currentBatch.Id,
-                        BatchName = txtBatchName.Text,
-                        Note = txtNote.Text
-                    };
+                        var updateResult = await _batchService.Update(request);
 
-                    var updateResult = await _batchService.Update(request);
+                        if (updateResult == 0)
+                        {
+                            NotificationShow("error", "Cập nhật không thành công!");
+                        }
+                        else
+                        {
+                            NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
+                        }
 
-                    if (updateResult == 0)
-                    {
-                        NotificationShow("error", "Cập nhật không thành công!");
-                    }
-                    else
-                    {
-                        NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
-                    }
-
-                    this.Visibility = Visibility.Hidden;
-                }
+                        this.Visibility = Visibility.Hidden;
+                    }, "OK", () => { }, "Cancel");
                
             }
             catch (Exception ex)

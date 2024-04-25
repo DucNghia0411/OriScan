@@ -1,0 +1,19 @@
+diff a/OriginalScan/Views/BatchWindow.xaml.cs b/OriginalScan/Views/BatchWindow.xaml.cs	(rejected hunks)
+@@ -312,6 +312,17 @@
+              }
+          }
+  
+++<<<<<<< Updated upstream
+++=======
++         public async void GetDocumentsByBatch(int batchId)
++         {
++             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
++             userFolderPath = userFolderPath.Replace("/", "\\");
++ 
++             IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
++         }
++ 
+++>>>>>>> Stashed changes
+          private void btnView_Click(object sender, RoutedEventArgs e)
+          {
+              try

@@ -260,12 +260,13 @@
 
             <Grid Grid.Row="1">
                 <GroupBox Header="DANH SÁCH TÀI LIỆU"
-                          FontWeight="Bold"
-                          materialDesign:ColorZoneAssist.Background="#00AE72"
-                          materialDesign:ColorZoneAssist.Foreground="Black"
-                          materialDesign:ColorZoneAssist.Mode="Custom"
-                          BorderThickness="2" 
-                          Margin="10,10,10,10">
+                    FontWeight="Bold"
+                    materialDesign:ColorZoneAssist.Background="#00AE72"
+                    materialDesign:ColorZoneAssist.Foreground="Black"
+                    materialDesign:ColorZoneAssist.Mode="Custom"
+                    BorderThickness="2" 
+                    Margin="10,10,10,10">
+
                 </GroupBox>
             </Grid>
 
