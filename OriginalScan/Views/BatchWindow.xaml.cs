@@ -299,6 +299,7 @@ namespace OriginalScan.Views
                     async () => {
                         try
                         {
+                            GetDocumentsByBatch(0);
                             var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
 
                             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

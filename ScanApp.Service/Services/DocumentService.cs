@@ -1,4 +1,5 @@
-﻿using ScanApp.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ScanApp.Data.Entities;
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
@@ -75,8 +76,7 @@ namespace ScanApp.Service.Services
         {
             try
             {
-                IEnumerable<ScanApp.Data.Entities.Document> documents = await Get(x => x.BatchId == batchId);
-
+                var documents = await _documentRepo.GetAsync(x => x.BatchId == batchId);
                 if (!documents.Any())
                 {
                     return false;
