@@ -1,4 +1,5 @@
 ﻿using FontAwesome5;
+using Microsoft.EntityFrameworkCore;
 using Notification.Wpf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
@@ -55,7 +56,7 @@ namespace OriginalScan.Views
                 if (CheckBatchCreateField() != "")
                 {
                     System.Windows.Forms.MessageBox.Show(CheckBatchCreateField(), "Thông báo!", MessageBoxButtons.OK);
-                    return; 
+                    return;
                 }
 
                 DateTime now = DateTime.Now;
@@ -85,7 +86,7 @@ namespace OriginalScan.Views
 
                 Batch? existBatch = await _batchService.FirstOrDefault(x => x.BatchName.Trim().ToUpper() == txtBatchName.Text.Trim().ToUpper());
 
-                if(existBatch != null)
+                if (existBatch != null)
                 {
                     var duplicateNoti = new NotificationContent
                     {
@@ -214,8 +215,8 @@ namespace OriginalScan.Views
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
                 _batchService.SetBatch(selectedBatch);
 
-                BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
-                batchDetailWindow.ShowDialog();
+                /*BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
+                batchDetailWindow.ShowDialog();*/
             }
             catch (Exception ex)
             {
@@ -254,6 +255,43 @@ namespace OriginalScan.Views
             userFolderPath = userFolderPath.Replace("/", "\\");
 
             IEnumerable<Document> documents = await _documentService.Get(x => x.BatchId == batchId);
+        }
+
+        private void btnView_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
+
+                var dataContext = clickedButton.DataContext;
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
+
+                _batchService.SetBatch(selectedBatch);
+
+                BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService);
+                batchDetailWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                var errorNoti = new NotificationContent
+                {
+                    Title = "Lỗi!",
+                    Message = $"Có lỗi: {ex.Message}",
+                    Type = NotificationType.Error,
+                    Icon = new SvgAwesome()
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Times,
+                        Height = 25,
+                        Foreground = new SolidColorBrush(Colors.Black)
+                    },
+                    Background = new SolidColorBrush(Colors.Red),
+                    Foreground = new SolidColorBrush(Colors.White),
+                };
+                _notificationManager.Show(errorNoti);
+                return;
+            }
         }
     }
 }
