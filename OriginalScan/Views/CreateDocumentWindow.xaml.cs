@@ -53,27 +53,77 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
+        void NotificationShow(string type, string message)
+        {
+            switch (type)
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
+        }
+
         private async void CreateDocument_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (CheckDocumentCreateField() != "")
                 {
-                    var nullNoti = new NotificationContent
-                    {
-                        Title = "Thông báo!",
-                        Message = CheckDocumentCreateField(),
-                        Type = NotificationType.Warning,
-                        Icon = new SvgAwesome()
-                        {
-                            Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
-                            Height = 25,
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        },
-                        Background = new SolidColorBrush(Colors.Yellow),
-                        Foreground = new SolidColorBrush(Colors.Black),
-                    };
-                    _notificationManager.Show(nullNoti);
+                    NotificationShow("warning", CheckDocumentCreateField());
                     return;
                 }
 
@@ -81,21 +131,7 @@ namespace OriginalScan.Views
 
                 if(currentBatch == null)
                 {
-                    var batchNotFoundNoti = new NotificationContent
-                    {
-                        Title = "Thông báo!",
-                        Message = $"Vui lòng chọn gói trước khi tạo tài liệu.",
-                        Type = NotificationType.Warning,
-                        Icon = new SvgAwesome()
-                        {
-                            Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
-                            Height = 25,
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        },
-                        Background = new SolidColorBrush(Colors.Yellow),
-                        Foreground = new SolidColorBrush(Colors.Black),
-                    };
-                    _notificationManager.Show(batchNotFoundNoti);
+                    NotificationShow("warning", "Vui lòng chọn gói trước khi tạo tài liệu.");
                     return;
                 }
 
@@ -118,7 +154,7 @@ namespace OriginalScan.Views
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.Forms.MessageBox.Show($"Khởi tạo thư mục thất bại! Vui lòng cấp quyền cho hệ thống: {ex.Message}");
+                    NotificationShow("error", $"Khởi tạo thư mục thất bại! Vui lòng cấp quyền cho hệ thống: {ex.Message}");
                     return;
                 }
 
@@ -135,21 +171,7 @@ namespace OriginalScan.Views
 
                 if (documentId == 0) 
                 {
-                    var errorNoti = new NotificationContent
-                    {
-                        Title = "Lỗi!",
-                        Message = $"Tạo tài liệu mới thất bại!",
-                        Type = NotificationType.Error,
-                        Icon = new SvgAwesome()
-                        {
-                            Icon = EFontAwesomeIcon.Solid_Times,
-                            Height = 25,
-                            Foreground = new SolidColorBrush(Colors.Black)
-                        },
-                        Background = new SolidColorBrush(Colors.Red),
-                        Foreground = new SolidColorBrush(Colors.White),
-                    };
-                    _notificationManager.Show(errorNoti);
+                    NotificationShow("error", "Tạo tài liệu mới thất bại!");
                     return;
                 }
 
@@ -157,39 +179,13 @@ namespace OriginalScan.Views
                 if (batchManagerWindow != null)
                     batchManagerWindow.GetDocumentsByBatch(currentBatch.Id);
 
-                var successNoti = new NotificationContent
-                {
-                    Title = "Thành công!",
-                    Message = $"Tạo tài liệu mới thành công với mã {documentId}.",
-                    Type = NotificationType.Success,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Check,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Green),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(successNoti);
+                NotificationShow("success", $"Tạo tài liệu mới thành công với mã {documentId}.");
+
+                this.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
             {
-                var errorNoti = new NotificationContent
-                {
-                    Title = "Lỗi!",
-                    Message = $"Tạo tài liệu mới thất bại! Có lỗi: {ex.Message}",
-                    Type = NotificationType.Error,
-                    Icon = new SvgAwesome()
-                    {
-                        Icon = EFontAwesomeIcon.Solid_Times,
-                        Height = 25,
-                        Foreground = new SolidColorBrush(Colors.Black)
-                    },
-                    Background = new SolidColorBrush(Colors.Red),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(errorNoti);
+                NotificationShow("error", $"Sửa thất bại! Có lỗi: {ex.Message}");
                 return;
             }
         }

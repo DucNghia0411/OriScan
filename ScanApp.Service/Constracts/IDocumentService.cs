@@ -1,4 +1,5 @@
 ﻿using ScanApp.Data.Entities;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Document;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,7 @@ namespace ScanApp.Service.Constracts
         Task<int> Create(DocumentCreateRequest request);
 
         Task<IEnumerable<Document>> GetAll();
+
+        void SetDocument(DocumentModel document);
     }
 }

@@ -2,6 +2,7 @@
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
 using System;
@@ -18,10 +19,17 @@ namespace ScanApp.Service.Services
         private readonly IDocumentRepo _documentRepo;
         private readonly IUnitOfWork _unitOfWork;
 
+        public DocumentModel? SelectedDocument { get; set; }
+
         public DocumentService(ScanContext context) 
         {
             _documentRepo = new DocumentRepo(context);
             _unitOfWork = new UnitOfWork(context);
+        }
+
+        public void SetDocument(DocumentModel document)
+        {
+            SelectedDocument = document;
         }
 
         public async Task<IEnumerable<Document>> Get(Expression<Func<Document, bool>> predicate)

@@ -1,5 +1,6 @@
 ﻿using FontAwesome5;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Notification.Wpf;
 using Notification.Wpf.Classes;
 using NTwain.Data;
@@ -158,7 +159,7 @@ namespace OriginalScan.Views
             return notification;
         }
 
-        void NotificationShow(string type, string message)
+        private void NotificationShow(string type, string message)
         {
             switch (type) 
             {
@@ -222,6 +223,14 @@ namespace OriginalScan.Views
             }
         }
 
+        private void ResetData()
+        {
+            GetBatches();
+            GetDocumentsByBatch(0);
+            txtCurrentBatch.Text = string.Empty;
+            txtCurrentDocument.Text = string.Empty;
+        }
+
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
@@ -240,8 +249,8 @@ namespace OriginalScan.Views
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
                 _batchService.SetBatch(selectedBatch);
 
-                /*BatchDetailWindow batchDetailWindow = new BatchDetailWindow();
-                batchDetailWindow.ShowDialog();*/
+                GetDocumentsByBatch(selectedBatch.Id);
+                txtCurrentBatch.Text = selectedBatch.BatchName;
             }
             catch (Exception ex)
             {
@@ -250,7 +259,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        private void btnEditBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -266,8 +275,7 @@ namespace OriginalScan.Views
                 BatchDetailWindow batchDetailWindow = new BatchDetailWindow(_batchService, true);
                 batchDetailWindow.ShowDialog();
 
-                GetBatches();
-                txtCurrentBatch.Text = string.Empty;
+                ResetData();
             }
             catch (Exception ex)
             {
@@ -276,7 +284,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        private void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -302,9 +310,7 @@ namespace OriginalScan.Views
                             if (deleteResult)
                             {
                                 NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                                GetBatches();
-                                txtCurrentBatch.Text = string.Empty;
-                                txtCurrentDocument.Text = string.Empty;
+                                ResetData();
                             }
                         }
                         catch (Exception ex)
@@ -329,9 +335,36 @@ namespace OriginalScan.Views
             userFolderPath = userFolderPath.Replace("/", "\\");
 
             IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
+
+            List<object> return_data = new List<object>();
+
+            foreach (ScanApp.Data.Entities.Document document in documents)
+            {
+                string formattedCreatedDate = "";
+
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(document.CreatedDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate)
+                    || DateTime.TryParseExact(document.CreatedDate, "dd-MMM-yy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedCreatedDate = createdDate.ToString("M/d/yyyy h:mm:ss tt");
+                }
+
+                var obj = new
+                {
+                    Id = document.Id,
+                    DocumentName = document.DocumentName,
+                    DocumentPath = document.DocumentPath,
+                    Note = document.Note,
+                    CreatedDate = formattedCreatedDate
+                };
+                return_data.Add(obj);
+            }
+
+            lstvDocuments.ItemsSource = return_data;
         }
 
-        private void btnView_Click(object sender, RoutedEventArgs e)
+        private void btnViewBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -355,6 +388,37 @@ namespace OriginalScan.Views
         }
 
         private void lstvDocuments_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                {
+                    return;
+                }
+
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(lstvDocuments.SelectedItem);
+
+                selectedDocument.BatchId = _batchService.SelectedBatch.Id;
+                txtCurrentDocument.Text = selectedDocument.DocumentName;
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                return;
+            }
+        }
+
+        private void btnViewDocument_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnEditDocument_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
         {
 
         }

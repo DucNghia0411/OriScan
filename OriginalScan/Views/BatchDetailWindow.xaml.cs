@@ -208,6 +208,15 @@ namespace OriginalScan.Views
                         else
                         {
                             NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
+
+                            BatchModel batchModel = new BatchModel()
+                            {
+                                Id = _currentBatch.Id,
+                                BatchName = txtBatchName.Text,
+                                BatchPath = txtPath.Text
+                            };
+
+                            _batchService.SetBatch(batchModel);
                         }
 
                         this.Visibility = Visibility.Hidden;
