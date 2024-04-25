@@ -54,7 +54,7 @@ namespace OriginalScan.Views
                 if (CheckBatchCreateField() != "")
                 {
                     System.Windows.Forms.MessageBox.Show(CheckBatchCreateField(), "Thông báo!", MessageBoxButtons.OK);
-                    return; 
+                    return;
                 }
 
                 DateTime now = DateTime.Now;
@@ -84,7 +84,7 @@ namespace OriginalScan.Views
 
                 Batch? existBatch = await _batchService.FirstOrDefault(x => x.BatchName.Trim().ToUpper() == txtBatchName.Text.Trim().ToUpper());
 
-                if(existBatch != null)
+                if (existBatch != null)
                 {
                     var duplicateNoti = new NotificationContent
                     {
@@ -251,28 +251,12 @@ namespace OriginalScan.Views
         {
             try
             {
-                System.Windows.Controls.Button? btn = sender as System.Windows.Controls.Button;
-                if (btn == null)
-                {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
                     return;
-                }
 
-                System.Windows.Controls.ListViewItem listViewItem = FindAncestor<System.Windows.Controls.ListViewItem>(btn);
-
-                if (listViewItem == null)
-                {
-                    return;
-                }
-
-                lstvBatches.SelectedItem = listViewItem.DataContext;
-
-                if (lstvBatches.SelectedItem == null)
-                {
-                    return;
-                }
-
-                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
-
+                var dataContext = clickedButton.DataContext;
+                BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
                 _batchService.SetBatch(selectedBatch);
 
@@ -298,20 +282,6 @@ namespace OriginalScan.Views
                 _notificationManager.Show(errorNoti);
                 return;
             }
-        }
-
-        private T FindAncestor<T>(DependencyObject current) where T : DependencyObject
-        {
-            do
-            {
-                if (current is T ancestor)
-                {
-                    return ancestor;
-                }
-                current = VisualTreeHelper.GetParent(current);
-            }
-            while (current != null);
-            return null;
         }
     }
 }
