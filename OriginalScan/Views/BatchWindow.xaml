@@ -94,17 +94,25 @@
                             Grid.Column="1"
                             Grid.Row="2"
                             Height="27"
+                            TextWrapping="Wrap"
                             FontSize="14"/>
 
-                    <Button Content="Tạo mới" 
-                            Style="{StaticResource ButtonStyle}"
+                    <Button x:Name="btnCreateBatch" Style="{StaticResource ButtonStyle}"
                             HorizontalAlignment="Center" 
                             VerticalAlignment="Top" 
                             Click="CreateBatch_Click" 
-                            Margin="10"
+                            Margin="30"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
-                            Grid.Row="3" />
+                            Grid.Row="3">
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Image Source="/Resource/Images/foldericon.png"
+                                   Width="20" Height="20" Margin="0,0,5,0" />
+                            <TextBlock Text="Tạo mới" />
+                        </StackPanel>
+
+                    </Button>
                 </Grid>
 
             </GroupBox>
@@ -308,13 +316,21 @@
                              Grid.Column="0"
                              IsEnabled="False"/>
 
-                    <Button x:Name="btnCreateDocument" Content="Tạo mới tài liệu" 
+                    <Button x:Name="btnCreateDocument" 
                             HorizontalAlignment="Center"
-                            Margin="10,0,0,0" 
                             VerticalAlignment="Center"
                             Grid.Column="4"
+                            Width="150"
                             Style="{StaticResource ButtonStyle}" 
-                            Width="150" Click="btnCreateDocument_Click"/>
+                            Click="btnCreateDocument_Click">
+
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Image Source="/Resource/Images/documents.png"
+                                   Width="20" Height="20" Margin="0,0,5,0" />
+                            <TextBlock Text="Tạo mới tài liệu" />
+                        </StackPanel>
+
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>

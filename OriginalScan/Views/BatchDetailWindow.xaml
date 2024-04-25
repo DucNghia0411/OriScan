@@ -129,14 +129,36 @@
         </Grid>
 
         <Grid Grid.Row="1">
+            <Button x:Name="btnEdit"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="CbtnEdit_Click" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,0,130,0" 
+                    VerticalAlignment="Center">
+
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/check-markwhite.png"
+                           Width="15" Height="15" Margin="0,0,5,0" />
+                    <TextBlock Text="Chỉnh sửa" />
+                </StackPanel>
+
+            </Button>
+
             <Button x:Name="btnCancelDocument"
-            Style="{StaticResource ButtonStyle}"
-            Content="Hủy" 
-            HorizontalAlignment="Right" 
-            Margin="0,0,20,0" 
-            VerticalAlignment="Center"
-            Background="#DF0029"
-            Click="btnCancelDocument_Click"/>
+                    Style="{StaticResource ButtonStyle}"
+                    HorizontalAlignment="Right" 
+                    Margin="0,0,20,0" 
+                    VerticalAlignment="Center"
+                    Background="#DF0029"
+                    Click="btnCancelDocument_Click">
+
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/closewhite.png"
+                           Width="15" Height="15" Margin="0,0,5,0" />
+                    <TextBlock Text="Hủy" />
+                </StackPanel>
+
+            </Button>
         </Grid>
     </Grid>
 </Window>

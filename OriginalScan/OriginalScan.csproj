@@ -9,16 +9,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\Icons\cancelwhite.png" />
+    <None Remove="Resource\Icons\check-markwhite.png" />
+    <None Remove="Resource\Icons\checkmark.png" />
+    <None Remove="Resource\Icons\closewhite.png" />
     <None Remove="Resource\Icons\delete.png" />
     <None Remove="Resource\Icons\diskette.png" />
     <None Remove="Resource\Icons\document.png" />
     <None Remove="Resource\Icons\edit.png" />
     <None Remove="Resource\Icons\eye.png" />
+    <None Remove="Resource\Icons\logout.png" />
     <None Remove="Resource\Icons\pdf.png" />
     <None Remove="Resource\Icons\play.png" />
     <None Remove="Resource\Icons\submit.png" />
     <None Remove="Resource\Images\addscanicon.png" />
     <None Remove="Resource\Images\completeicon.png" />
+    <None Remove="Resource\Images\documenticon.png" />
+    <None Remove="Resource\Images\documents.png" />
+    <None Remove="Resource\Images\foldericon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,16 +46,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resource\Icons\cancelwhite.png" />
+    <Resource Include="Resource\Icons\check-markwhite.png" />
+    <Resource Include="Resource\Icons\checkmark.png" />
+    <Resource Include="Resource\Icons\closewhite.png" />
     <Resource Include="Resource\Icons\delete.png" />
     <Resource Include="Resource\Icons\diskette.png" />
     <Resource Include="Resource\Icons\document.png" />
     <Resource Include="Resource\Icons\edit.png" />
     <Resource Include="Resource\Icons\eye.png" />
+    <Resource Include="Resource\Icons\logout.png" />
     <Resource Include="Resource\Icons\pdf.png" />
     <Resource Include="Resource\Icons\play.png" />
     <Resource Include="Resource\Icons\submit.png" />
     <Resource Include="Resource\Images\addscanicon.png" />
     <Resource Include="Resource\Images\completeicon.png" />
+    <Resource Include="Resource\Images\documenticon.png" />
+    <Resource Include="Resource\Images\documents.png" />
+    <Resource Include="Resource\Images\foldericon.png" />
   </ItemGroup>
 
 </Project>
