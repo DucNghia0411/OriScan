@@ -247,10 +247,16 @@ namespace OriginalScan.Views
                 }
 
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(lstvBatches.SelectedItem);
+
+                if (_batchService.SelectedBatch == selectedBatch)
+                {
+                    return;
+                }
                 _batchService.SetBatch(selectedBatch);
 
                 GetDocumentsByBatch(selectedBatch.Id);
                 txtCurrentBatch.Text = selectedBatch.BatchName;
+                txtCurrentDocument.Text = string.Empty;
             }
             catch (Exception ex)
             {
@@ -300,6 +306,8 @@ namespace OriginalScan.Views
                         try
                         {
                             GetDocumentsByBatch(0);
+                            _documentService.SetDocument(new DocumentModel());
+
                             var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
 
                             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);

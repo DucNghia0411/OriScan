@@ -52,5 +52,10 @@ namespace ScanApp.Data.Infrastructure
         {
             _context.Dispose();
         }
+
+        public void ClearChangeTracker()
+        {
+            _context.ChangeTracker.Clear();
+        }
     }
 }

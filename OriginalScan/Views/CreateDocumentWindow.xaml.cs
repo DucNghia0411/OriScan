@@ -176,16 +176,15 @@ namespace OriginalScan.Views
                 }
 
                 BatchWindow? batchManagerWindow = System.Windows.Application.Current.Windows.OfType<BatchWindow>().FirstOrDefault();
-                if (batchManagerWindow != null)
+                if (batchManagerWindow != null) 
                     batchManagerWindow.GetDocumentsByBatch(currentBatch.Id);
 
                 NotificationShow("success", $"Tạo tài liệu mới thành công với mã {documentId}.");
-
-                this.Visibility = Visibility.Hidden;
+                this.Close();
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Sửa thất bại! Có lỗi: {ex.Message}");
+                NotificationShow("error", $"Tạo thất bại! Có lỗi: {ex.Message}");
                 return;
             }
         }

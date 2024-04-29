@@ -15,5 +15,7 @@ namespace ScanApp.Data.Infrastructure.Interface
         void Rollback();
 
         Task Save();
+
+        void ClearChangeTracker();
     }
 }

@@ -59,7 +59,11 @@ namespace ScanApp.Service.Services
                 await _documentRepo.AddAsync(document);
                 await _unitOfWork.Save();
 
-                return document.Id;
+                int result = document.Id;
+
+                _unitOfWork.ClearChangeTracker();
+
+                return result;
             }
             catch (Exception)
             {
@@ -77,7 +81,8 @@ namespace ScanApp.Service.Services
             try
             {
                 var documents = await _documentRepo.GetAsync(x => x.BatchId == batchId);
-                if (!documents.Any())
+
+                if (documents == null || !documents.Any())
                 {
                     return false;
                 }
