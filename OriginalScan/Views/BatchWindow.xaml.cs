@@ -108,6 +108,7 @@ namespace OriginalScan.Views
 
                 NotificationShow("success", $"Tạo gói mới thành công với mã {batchId}.");
 
+                lstvBatches.SelectedItems.Clear();
                 GetBatches();
             }
             catch (Exception ex)
@@ -235,6 +236,7 @@ namespace OriginalScan.Views
         {
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
             createDocumentWindow.ShowDialog();
+            lstvDocuments.SelectedItems.Clear();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -274,6 +276,8 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
+                lstvBatches.SelectedItem = dataContext;
+
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
                 _batchService.SetBatch(selectedBatch);
@@ -299,6 +303,8 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
+                lstvBatches.SelectedItem = dataContext;
+
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
                 _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", 
@@ -326,7 +332,7 @@ namespace OriginalScan.Views
                         }
                         catch (Exception ex)
                         {
-                            NotificationShow("error", $"Có lỗi: {ex.Message}");
+                            NotificationShow("error", $"{ex.Message}");
                             return;
 
                         }
@@ -335,7 +341,7 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Xóa thất bại! Có lỗi: {ex.Message}");
+                NotificationShow("error", $"Xóa thất bại! {ex.Message}");
                 return;
             }
         }
@@ -384,6 +390,8 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
+                lstvBatches.SelectedItem = dataContext;
+
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
                 _batchService.SetBatch(selectedBatch);
@@ -393,7 +401,7 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                NotificationShow("error", $"{ex.Message}");
                 return;
             }
         }
@@ -414,7 +422,7 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                NotificationShow("error", $"{ex.Message}");
                 return;
             }
         }
@@ -428,8 +436,9 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
+                lstvDocuments.SelectedItem = dataContext;
 
-                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                if (_batchService.SelectedBatch == null)
                 {
                     return;
 
@@ -443,7 +452,7 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                NotificationShow("error", $"{ex.Message}");
                 return;
             }
         }
@@ -457,7 +466,9 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
-                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                lstvDocuments.SelectedItem = dataContext;
+
+                if (_batchService.SelectedBatch == null)
                 {
                     return;
 
@@ -473,14 +484,65 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Sửa thất bại! Có lỗi: {ex.Message}");
+                NotificationShow("error", $"Sửa thất bại! {ex.Message}");
                 return;
             }
         }
 
         private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
 
+                var dataContext = clickedButton.DataContext;
+                lstvDocuments.SelectedItem = dataContext;
+
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+                _notificationManager.ShowButtonWindow($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận",
+                    async () => {
+                        try
+                        {
+                            _documentService.SetDocument(new DocumentModel());
+
+                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            string folderPath = selectedDocument.DocumentPath;
+                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                            try
+                            {
+                                Directory.Delete(path, true);
+                            }
+                            catch (DirectoryNotFoundException) { }
+
+                            var documentDelete = await _documentService.Delete(selectedDocument.Id);
+
+                            if (documentDelete)
+                            {
+                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
+                                if (_batchService.SelectedBatch != null)
+                                {
+                                    GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            NotificationShow("error", $"{ex.Message}");
+                            return;
+
+                        }
+                    }, "OK", () => { }, "Cancel");
+
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Xóa thất bại! {ex.Message}");
+                return;
+            }
         }
     }
 }

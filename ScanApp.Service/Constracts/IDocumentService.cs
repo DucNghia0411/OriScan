@@ -28,5 +28,7 @@ namespace ScanApp.Service.Constracts
         Task<bool> DeleteByBatch(int batchId);
 
         Task<int> Update(DocumentUpdateRequest request);
+
+        Task<bool> Delete(int id);
     }
 }

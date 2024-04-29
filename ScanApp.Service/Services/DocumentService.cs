@@ -123,5 +123,21 @@ namespace ScanApp.Service.Services
                 throw;
             }
         }
+
+        public async Task<bool> Delete(int id)
+        {
+            try
+            {
+                await _documentRepo.DeleteAsync(id);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
+        }
     }
 }
