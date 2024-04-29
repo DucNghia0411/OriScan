@@ -1,5 +1,6 @@
 ﻿using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
+using ScanApp.Model.Requests.Batch;
 using ScanApp.Model.Requests.Document;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace ScanApp.Service.Constracts
 {
     public interface IDocumentService
     {
+        DocumentModel? SelectedDocument { get; set; }
+
+        void SetDocument(DocumentModel document);
+
         Task<IEnumerable<Document>> Get(Expression<Func<Document, bool>> predicate);
 
         Task<Document?> FirstOrDefault(Expression<Func<Document, bool>> predicate);
@@ -20,8 +25,8 @@ namespace ScanApp.Service.Constracts
 
         Task<IEnumerable<Document>> GetAll();
 
-        void SetDocument(DocumentModel document);
-
         Task<bool> DeleteByBatch(int batchId);
+
+        Task<int> Update(DocumentUpdateRequest request);
     }
 }

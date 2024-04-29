@@ -4,6 +4,7 @@ using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
 using ScanApp.Model.Models;
+using ScanApp.Model.Requests.Batch;
 using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
 using System;
@@ -93,6 +94,31 @@ namespace ScanApp.Service.Services
                 return true;
             }
             catch(Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<int> Update(DocumentUpdateRequest request)
+        {
+            try
+            {
+                var editDocument = await _documentRepo.GetByIdAsync(request.Id);
+
+                if (editDocument == null)
+                {
+                    return 0;
+                }
+
+                editDocument.DocumentName = request.DocumentName;
+                editDocument.Note = request.Note;
+
+                _documentRepo.Update(editDocument);
+                await _unitOfWork.Save();
+
+                return editDocument.Id;
+            }
+            catch (Exception)
             {
                 throw;
             }

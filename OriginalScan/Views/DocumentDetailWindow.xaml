@@ -1,0 +1,181 @@
+﻿<Window x:Class="OriginalScan.Views.DocumentDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:OriginalScan.Views"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Chi tiết tài liệu" 
+        Height="660" 
+        Width="1200"
+        MinHeight="615"
+        Closing="Window_Closing">
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#00AE72" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="35" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <GroupBox materialDesign:ColorZoneAssist.Background="#00AE72"
+        materialDesign:ColorZoneAssist.Foreground="Black"
+        materialDesign:ColorZoneAssist.Mode="Custom"                    
+        Header="GÓI TÀI LIỆU"
+        FontWeight="Bold"
+        BorderThickness="2" 
+        Margin="10,10,10,10">
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Tên tài liệu:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="0"
+                       FontSize="14"/>
+
+                    <Label Content="Tên gói tài liệu:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       FontSize="14"/>
+
+                    <Label Content="Ngày tạo:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="2"
+                       FontSize="14"/>
+
+                    <Label Content="Đường dẫn:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="3"
+                       FontSize="14"/>
+
+                    <Label Content="Ghi chú:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="4"
+                       FontSize="14"/>
+
+                    <TextBox x:Name="txtDocumentName" 
+                HorizontalAlignment="Stretch"
+                Margin="20,0,20,0" 
+                TextWrapping="NoWrap" 
+                VerticalAlignment="Center" 
+                Grid.Column="1"
+                Grid.Row="0"
+                FontSize="14"
+                IsReadOnly="True"/>
+                    
+                    <TextBox x:Name="txtBatchName" 
+                 HorizontalAlignment="Stretch"
+                 Margin="20,0,20,0" 
+                 TextWrapping="NoWrap" 
+                 VerticalAlignment="Center" 
+                 Grid.Column="1"
+                 Grid.Row="1"
+                 FontSize="14"
+                 IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtCreatedDate" 
+                 HorizontalAlignment="Stretch"
+                 Margin="20,0,20,0" 
+                 TextWrapping="NoWrap" 
+                 VerticalAlignment="Center" 
+                 Grid.Column="1"
+                 Grid.Row="2"
+                 FontSize="14"
+                 IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtPath" 
+                 HorizontalAlignment="Stretch"
+                 Margin="20,0,20,0" 
+                 TextWrapping="Wrap" 
+                 VerticalAlignment="Center" 
+                 Grid.Column="1"
+                 Grid.Row="3"
+                 FontSize="14"
+                 IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtNote" 
+                 HorizontalAlignment="Stretch"
+                 Margin="20,0,20,0" 
+                 TextWrapping="Wrap" 
+                 FontSize="14"
+                 VerticalAlignment="Center" 
+                 Grid.Column="1"
+                 Grid.Row="4"
+                 IsReadOnly="True"/>
+                </Grid>
+            </GroupBox>
+
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Button x:Name="btnEdit"
+                Style="{StaticResource ButtonStyle}"
+                Click="CbtnEdit_Click" 
+                HorizontalAlignment="Right" 
+                Margin="0,0,130,0" 
+                VerticalAlignment="Center">
+
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/check-markwhite.png"
+                       Width="15" Height="15" Margin="0,0,5,0" />
+                    <TextBlock Text="Chỉnh sửa" />
+                </StackPanel>
+
+            </Button>
+
+            <Button x:Name="btnCancelDocument"
+                Style="{StaticResource ButtonStyle}"
+                HorizontalAlignment="Right" 
+                Margin="0,0,20,0" 
+                VerticalAlignment="Center"
+                Background="#DF0029"
+                Click="btnCancelDocument_Click">
+
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/closewhite.png"
+                       Width="15" Height="15" Margin="0,0,5,0" />
+                    <TextBlock Text="Hủy" />
+                </StackPanel>
+
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

@@ -421,12 +421,61 @@ namespace OriginalScan.Views
 
         private void btnViewDocument_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
 
+                var dataContext = clickedButton.DataContext;
+
+                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                {
+                    return;
+
+                }
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+                _documentService.SetDocument(selectedDocument);
+
+                DocumentDetailWindow documentDetailWindow = new DocumentDetailWindow(_documentService, false, _batchService.SelectedBatch);
+                documentDetailWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                return;
+            }
         }
 
         private void btnEditDocument_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
 
+                var dataContext = clickedButton.DataContext;
+                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                {
+                    return;
+
+                }
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+                _documentService.SetDocument(selectedDocument);
+
+                DocumentDetailWindow documentDetailWindow = new DocumentDetailWindow(_documentService, true, _batchService.SelectedBatch);
+                documentDetailWindow.ShowDialog();
+
+                txtCurrentDocument.Text = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Sửa thất bại! Có lỗi: {ex.Message}");
+                return;
+            }
         }
 
         private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
