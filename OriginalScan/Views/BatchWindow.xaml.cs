@@ -429,7 +429,7 @@ namespace OriginalScan.Views
 
                 var dataContext = clickedButton.DataContext;
 
-                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+                if (_batchService.SelectedBatch == null)
                 {
                     return;
 
@@ -457,7 +457,8 @@ namespace OriginalScan.Views
                     return;
 
                 var dataContext = clickedButton.DataContext;
-                if (lstvDocuments.SelectedItem == null || _batchService.SelectedBatch == null)
+
+                if (_batchService.SelectedBatch == null)
                 {
                     return;
 
