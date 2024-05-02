@@ -108,7 +108,7 @@ namespace OriginalScan.Views
                 NotificationShow("success", $"Tạo gói mới thành công với mã {batchId}.");
 
                 lstvBatches.SelectedItems.Clear();
-                GetBatches();
+                ResetData();
             }
             catch (Exception ex)
             {
@@ -232,6 +232,8 @@ namespace OriginalScan.Views
         {
             GetBatches();
             GetDocumentsByBatch(0);
+            txtBatchName.Text = string.Empty;
+            txtBatchNote.Text = string.Empty;
             txtCurrentBatch.Text = string.Empty;
             txtCurrentDocument.Text = string.Empty;
         }
