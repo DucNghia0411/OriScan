@@ -298,7 +298,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -311,36 +311,47 @@ namespace OriginalScan.Views
 
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", 
-                    async () => {
+                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        GetDocumentsByBatch(0);
+                        _documentService.SetDocument(new DocumentModel());
+
+                        var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
+
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string folderPath = selectedBatch.BatchPath;
+                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
                         try
                         {
-                            GetDocumentsByBatch(0);
-                            _documentService.SetDocument(new DocumentModel());
-
-                            var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
-
-                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            string folderPath = selectedBatch.BatchPath;
-                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
                             Directory.Delete(path, true);
-
-                            var deleteResult = await _batchService.Delete(selectedBatch.Id);
-
-                            if (deleteResult)
-                            {
-                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                                ResetData();
-                            }
                         }
-                        catch (Exception ex)
+                        catch (DirectoryNotFoundException) { }
+
+                        var deleteResult = await _batchService.Delete(selectedBatch.Id);
+
+                        if (deleteResult)
                         {
-                            NotificationShow("error", $"{ex.Message}");
-                            return;
-
+                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                            ResetData();
                         }
-                    }, "OK", () => { }, "Cancel");
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationShow("error", $"{ex.Message}");
+                        return;
+
+                    }
+
+                }
+                else
+                {
+                    return;
+                }
 
             }
             catch (Exception ex)
@@ -493,7 +504,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -506,40 +517,47 @@ namespace OriginalScan.Views
 
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận",
-                    async () => {
+                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _documentService.SetDocument(new DocumentModel());
+
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string folderPath = selectedDocument.DocumentPath;
+                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
                         try
                         {
-                            _documentService.SetDocument(new DocumentModel());
-
-                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            string folderPath = selectedDocument.DocumentPath;
-                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                            try
-                            {
-                                Directory.Delete(path, true);
-                            }
-                            catch (DirectoryNotFoundException) { }
-
-                            var documentDelete = await _documentService.Delete(selectedDocument.Id);
-
-                            if (documentDelete)
-                            {
-                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
-                                if (_batchService.SelectedBatch != null)
-                                {
-                                    GetDocumentsByBatch(_batchService.SelectedBatch.Id);
-                                }
-                            }
+                            Directory.Delete(path, true);
                         }
-                        catch (Exception ex)
+                        catch (DirectoryNotFoundException) { }
+
+                        var documentDelete = await _documentService.Delete(selectedDocument.Id);
+
+                        if (documentDelete)
                         {
-                            NotificationShow("error", $"{ex.Message}");
-                            return;
-
+                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
+                            if (_batchService.SelectedBatch != null)
+                            {
+                                GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                            }
                         }
-                    }, "OK", () => { }, "Cancel");
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationShow("error", $"{ex.Message}");
+                        return;
+
+                    }
+
+                }
+                else
+                {
+                    return;
+                }
 
             }
             catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using FontAwesome5;
 using Notification.Wpf;
+using NTwain.Data;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
@@ -175,7 +176,7 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private void CbtnEdit_Click(object sender, RoutedEventArgs e)
+        private async void CbtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBatchField() != "")
             {
@@ -190,45 +191,52 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận",
-                    async () => {
-                        BatchUpdateRequest request = new BatchUpdateRequest()
+                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    BatchUpdateRequest request = new BatchUpdateRequest()
+                    {
+                        Id = _currentBatch.Id,
+                        BatchName = txtBatchName.Text,
+                        Note = txtNote.Text
+                    };
+
+                    var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
+
+                    if (checkExistedResult && txtBatchName.Text != _currentBatch.BatchName)
+                    {
+                        NotificationShow("warning", "Tên gói bị trùng lặp!");
+                        return;
+                    }
+
+                    var updateResult = await _batchService.Update(request);
+
+                    if (updateResult == 0)
+                    {
+                        NotificationShow("error", "Cập nhật không thành công!");
+                    }
+                    else
+                    {
+                        NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
+
+                        BatchModel batchModel = new BatchModel()
                         {
                             Id = _currentBatch.Id,
                             BatchName = txtBatchName.Text,
-                            Note = txtNote.Text
+                            BatchPath = txtPath.Text
                         };
 
-                        var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
+                        _batchService.SetBatch(batchModel);
+                    }
 
-                        if (checkExistedResult && txtBatchName.Text != _currentBatch.BatchName)
-                        {
-                            NotificationShow("warning", "Tên gói bị trùng lặp!");
-                            return;
-                        }
+                    this.Visibility = Visibility.Hidden;
 
-                        var updateResult = await _batchService.Update(request);
-
-                        if (updateResult == 0)
-                        {
-                            NotificationShow("error", "Cập nhật không thành công!");
-                        }
-                        else
-                        {
-                            NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
-
-                            BatchModel batchModel = new BatchModel()
-                            {
-                                Id = _currentBatch.Id,
-                                BatchName = txtBatchName.Text,
-                                BatchPath = txtPath.Text
-                            };
-
-                            _batchService.SetBatch(batchModel);
-                        }
-
-                        this.Visibility = Visibility.Hidden;
-                    }, "OK", () => { }, "Cancel");
+                }
+                else
+                {
+                    return;
+                }
                
             }
             catch (Exception ex)
