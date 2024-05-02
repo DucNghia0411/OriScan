@@ -199,6 +199,14 @@ namespace OriginalScan.Views
                             Note = txtNote.Text
                         };
 
+                        var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
+
+                        if (checkExistedResult && txtBatchName.Text != _currentBatch.BatchName)
+                        {
+                            NotificationShow("warning", "Tên gói bị trùng lặp!");
+                            return;
+                        }
+
                         var updateResult = await _batchService.Update(request);
 
                         if (updateResult == 0)

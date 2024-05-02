@@ -140,6 +140,22 @@ namespace OriginalScan.Views
                 string systemPath = System.IO.Path.Combine(currentBatch.BatchPath, $"{txtDocumentName.Text}_{now.ToString("yyyyMMdd")}");
                 string path = System.IO.Path.Combine(userFolderPath, systemPath);
 
+                DocumentCreateRequest request = new DocumentCreateRequest()
+                {
+                    BatchId = currentBatch.Id,
+                    DocumentName = txtDocumentName.Text,
+                    DocumentPath = systemPath,
+                    Note = txtNote.Text,
+                    CreatedDate = now.ToString()
+                };
+
+                var checkExistedResult = await _documentService.CheckExisted(currentBatch.Id, txtDocumentName.Text);
+                if (checkExistedResult)
+                {
+                    NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
+                    return;
+                }
+
                 try
                 {
                     DirectoryInfo directoryInfo = Directory.CreateDirectory(path);
@@ -157,15 +173,6 @@ namespace OriginalScan.Views
                     NotificationShow("error", $"Khởi tạo thư mục thất bại! Vui lòng cấp quyền cho hệ thống: {ex.Message}");
                     return;
                 }
-
-                DocumentCreateRequest request = new DocumentCreateRequest()
-                { 
-                    BatchId = currentBatch.Id,
-                    DocumentName = txtDocumentName.Text,
-                    DocumentPath = systemPath,
-                    Note = txtNote.Text,
-                    CreatedDate = now.ToString()
-                };
 
                 int documentId = await _documentService.Create(request);
 

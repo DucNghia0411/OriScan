@@ -28,5 +28,7 @@ namespace ScanApp.Service.Constracts
         Task<int> Update(BatchUpdateRequest request);
 
         Task<bool> Delete(int id);
+
+        Task<bool> CheckExisted(string batchName);
     }
 }

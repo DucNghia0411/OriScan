@@ -139,5 +139,17 @@ namespace ScanApp.Service.Services
 
             }
         }
+
+        public async Task<bool> CheckExisted(int batchId, string documentName)
+        {
+            var batch = await _documentRepo.FirstOrDefaultAsync(e => (e.BatchId == batchId && e.DocumentName == documentName));
+
+            if (batch == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

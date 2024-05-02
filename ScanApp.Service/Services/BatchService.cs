@@ -111,5 +111,17 @@ namespace ScanApp.Service.Services
 
             }
         }
+
+        public async Task<bool> CheckExisted(string batchName)
+        {
+            var batch = await _batchRepo.FirstOrDefaultAsync(e => e.BatchName.Trim().ToUpper() == batchName.Trim().ToUpper());
+
+            if (batch == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

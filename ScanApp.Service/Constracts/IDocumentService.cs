@@ -30,5 +30,7 @@ namespace ScanApp.Service.Constracts
         Task<int> Update(DocumentUpdateRequest request);
 
         Task<bool> Delete(int id);
+
+        Task<bool> CheckExisted(int batchId, string documentName);
     }
 }

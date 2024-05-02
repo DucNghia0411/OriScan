@@ -196,6 +196,13 @@ namespace OriginalScan.Views
                             Note = txtNote.Text
                         };
 
+                        var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
+                        if (checkExistedResult && txtDocumentName.Text != _currentDocument.DocumentName)
+                        {
+                            NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
+                            return;
+                        }
+
                         var updateResult = await _documentService.Update(request);
 
                         if (updateResult == 0)

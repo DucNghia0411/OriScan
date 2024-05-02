@@ -68,6 +68,22 @@ namespace OriginalScan.Views
                 string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.TempData, $"{txtBatchName.Text}_{now.ToString("yyyyMMddHHmmss")}");
                 string path = System.IO.Path.Combine(userFolderPath, systemPath);
 
+                BatchCreateRequest request = new BatchCreateRequest()
+                {
+                    BatchName = txtBatchName.Text,
+                    Note = txtBatchNote.Text,
+                    BatchPath = systemPath,
+                    CreatedDate = now.ToString()
+                };
+
+                var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
+
+                if (checkExistedResult)
+                {
+                    NotificationShow("warning", "Tên gói bị trùng lặp!");
+                    return;
+                }
+
                 try
                 {
                     DirectoryInfo directoryInfo = Directory.CreateDirectory(path);
@@ -86,25 +102,8 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                Directory.CreateDirectory(path);
-
-                Batch? existBatch = await _batchService.FirstOrDefault(x => x.BatchName.Trim().ToUpper() == txtBatchName.Text.Trim().ToUpper());
-
-                if (existBatch != null)
-                {
-                    NotificationShow("warning", "Tên gói bị trùng lặp!");
-                    return;
-                }
-
-                BatchCreateRequest request = new BatchCreateRequest()
-                {
-                    BatchName = txtBatchName.Text,
-                    Note = txtBatchNote.Text,
-                    BatchPath = systemPath,
-                    CreatedDate = now.ToString()
-                };
-
                 int batchId = await _batchService.Create(request);
+                Directory.CreateDirectory(path);
 
                 NotificationShow("success", $"Tạo gói mới thành công với mã {batchId}.");
 
@@ -120,8 +119,13 @@ namespace OriginalScan.Views
 
         private async void GetBatches()
         {
+            trvBatchExplorer.Items.Clear();
+
             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             userFolderPath = userFolderPath.Replace("/", "\\");
+            string path = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder);
+
+            DisplayDirectories(path, null);
 
             IEnumerable<Batch> batches = await _batchService.GetAll();
             List<object> return_data = new List<object>();
@@ -543,6 +547,64 @@ namespace OriginalScan.Views
                 NotificationShow("error", $"Xóa thất bại! {ex.Message}");
                 return;
             }
+        }
+
+        private void DisplayDirectories(string dirPath, TreeViewItem? parentNode)
+        {
+            DirectoryInfo directoryInfo = new DirectoryInfo(dirPath);
+
+            TreeViewItem directoryNode = new TreeViewItem();
+            directoryNode.Header = directoryInfo.Name;
+
+            if (parentNode == null)
+            {
+                trvBatchExplorer.Items.Add(directoryNode);
+            }
+            else
+            {
+                parentNode.Items.Add(directoryNode);
+            }
+
+            foreach (var subDir in directoryInfo.GetDirectories())
+            {
+                DisplayDirectories(subDir.FullName, directoryNode);
+            }
+
+            foreach (var file in directoryInfo.GetFiles())
+            {
+                System.Windows.Controls.ListViewItem item = new System.Windows.Controls.ListViewItem();
+                item.Content = file.Name;
+                item.Tag = file.FullName;
+                lstvBatchExplorer.Items.Add(item);
+            }
+        }
+
+        private void ClearTreeViewSelection(TreeViewItem item)
+        {
+            if (item == null)
+                return;
+
+            item.IsSelected = false;
+
+            foreach (var subItem in item.Items)
+            {
+                if (subItem is TreeViewItem)
+                    ClearTreeViewSelection((TreeViewItem)subItem);
+            }
+        }
+
+        private void ClearAllRootNodesSelection(System.Windows.Controls.TreeView treeView)
+        {
+            foreach (var rootNode in treeView.Items)
+            {
+                if (rootNode is TreeViewItem)
+                    ClearTreeViewSelection((TreeViewItem)rootNode);
+            }
+        }
+
+        private void trvBatchExplorer_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ClearAllRootNodesSelection(trvBatchExplorer);
         }
     }
 }
