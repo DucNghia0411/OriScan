@@ -1,5 +1,7 @@
 ﻿using FontAwesome5;
 using Notification.Wpf;
+using Notification.Wpf.Constants;
+using Notification.Wpf.Controls;
 using NTwain.Data;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
@@ -14,6 +16,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -122,11 +125,15 @@ namespace OriginalScan.Views
                             Background = new SolidColorBrush(Colors.Red),
                             Foreground = new SolidColorBrush(Colors.White),
                         };
+                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+
                         _notificationManager.Show(errorNoti);
                         break;
                     }
                 case "success":
                     {
+                        
+
                         var successNoti = new NotificationContent
                         {
                             Title = "Thành công!",
@@ -141,11 +148,15 @@ namespace OriginalScan.Views
                             Background = new SolidColorBrush(Colors.Green),
                             Foreground = new SolidColorBrush(Colors.White),
                         };
+
+                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
                         _notificationManager.Show(successNoti);
                         break;
                     }
                 case "warning":
                     {
+                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+
                         var warningNoti = new NotificationContent
                         {
                             Title = "Thông báo!",
@@ -164,6 +175,8 @@ namespace OriginalScan.Views
                         break;
                     }
             }
+
+            NotificationConstants.MessagePosition = NotificationPosition.Center;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -176,7 +189,7 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private async void CbtnEdit_Click(object sender, RoutedEventArgs e)
+        private void CbtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBatchField() != "")
             {
@@ -191,53 +204,34 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                NotificationConstants.MessagePosition = NotificationPosition.TopRight;
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    BatchUpdateRequest request = new BatchUpdateRequest()
-                    {
-                        Id = _currentBatch.Id,
-                        BatchName = txtBatchName.Text,
-                        Note = txtNote.Text
-                    };
-
-                    var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
-
-                    if (checkExistedResult && txtBatchName.Text != _currentBatch.BatchName)
-                    {
-                        NotificationShow("warning", "Tên gói bị trùng lặp!");
-                        return;
-                    }
-
-                    var updateResult = await _batchService.Update(request);
-
-                    if (updateResult == 0)
-                    {
-                        NotificationShow("error", "Cập nhật không thành công!");
-                    }
-                    else
-                    {
-                        NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
-
-                        BatchModel batchModel = new BatchModel()
-                        {
+                _notificationManager.ShowButtonWindow($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận",
+                    async () => {
+                        BatchUpdateRequest request = new BatchUpdateRequest()
+                        {   
                             Id = _currentBatch.Id,
                             BatchName = txtBatchName.Text,
-                            BatchPath = txtPath.Text
+                            Note = txtNote.Text
                         };
 
-                        _batchService.SetBatch(batchModel);
-                    }
+                        var updateResult = await _batchService.Update(request);
+                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
 
-                    this.Visibility = Visibility.Hidden;
+                        if (updateResult == 0)
+                        {
+                            
+                            NotificationShow("error", "Cập nhật không thành công!");
+                        }
+                        else
+                        {
 
-                }
-                else
-                {
-                    return;
-                }
-               
+                            NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
+                        }
+
+                        this.Visibility = Visibility.Hidden;
+                    }, "OK", () => { }, "Cancel");
+
             }
             catch (Exception ex)
             {

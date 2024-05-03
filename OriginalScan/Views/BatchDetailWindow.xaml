@@ -25,6 +25,8 @@
         </Style>
     </Window.Resources>
 
+    <!--<notifications:NotificationArea x:Name="WindowArea" Position="TopLeft" MaxItems="3"/>-->
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*"></RowDefinition>

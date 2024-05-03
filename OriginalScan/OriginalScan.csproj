@@ -13,6 +13,7 @@
     <None Remove="Resource\Icons\check-markwhite.png" />
     <None Remove="Resource\Icons\checkmark.png" />
     <None Remove="Resource\Icons\closewhite.png" />
+    <None Remove="Resource\Icons\crop.png" />
     <None Remove="Resource\Icons\delete.png" />
     <None Remove="Resource\Icons\diskette.png" />
     <None Remove="Resource\Icons\document.png" />
@@ -50,6 +51,7 @@
     <Resource Include="Resource\Icons\check-markwhite.png" />
     <Resource Include="Resource\Icons\checkmark.png" />
     <Resource Include="Resource\Icons\closewhite.png" />
+    <Resource Include="Resource\Icons\crop.png" />
     <Resource Include="Resource\Icons\delete.png" />
     <Resource Include="Resource\Icons\diskette.png" />
     <Resource Include="Resource\Icons\document.png" />

@@ -9,6 +9,7 @@ using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Batch;
+using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
@@ -119,13 +120,9 @@ namespace OriginalScan.Views
 
         private async void GetBatches()
         {
-            trvBatchExplorer.Items.Clear();
-
             string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             userFolderPath = userFolderPath.Replace("/", "\\");
             string path = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder);
-
-            DisplayDirectories(path, null);
 
             IEnumerable<Batch> batches = await _batchService.GetAll();
             List<object> return_data = new List<object>();
@@ -236,6 +233,10 @@ namespace OriginalScan.Views
             txtBatchNote.Text = string.Empty;
             txtCurrentBatch.Text = string.Empty;
             txtCurrentDocument.Text = string.Empty;
+
+            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (mainWindow != null)
+                mainWindow.LoadDirectoryTree();
         }
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
@@ -300,7 +301,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private async void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
+        private void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -313,48 +314,40 @@ namespace OriginalScan.Views
 
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
-                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        GetDocumentsByBatch(0);
-                        _documentService.SetDocument(new DocumentModel());
-
-                        var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
-
-                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        string folderPath = selectedBatch.BatchPath;
-                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
+                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận",
+                    async () => {
                         try
                         {
-                            Directory.Delete(path, true);
+                            GetDocumentsByBatch(0);
+                            _documentService.SetDocument(new DocumentModel());
+
+                            var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
+
+                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            string folderPath = selectedBatch.BatchPath;
+                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                            try
+                            {
+                                Directory.Delete(path, true);
+                            }
+                            catch (DirectoryNotFoundException) { }
+
+                            var deleteResult = await _batchService.Delete(selectedBatch.Id);
+
+                            if (deleteResult)
+                            {
+                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                                ResetData();
+                            }
                         }
-                        catch (DirectoryNotFoundException) { }
-
-                        var deleteResult = await _batchService.Delete(selectedBatch.Id);
-
-                        if (deleteResult)
+                        catch (Exception ex)
                         {
-                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                            ResetData();
+                            NotificationShow("error", $"{ex.Message}");
+                            return;
+
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        NotificationShow("error", $"{ex.Message}");
-                        return;
-
-                    }
-
-                }
-                else
-                {
-                    return;
-                }
-
+                    }, "OK", () => { }, "Cancel");
             }
             catch (Exception ex)
             {
@@ -506,7 +499,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private async void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
+        private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -519,112 +512,50 @@ namespace OriginalScan.Views
 
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 
-                MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        _documentService.SetDocument(new DocumentModel());
-
-                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        string folderPath = selectedDocument.DocumentPath;
-                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
+                _notificationManager.ShowButtonWindow($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận",
+                    async () => {
                         try
                         {
-                            Directory.Delete(path, true);
-                        }
-                        catch (DirectoryNotFoundException) { }
+                            _documentService.SetDocument(new DocumentModel());
 
-                        var documentDelete = await _documentService.Delete(selectedDocument.Id);
+                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            string folderPath = selectedDocument.DocumentPath;
+                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
 
-                        if (documentDelete)
-                        {
-                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
-                            if (_batchService.SelectedBatch != null)
+                            try
                             {
-                                GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                                Directory.Delete(path, true);
+                            }
+                            catch (DirectoryNotFoundException) { }
+
+                            var documentDelete = await _documentService.Delete(selectedDocument.Id);
+
+                            if (documentDelete)
+                            {
+                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
+                                if (_batchService.SelectedBatch != null)
+                                {
+                                    GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+
+                                    MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                                    if (mainWindow != null)
+                                        mainWindow.LoadDirectoryTree();
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        NotificationShow("error", $"{ex.Message}");
-                        return;
+                        catch (Exception ex)
+                        {
+                            NotificationShow("error", $"{ex.Message}");
+                            return;
 
-                    }
-
-                }
-                else
-                {
-                    return;
-                }
-
+                        }
+                    }, "OK", () => { }, "Cancel");
             }
             catch (Exception ex)
             {
                 NotificationShow("error", $"Xóa thất bại! {ex.Message}");
                 return;
             }
-        }
-
-        private void DisplayDirectories(string dirPath, TreeViewItem? parentNode)
-        {
-            DirectoryInfo directoryInfo = new DirectoryInfo(dirPath);
-
-            TreeViewItem directoryNode = new TreeViewItem();
-            directoryNode.Header = directoryInfo.Name;
-
-            if (parentNode == null)
-            {
-                trvBatchExplorer.Items.Add(directoryNode);
-            }
-            else
-            {
-                parentNode.Items.Add(directoryNode);
-            }
-
-            foreach (var subDir in directoryInfo.GetDirectories())
-            {
-                DisplayDirectories(subDir.FullName, directoryNode);
-            }
-
-            foreach (var file in directoryInfo.GetFiles())
-            {
-                System.Windows.Controls.ListViewItem item = new System.Windows.Controls.ListViewItem();
-                item.Content = file.Name;
-                item.Tag = file.FullName;
-                lstvBatchExplorer.Items.Add(item);
-            }
-        }
-
-        private void ClearTreeViewSelection(TreeViewItem item)
-        {
-            if (item == null)
-                return;
-
-            item.IsSelected = false;
-
-            foreach (var subItem in item.Items)
-            {
-                if (subItem is TreeViewItem)
-                    ClearTreeViewSelection((TreeViewItem)subItem);
-            }
-        }
-
-        private void ClearAllRootNodesSelection(System.Windows.Controls.TreeView treeView)
-        {
-            foreach (var rootNode in treeView.Items)
-            {
-                if (rootNode is TreeViewItem)
-                    ClearTreeViewSelection((TreeViewItem)rootNode);
-            }
-        }
-
-        private void trvBatchExplorer_LostFocus(object sender, RoutedEventArgs e)
-        {
-            ClearAllRootNodesSelection(trvBatchExplorer);
         }
     }
 }

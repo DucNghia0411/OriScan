@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Notification.Wpf.Constants;
+using Notification.Wpf.Controls;
 using NTwain;
 using NTwain.Data;
 using OriginalScan.Views;
@@ -14,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Printing;
 using System.Reflection;
@@ -26,9 +29,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace OriginalScan
@@ -36,7 +36,7 @@ namespace OriginalScan
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         public DataSource? dataSource;
         public TwainSession? _twainSession;
@@ -57,6 +57,8 @@ namespace OriginalScan
             DataContext = this;
             CreateSession();
             _transferApiClient = new TransferApiClient();
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+            LoadDirectoryTree();
         }
 
         private void CreateSession()
@@ -301,6 +303,51 @@ namespace OriginalScan
                 MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
                 return;
             }
+        }
+
+
+        public void LoadDirectoryTree()
+        {
+            trvBatchExplorer.Items.Clear();
+            try
+            {
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                userFolderPath = userFolderPath.Replace("/", "\\");
+                string path = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder, FolderSetting.TempData);
+
+                foreach (string directory in Directory.GetDirectories(path))
+                {
+                    
+                    var directoryInfo = new DirectoryInfo(directory);
+                    var directoryItem = new TreeViewItemViewModel(directoryInfo.Name, "/Resource/Images/foldericon.png");
+                    trvBatchExplorer.Items.Add(directoryItem);
+                    LoadDirectory(directoryItem, directory);
+                }
+
+            }
+            catch (Exception) { }
+        }
+
+        private static void LoadDirectory(TreeViewItemViewModel parentItem, string folderPath)
+        {
+            try
+            {
+                foreach (string directory in Directory.GetDirectories(folderPath))
+                {
+                    var directoryInfo = new DirectoryInfo(directory);
+                    var directoryItem = new TreeViewItemViewModel(directoryInfo.Name, "/Resource/Images/documents.png");
+                    parentItem.Children.Add(directoryItem);
+                    LoadDirectory(directoryItem, directory);
+                }
+
+                foreach (string file in Directory.GetFiles(folderPath))
+                {
+                    var fileInfo = new FileInfo(file);
+                    var fileItem = new TreeViewItemViewModel(fileInfo.Name, "/Resource/Icons/crop.png");
+                    parentItem.Children.Add(fileItem);
+                }
+            }
+            catch (Exception) { }
         }
     }
 }

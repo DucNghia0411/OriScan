@@ -8,7 +8,7 @@
         Background="{DynamicResource MaterialDesign.Brush.Background}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        FontFamily="{materialDesign:MaterialDesignFont}"        
+        FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:local="clr-namespace:OriginalScan"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
@@ -16,6 +16,123 @@
         Height="1000" 
         Width="1500"
         WindowState="Maximized">
+    <Window.Resources>
+        <!-- Toggle Button -->
+        <local:TreeViewLineConverter x:Key="LineConverter"/>
+
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid Width="15" Height="13" SnapsToDevicePixels="True">
+                            <Rectangle Width="9" Height="9" Stroke="#919191" SnapsToDevicePixels="true">
+                                <Rectangle.Fill>
+                                    <LinearGradientBrush EndPoint="0.5,2" StartPoint="0.5,0">
+                                        <GradientStop Color="White" Offset="0"/>
+                                        <GradientStop Color="Silver" Offset="0.5"/>
+                                        <GradientStop Color="LightGray" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle x:Name="ExpandPath" Width="1" Height="5" Stroke="Black" SnapsToDevicePixels="true"/>
+                            <Rectangle Width="5" Height="1" Stroke="Black" SnapsToDevicePixels="true"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Visibility"  TargetName="ExpandPath" Value="Collapsed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TreeViewItem -->
+        <Style x:Key="{x:Type TreeViewItem}" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="1,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Grid x:Name="grid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition MinWidth="19" Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Connecting Lines -->
+                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True"/>
+                            <Rectangle x:Name="VerLn" Width="1" Stroke="#DCDCDC" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White">
+
+                                <Rectangle.Height>
+                                    <MultiBinding Converter="{StaticResource LineConverter}">
+                                        <MultiBinding.Bindings>
+                                            <Binding  RelativeSource="{RelativeSource AncestorType=TreeView}" Path="ActualHeight" ></Binding>
+                                            <Binding  RelativeSource="{RelativeSource AncestorType=TreeView}" Path="ActualWidth"></Binding>
+                                            <Binding  RelativeSource="{RelativeSource TemplatedParent}"></Binding>
+                                            <Binding  RelativeSource="{RelativeSource Self}"></Binding>
+                                            <Binding  ElementName="Expander" Path="IsChecked"></Binding>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+
+                                </Rectangle.Height>
+                            </Rectangle>
+                            <ToggleButton Margin="-1,0,0,0" x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+                            <Border Name="Bd" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" MinWidth="20"/>
+                            </Border>
+                            <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsExpanded" Value="false">
+                                <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="HasItems" Value="false">
+                                <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false"/>
+                                    <Condition Property="Width" Value="Auto"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="HasHeader" Value="false"/>
+                                    <Condition Property="Height" Value="Auto"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true"/>
+                                    <Condition Property="IsSelectionActive" Value="false"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="Bd" Property="Background" Value="Green"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -68,83 +185,129 @@
             </ToolBar>
         </ToolBarTray>
         <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*"></RowDefinition>
                 <RowDefinition Height="5*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
-                            x:Name="ListMainImages"
-                            Grid.Row="0">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Width="1650" Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+            <Grid Grid.Column="1" Grid.RowSpan="2">
+                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
+                x:Name="ListMainImages"
+                Grid.Row="0">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="1100" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border>
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="BorderThickness" Value="0.5" />
-                                    <Setter Property="BorderBrush" Value="Black" />
-                                    <Setter Property="Background" Value="LightGray"/>
-                                    <!--<Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
-                                            <Setter Property="BorderBrush" Value="#00AE72" />
-                                            <Setter Property="BorderThickness" Value="2" />
-                                        </DataTrigger>
-                                    </Style.Triggers>-->
-                                </Style>
-                            </Border.Style>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0.5" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Background" Value="LightGray"/>
+                                        <!--<Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
+                                <Setter Property="BorderBrush" Value="#00AE72" />
+                                <Setter Property="BorderThickness" Value="2" />
+                            </DataTrigger>
+                        </Style.Triggers>-->
+                                    </Style>
+                                </Border.Style>
 
-                            <Image Stretch="Uniform"  
-                                            HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center" 
-                                            Height="375" 
-                                            Width="375"
-                                            Margin="8,8,8,8"
-                                            Source="{Binding}">
-                            </Image>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                <Image Stretch="Uniform"  
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Height="375" 
+                                Width="375"
+                                Margin="8,8,8,8"
+                                Source="{Binding}">
+                                </Image>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-            <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
-                            x:Name="ListExtraImages"
-                            Grid.Row="1">
-                <ListView.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Width="1650" Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListView.ItemsPanel>
+                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
+                x:Name="ListExtraImages"
+                Grid.Row="1">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="1650" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border>
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="BorderThickness" Value="0.5" />
-                                    <Setter Property="BorderBrush" Value="Black" />
-                                    <Setter Property="Background" Value="LightGray"/>
-                                    <!--<Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
-                                            <Setter Property="BorderBrush" Value="#00AE72" />
-                                            <Setter Property="BorderThickness" Value="2" />
-                                        </DataTrigger>
-                                    </Style.Triggers>-->
-                                </Style>
-                            </Border.Style>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0.5" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Background" Value="LightGray"/>
+                                        <!--<Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
+                                <Setter Property="BorderBrush" Value="#00AE72" />
+                                <Setter Property="BorderThickness" Value="2" />
+                            </DataTrigger>
+                        </Style.Triggers>-->
+                                    </Style>
+                                </Border.Style>
 
-                            <StackPanel>
-                                <Image  Height="100" Width="100" Source="{Binding}" />
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                                <StackPanel>
+                                    <Image  Height="100" Width="100" Source="{Binding}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <Grid Grid.Column="0" Grid.RowSpan="2">
+                <GroupBox
+                        materialDesign:ColorZoneAssist.Background="#00AE72"
+                        materialDesign:ColorZoneAssist.Foreground="Black"
+                        materialDesign:ColorZoneAssist.Mode="Custom"                    
+                        Header="Batch Explorer"
+                        FontSize="12"
+                        BorderThickness="1" 
+                        Grid.Row="4" 
+                        Grid.RowSpan="2" 
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2" Margin="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewItemViewModel}" ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding Icon}" Width="16" Height="16" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding Name}"/>
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+
+                        <ListView x:Name="lstvBatchExplorer" Grid.Row="2" Grid.Column="0" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            
+            
         </Grid>
     </Grid>
 </Window>
