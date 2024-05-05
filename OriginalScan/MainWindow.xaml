@@ -67,7 +67,7 @@
                             </Grid.RowDefinitions>
 
                             <!-- Connecting Lines -->
-                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True"/>
+                            <Rectangle x:Name="HorLn" Margin="9,10,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True"/>
                             <Rectangle x:Name="VerLn" Width="1" Stroke="#DCDCDC" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White">
 
                                 <Rectangle.Height>
@@ -83,7 +83,7 @@
 
                                 </Rectangle.Height>
                             </Rectangle>
-                            <ToggleButton Margin="-1,0,0,0" x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
+                            <ToggleButton Margin="0,10,0,0" x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
                             <Border Name="Bd" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
                                 <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" MinWidth="20"/>
                             </Border>
@@ -186,7 +186,7 @@
         </ToolBarTray>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.7*"/>
+                <ColumnDefinition Width="0.6*"/>
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -291,16 +291,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0">
-                            <TreeView.Resources>
-                                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewItemViewModel}" ItemsSource="{Binding Children}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding Icon}" Width="16" Height="16" Margin="0,0,5,0"/>
-                                        <TextBlock Text="{Binding Name}"/>
-                                    </StackPanel>
-                                </HierarchicalDataTemplate>
-                            </TreeView.Resources>
-                        </TreeView>
+                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0"></TreeView>
 
                         <ListView x:Name="lstvBatchExplorer" Grid.Row="2" Grid.Column="0" />
                     </Grid>

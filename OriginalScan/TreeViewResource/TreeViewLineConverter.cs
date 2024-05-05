@@ -12,12 +12,8 @@ namespace OriginalScan
 {
     class TreeViewLineConverter : IMultiValueConverter
     {
-
-
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            double height = (double)values[0];
-
             TreeViewItem? item = values[2] as TreeViewItem;
             ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
             bool isLastOne = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
@@ -30,7 +26,7 @@ namespace OriginalScan
             if (isLastOne)
             {
                 rectangle.VerticalAlignment = VerticalAlignment.Top;
-                return 9.0;
+                return 17.0;
             }
             else
             {
@@ -38,7 +34,6 @@ namespace OriginalScan
                 return double.NaN;
             }
         }
-
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {

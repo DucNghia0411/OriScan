@@ -319,35 +319,99 @@ namespace OriginalScan
                 {
                     
                     var directoryInfo = new DirectoryInfo(directory);
-                    var directoryItem = new TreeViewItemViewModel(directoryInfo.Name, "/Resource/Images/foldericon.png");
+
+                    var directoryItem = new TreeViewItem()
+                    {
+                        Header = new StackPanel()
+                        {
+                            Orientation = System.Windows.Controls.Orientation.Horizontal,
+                            Children =
+                            {
+                                new System.Windows.Controls.Image()
+                                {
+                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
+                                    Width = 16,
+                                    Height = 16,
+                                    Margin = new Thickness(0, 10, 5, 0)
+                                },
+                                new TextBlock()
+                                {
+                                    Text = directoryInfo.Name,
+                                    Margin = new Thickness(0, 10, 0, 0)
+                                }
+                            }
+                        }
+                    };
                     trvBatchExplorer.Items.Add(directoryItem);
                     LoadDirectory(directoryItem, directory);
                 }
-
             }
             catch (Exception) { }
         }
 
-        private static void LoadDirectory(TreeViewItemViewModel parentItem, string folderPath)
+        private static void LoadDirectory(TreeViewItem parentItem, string folderPath)
         {
             try
             {
                 foreach (string directory in Directory.GetDirectories(folderPath))
                 {
                     var directoryInfo = new DirectoryInfo(directory);
-                    var directoryItem = new TreeViewItemViewModel(directoryInfo.Name, "/Resource/Images/documents.png");
-                    parentItem.Children.Add(directoryItem);
+                    var directoryItem = new TreeViewItem()
+                    {
+                        Header = new StackPanel()
+                        {
+                            Orientation = System.Windows.Controls.Orientation.Horizontal,
+                            Children =
+                            {
+                                new System.Windows.Controls.Image()
+                                {
+                                    Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
+                                    Width = 16,
+                                    Height = 16,
+                                    Margin = new Thickness(0, 10, 5, 0)
+                                },
+                                new TextBlock()
+                                {
+                                    Text = directoryInfo.Name,
+                                    Margin = new Thickness(0, 10, 0, 0)
+                                }
+                            }
+                        }
+                    };
+                    parentItem.Items.Add(directoryItem);
                     LoadDirectory(directoryItem, directory);
                 }
 
                 foreach (string file in Directory.GetFiles(folderPath))
                 {
                     var fileInfo = new FileInfo(file);
-                    var fileItem = new TreeViewItemViewModel(fileInfo.Name, "/Resource/Icons/crop.png");
-                    parentItem.Children.Add(fileItem);
+                    var fileItem = new TreeViewItem()
+                    {
+                        Header = new StackPanel()
+                        {
+                            Orientation = System.Windows.Controls.Orientation.Horizontal,
+                            Children =
+                            {
+                                new System.Windows.Controls.Image()
+                                {
+                                    Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
+                                    Width = 16,
+                                    Height = 16,
+                                    Margin = new Thickness(0, 10, 5, 0)
+                                },
+                                new TextBlock()
+                                {
+                                    Text = fileInfo.Name,
+                                    Margin = new Thickness(0, 10, 0, 0)
+                                }
+                            }
+                        }
+                    };
+                    parentItem.Items.Add(fileItem);
                 }
             }
             catch (Exception) { }
         }
+
     }
 }
