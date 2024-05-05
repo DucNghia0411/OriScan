@@ -266,6 +266,16 @@ namespace OriginalScan.Views
                 GetDocumentsByBatch(selectedBatch.Id);
                 txtCurrentBatch.Text = selectedBatch.BatchName;
                 txtCurrentDocument.Text = string.Empty;
+
+                MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (mainWindow != null)
+                {
+                    string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string folderPath = selectedBatch.BatchPath;
+                    string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                    mainWindow.ExpandTreeViewItem(path);
+                }
             }
             catch (Exception ex)
             {

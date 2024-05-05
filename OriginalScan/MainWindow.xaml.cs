@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FontAwesome5;
+using Microsoft.AspNetCore.Http;
+using Notification.Wpf;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain;
@@ -11,6 +13,7 @@ using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
 using ScanApp.Intergration.ApiClients;
 using ScanApp.Intergration.Constracts;
+using ScanApp.Model.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Common;
@@ -45,6 +48,7 @@ namespace OriginalScan
         private DateTime _scanTime;
         private readonly ITransferApiClient _transferApiClient;
         private readonly ScanContext _context;
+        private readonly NotificationManager _notificationManager;
 
         public MainWindow
         (
@@ -58,7 +62,72 @@ namespace OriginalScan
             CreateSession();
             _transferApiClient = new TransferApiClient();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+            _notificationManager = new NotificationManager();
             LoadDirectoryTree();
+        }
+
+        private void NotificationShow(string type, string message)
+        {
+            switch (type)
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
         }
 
         private void CreateSession()
@@ -72,7 +141,7 @@ namespace OriginalScan
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
@@ -83,13 +152,13 @@ namespace OriginalScan
             {
                 if(_twainSession == null)
                 {
-                    MessageBox.Show("Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!", "Thông báo!", MessageBoxButtons.OK);
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
                     return;
                 }
 
                 if (dataSource == null)
                 {
-                    MessageBox.Show("Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!", "Thông báo!", MessageBoxButtons.OK);
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
                     return;
                 }
 
@@ -103,7 +172,7 @@ namespace OriginalScan
 
                 if (!_twainSession.IsSourceOpen)
                 {
-                    MessageBox.Show("Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!", "Thông báo!", MessageBoxButtons.OK);
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
                     return;
                 }
 
@@ -112,7 +181,7 @@ namespace OriginalScan
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
@@ -200,7 +269,7 @@ namespace OriginalScan
 
                         if (images.Count() == 0)
                         {
-                            MessageBox.Show($"Không có hình ảnh trong thư mục!", "Thông báo!", MessageBoxButtons.OK);
+                            NotificationShow("error", $"Không có hình ảnh trong thư mục!");
                             return;
                         }
 
@@ -217,6 +286,21 @@ namespace OriginalScan
                                 File.Delete(pdfFileName);
                             else
                                 return;
+
+                            _notificationManager.ShowButtonWindow("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Xác nhận",
+                            async () =>
+                            {
+                                try
+                                {
+                                    File.Delete(pdfFileName);
+                                }
+                                catch (Exception ex)
+                                {
+                                    NotificationShow("error", $"{ex.Message}");
+                                    return;
+
+                                }
+                            }, "OK", () => { }, "Cancel");
                         }
 
                         PdfDocument pdfDocument = new PdfDocument();
@@ -233,13 +317,13 @@ namespace OriginalScan
                         }
 
                         pdfDocument.Save(pdfFilePath);
-                        MessageBox.Show($"Lưu thành công tại đường dẫn: {pdfFilePath}", "Thông báo!", MessageBoxButtons.OK);
+                        NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
@@ -267,17 +351,17 @@ namespace OriginalScan
                     bool transferResult =  await _transferApiClient.TransferToPortal(selectedFolder);
 
                     if(transferResult)
-                        MessageBox.Show($"Upload công văn thành công!", "Thông báo!", MessageBoxButtons.OK);
+                        NotificationShow("success", $"Upload công văn thành công!");
                     else
                     {
-                        MessageBox.Show($"Upload công văn thất bại!", "Thông báo!", MessageBoxButtons.OK);
+                        NotificationShow("error", "Upload công văn thất bại!");
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
@@ -300,11 +384,10 @@ namespace OriginalScan
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Có lỗi: {ex.Message}", "Thông báo!", MessageBoxButtons.OK);
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
-
 
         public void LoadDirectoryTree()
         {
@@ -317,9 +400,8 @@ namespace OriginalScan
 
                 foreach (string directory in Directory.GetDirectories(path))
                 {
-                    
-                    var directoryInfo = new DirectoryInfo(directory);
 
+                    var directoryInfo = new DirectoryInfo(directory);
                     var directoryItem = new TreeViewItem()
                     {
                         Header = new StackPanel()
@@ -346,72 +428,147 @@ namespace OriginalScan
                     LoadDirectory(directoryItem, directory);
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+            }
         }
 
-        private static void LoadDirectory(TreeViewItem parentItem, string folderPath)
+        private void LoadDirectory(TreeViewItem parentItem, string folderPath)
         {
             try
             {
                 foreach (string directory in Directory.GetDirectories(folderPath))
                 {
                     var directoryInfo = new DirectoryInfo(directory);
-                    var directoryItem = new TreeViewItem()
+                    string directoryName = directoryInfo.Name;
+
+                    if (!IsItemAlreadyExists(parentItem, directoryName))
                     {
-                        Header = new StackPanel()
+                        var directoryItem = new TreeViewItem()
                         {
-                            Orientation = System.Windows.Controls.Orientation.Horizontal,
-                            Children =
+                            Header = new StackPanel()
                             {
-                                new System.Windows.Controls.Image()
-                                {
-                                    Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
-                                    Width = 16,
-                                    Height = 16,
-                                    Margin = new Thickness(0, 10, 5, 0)
-                                },
-                                new TextBlock()
-                                {
-                                    Text = directoryInfo.Name,
-                                    Margin = new Thickness(0, 10, 0, 0)
-                                }
+                                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                                Children =
+                        {
+                            new System.Windows.Controls.Image()
+                            {
+                                Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
+                                Width = 16,
+                                Height = 16,
+                                Margin = new Thickness(0, 10, 5, 0)
+                            },
+                            new TextBlock()
+                            {
+                                Text = directoryName,
+                                Margin = new Thickness(0, 10, 0, 0)
                             }
                         }
-                    };
-                    parentItem.Items.Add(directoryItem);
-                    LoadDirectory(directoryItem, directory);
+                            }
+                        };
+                        parentItem.Items.Add(directoryItem);
+                        LoadDirectory(directoryItem, directory);
+                    }
                 }
 
                 foreach (string file in Directory.GetFiles(folderPath))
                 {
                     var fileInfo = new FileInfo(file);
-                    var fileItem = new TreeViewItem()
+                    string fileName = fileInfo.Name;
+
+                    if (!IsItemAlreadyExists(parentItem, fileName))
                     {
-                        Header = new StackPanel()
+                        var fileItem = new TreeViewItem()
                         {
-                            Orientation = System.Windows.Controls.Orientation.Horizontal,
-                            Children =
+                            Header = new StackPanel()
                             {
-                                new System.Windows.Controls.Image()
-                                {
-                                    Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
-                                    Width = 16,
-                                    Height = 16,
-                                    Margin = new Thickness(0, 10, 5, 0)
-                                },
-                                new TextBlock()
-                                {
-                                    Text = fileInfo.Name,
-                                    Margin = new Thickness(0, 10, 0, 0)
-                                }
+                                Orientation = System.Windows.Controls.Orientation.Horizontal,
+                                Children =
+                        {
+                            new System.Windows.Controls.Image()
+                            {
+                                Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
+                                Width = 16,
+                                Height = 16,
+                                Margin = new Thickness(0, 10, 5, 0)
+                            },
+                            new TextBlock()
+                            {
+                                Text = fileName,
+                                Margin = new Thickness(0, 10, 0, 0)
                             }
                         }
-                    };
-                    parentItem.Items.Add(fileItem);
+                            }
+                        };
+                        parentItem.Items.Add(fileItem);
+                    }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+            }
         }
 
+        private bool IsItemAlreadyExists(TreeViewItem parentItem, string itemName)
+        {
+            foreach (TreeViewItem item in parentItem.Items)
+            {
+                if (item.Header is StackPanel stackPanel)
+                {
+                    var textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+                    if (textBlock != null && textBlock.Text == itemName)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void ExpandTreeViewItem(string folderPath)
+        {
+            try
+            {
+                if (!Directory.Exists(folderPath))
+                    return;
+
+                ExpandTreeViewItem(trvBatchExplorer.Items, folderPath);
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+            }
+        }
+
+        private bool IsTreeViewItemExpanded(TreeViewItem treeViewItem)
+        {
+            if (treeViewItem == null)
+                return false;
+
+            return treeViewItem.IsExpanded;
+        }
+
+        private void ExpandTreeViewItem(ItemCollection items, string folderPath)
+        {
+            foreach (var item in items)
+            {
+                if (item is TreeViewItem treeViewItem && treeViewItem.Header is StackPanel stackPanel)
+                {
+                    if (stackPanel.Children.OfType<TextBlock>().FirstOrDefault()?.Text == Path.GetFileName(folderPath))
+                    {
+                        if (!IsTreeViewItemExpanded(treeViewItem))
+                        {
+                            treeViewItem.IsExpanded = true;
+                            LoadDirectory(treeViewItem, folderPath);
+                        }
+                        return;
+                    }
+
+                    ExpandTreeViewItem(treeViewItem.Items, folderPath);
+                }
+            }
+        }
     }
 }
