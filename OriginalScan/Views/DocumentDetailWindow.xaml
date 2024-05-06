@@ -35,7 +35,7 @@
             <GroupBox materialDesign:ColorZoneAssist.Background="#00AE72"
         materialDesign:ColorZoneAssist.Foreground="Black"
         materialDesign:ColorZoneAssist.Mode="Custom"                    
-        Header="GÓI TÀI LIỆU"
+        Header="TÀI LIỆU"
         FontWeight="Bold"
         BorderThickness="2" 
         Margin="10,10,10,10">

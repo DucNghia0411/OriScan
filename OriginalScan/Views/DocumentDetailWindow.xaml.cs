@@ -232,10 +232,6 @@ namespace OriginalScan.Views
                     if (batchManagerWindow != null)
                         batchManagerWindow.GetDocumentsByBatch(_currentBatch.Id);
 
-                    MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                    if (mainWindow != null)
-                        mainWindow.LoadDirectoryTree();
-
                     NotificationShow("success", $"Cập nhật thành công tài liệu với id: {updateResult}");
                     this.Visibility = Visibility.Hidden;
                 }

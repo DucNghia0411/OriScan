@@ -189,10 +189,6 @@ namespace OriginalScan.Views
                 if (batchManagerWindow != null) 
                     batchManagerWindow.GetDocumentsByBatch(currentBatch.Id);
 
-                MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                if (mainWindow != null)
-                    mainWindow.LoadDirectoryTree();
-
                 NotificationShow("success", $"Tạo tài liệu mới thành công với mã {documentId}.");
                 this.Close();
             }
