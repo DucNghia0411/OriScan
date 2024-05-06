@@ -293,7 +293,7 @@
                                 <GridViewColumn Width="200">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="Tên gói"
+                                            <TextBlock Text="Tên tài liệu"
                                                        FontSize="14"
                                                        Foreground="Black"
                                                        FontWeight="Bold"
