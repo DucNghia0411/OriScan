@@ -1,5 +1,6 @@
 ﻿using FontAwesome5;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Notification.Wpf;
 using Notification.Wpf.Classes;
@@ -110,6 +111,7 @@ namespace OriginalScan.Views
 
                 lstvBatches.SelectedItems.Clear();
                 ResetData();
+                ReloadTreeView();
             }
             catch (Exception ex)
             {
@@ -239,11 +241,25 @@ namespace OriginalScan.Views
                 mainWindow.LoadDirectoryTree();
         }
 
+        public void ReloadTreeView()
+        {
+            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (mainWindow != null)
+            {
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string tempPath = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder, FolderSetting.TempData);
+
+                mainWindow.ExpandTreeViewItem(tempPath);
+            }
+        }
+
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
             createDocumentWindow.ShowDialog();
             lstvDocuments.SelectedItems.Clear();
+
+            ReloadTreeView();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -270,6 +286,7 @@ namespace OriginalScan.Views
                 MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (mainWindow != null)
                 {
+                    ReloadTreeView();
                     string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                     string folderPath = selectedBatch.BatchPath;
                     string path = System.IO.Path.Combine(userFolderPath, folderPath);
@@ -303,6 +320,7 @@ namespace OriginalScan.Views
                 batchDetailWindow.ShowDialog();
 
                 ResetData();
+                ReloadTreeView();
             }
             catch (Exception ex)
             {
@@ -349,6 +367,7 @@ namespace OriginalScan.Views
                             {
                                 NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
                                 ResetData();
+                                ReloadTreeView();
                             }
                         }
                         catch (Exception ex)
@@ -501,6 +520,7 @@ namespace OriginalScan.Views
                 documentDetailWindow.ShowDialog();
 
                 txtCurrentDocument.Text = string.Empty;
+                ReloadTreeView();
             }
             catch (Exception ex)
             {
@@ -547,9 +567,7 @@ namespace OriginalScan.Views
                                 {
                                     GetDocumentsByBatch(_batchService.SelectedBatch.Id);
 
-                                    MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                                    if (mainWindow != null)
-                                        mainWindow.LoadDirectoryTree();
+                                    ReloadTreeView();
                                 }
                             }
                         }

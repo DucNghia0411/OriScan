@@ -398,6 +398,30 @@ namespace OriginalScan
                 userFolderPath = userFolderPath.Replace("/", "\\");
                 string path = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder, FolderSetting.TempData);
 
+                var rootItem = new TreeViewItem()
+                {
+                    Header = new StackPanel()
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        Children =
+                            {
+                                new System.Windows.Controls.Image()
+                                {
+                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
+                                    Width = 16,
+                                    Height = 16,
+                                    Margin = new Thickness(0, 10, 5, 0)
+                                },
+                                new TextBlock()
+                                {
+                                    Text = FolderSetting.AppFolder,
+                                    Margin = new Thickness(0, 10, 0, 0)
+                                }
+                            }
+                    }
+                };
+                trvBatchExplorer.Items.Add(rootItem);
+
                 foreach (string directory in Directory.GetDirectories(path))
                 {
 
@@ -424,7 +448,7 @@ namespace OriginalScan
                             }
                         }
                     };
-                    trvBatchExplorer.Items.Add(directoryItem);
+                    rootItem.Items.Add(directoryItem);
                     LoadDirectory(directoryItem, directory);
                 }
             }
@@ -451,20 +475,20 @@ namespace OriginalScan
                             {
                                 Orientation = System.Windows.Controls.Orientation.Horizontal,
                                 Children =
-                        {
-                            new System.Windows.Controls.Image()
-                            {
-                                Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
-                                Width = 16,
-                                Height = 16,
-                                Margin = new Thickness(0, 10, 5, 0)
-                            },
-                            new TextBlock()
-                            {
-                                Text = directoryName,
-                                Margin = new Thickness(0, 10, 0, 0)
-                            }
-                        }
+                                {
+                                    new System.Windows.Controls.Image()
+                                    {
+                                        Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
+                                        Width = 16,
+                                        Height = 16,
+                                        Margin = new Thickness(0, 10, 5, 0)
+                                    },
+                                    new TextBlock()
+                                    {
+                                        Text = directoryName,
+                                        Margin = new Thickness(0, 10, 0, 0)
+                                    }
+                                }
                             }
                         };
                         parentItem.Items.Add(directoryItem);
@@ -485,20 +509,20 @@ namespace OriginalScan
                             {
                                 Orientation = System.Windows.Controls.Orientation.Horizontal,
                                 Children =
-                        {
-                            new System.Windows.Controls.Image()
-                            {
-                                Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
-                                Width = 16,
-                                Height = 16,
-                                Margin = new Thickness(0, 10, 5, 0)
-                            },
-                            new TextBlock()
-                            {
-                                Text = fileName,
-                                Margin = new Thickness(0, 10, 0, 0)
-                            }
-                        }
+                                {
+                                    new System.Windows.Controls.Image()
+                                    {
+                                        Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
+                                        Width = 16,
+                                        Height = 16,
+                                        Margin = new Thickness(0, 10, 5, 0)
+                                    },
+                                    new TextBlock()
+                                    {
+                                        Text = fileName,
+                                        Margin = new Thickness(0, 10, 0, 0)
+                                    }
+                                }
                             }
                         };
                         parentItem.Items.Add(fileItem);
@@ -556,7 +580,7 @@ namespace OriginalScan
             {
                 if (item is TreeViewItem treeViewItem && treeViewItem.Header is StackPanel stackPanel)
                 {
-                    if (stackPanel.Children.OfType<TextBlock>().FirstOrDefault()?.Text == Path.GetFileName(folderPath))
+                    if ((stackPanel.Children.OfType<TextBlock>().FirstOrDefault()?.Text == Path.GetFileName(folderPath)) || Path.GetFileName(folderPath) == FolderSetting.TempData)
                     {
                         if (!IsTreeViewItemExpanded(treeViewItem))
                         {
