@@ -260,6 +260,11 @@ namespace OriginalScan.Views
                 string folderPath = _batchService.SelectedBatch.BatchPath;
                 string path = System.IO.Path.Combine(userFolderPath, folderPath);
 
+                if (!Directory.Exists(path))
+                {
+                    return;
+                }
+
                 string name = System.IO.Path.GetFileName(path);
 
                 var directoryItem = new TreeViewItem()
