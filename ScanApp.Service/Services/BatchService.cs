@@ -58,6 +58,8 @@ namespace ScanApp.Service.Services
                 await _batchRepo.AddAsync(batch);
                 await _unitOfWork.Save();
 
+                _unitOfWork.ClearChangeTracker();
+
                 return batch.Id;
             }
             catch (Exception)
@@ -87,6 +89,8 @@ namespace ScanApp.Service.Services
 
                 _batchRepo.Update(editBatch);
                 await _unitOfWork.Save();
+
+                _unitOfWork.ClearChangeTracker();
 
                 return editBatch.Id;
             }

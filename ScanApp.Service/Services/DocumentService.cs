@@ -115,6 +115,7 @@ namespace ScanApp.Service.Services
 
                 _documentRepo.Update(editDocument);
                 await _unitOfWork.Save();
+                _unitOfWork.ClearChangeTracker();
 
                 return editDocument.Id;
             }
