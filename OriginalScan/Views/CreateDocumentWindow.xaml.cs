@@ -1,5 +1,7 @@
 ﻿using FontAwesome5;
 using Notification.Wpf;
+using Notification.Wpf.Constants;
+using Notification.Wpf.Controls;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Document;
@@ -46,6 +48,7 @@ namespace OriginalScan.Views
             _notificationManager = new NotificationManager();
             InitializeComponent();
             this.ResizeMode = ResizeMode.NoResize;
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

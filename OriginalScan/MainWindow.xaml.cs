@@ -63,7 +63,7 @@ namespace OriginalScan
             _transferApiClient = new TransferApiClient();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
             _notificationManager = new NotificationManager();
-            LoadDirectoryTree();
+            //LoadDirectoryTree();
         }
 
         private void NotificationShow(string type, string message)
@@ -458,10 +458,13 @@ namespace OriginalScan
             }
         }
 
-        private void LoadDirectory(TreeViewItem parentItem, string folderPath)
+        public void LoadDirectory(TreeViewItem parentItem, string folderPath)
         {
             try
             {
+                var parentInfo = new DirectoryInfo(folderPath);
+                string parentName = parentInfo.Name;
+
                 foreach (string directory in Directory.GetDirectories(folderPath))
                 {
                     var directoryInfo = new DirectoryInfo(directory);
@@ -535,8 +538,22 @@ namespace OriginalScan
             }
         }
 
-        private bool IsItemAlreadyExists(TreeViewItem parentItem, string itemName)
+        public bool IsItemAlreadyExists(TreeViewItem parentItem, string itemName)
         {
+            if (trvBatchExplorer.Items.Count == 0)
+            {
+                return false;
+            }
+
+            if (parentItem.Header is StackPanel parentStackPanel)
+            {
+                var textBlock = parentStackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+                if (textBlock != null && textBlock.Text == itemName)
+                {
+                    return true;
+                }
+            }
+
             foreach (TreeViewItem item in parentItem.Items)
             {
                 if (item.Header is StackPanel stackPanel)

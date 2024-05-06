@@ -48,6 +48,8 @@ namespace OriginalScan.Views
             InitializeComponent();
             GetBatch();
             GetTask();
+
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
         public async void GetBatch()
@@ -189,7 +191,7 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private void CbtnEdit_Click(object sender, RoutedEventArgs e)
+        private async void CbtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (CheckBatchField() != "")
             {
@@ -204,34 +206,37 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn sửa gói: {_currentBatch.BatchName}?", "Xác nhận",
-                    async () => {
-                        BatchUpdateRequest request = new BatchUpdateRequest()
-                        {   
-                            Id = _currentBatch.Id,
-                            BatchName = txtBatchName.Text,
-                            Note = txtNote.Text
-                        };
+                if (Result == MessageBoxResult.Yes)
+                {
+                    BatchUpdateRequest request = new BatchUpdateRequest()
+                    {
+                        Id = _currentBatch.Id,
+                        BatchName = txtBatchName.Text,
+                        Note = txtNote.Text
+                    };
 
-                        var updateResult = await _batchService.Update(request);
-                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+                    var updateResult = await _batchService.Update(request);
+                    NotificationConstants.MessagePosition = NotificationPosition.TopRight;
 
-                        if (updateResult == 0)
-                        {
-                            
-                            NotificationShow("error", "Cập nhật không thành công!");
-                        }
-                        else
-                        {
+                    if (updateResult == 0)
+                    {
 
-                            NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
-                        }
+                        NotificationShow("error", "Cập nhật không thành công!");
+                    }
+                    else
+                    {
 
-                        this.Visibility = Visibility.Hidden;
-                    }, "OK", () => { }, "Cancel");
+                        NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
+                    }
 
+                    this.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {

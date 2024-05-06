@@ -175,7 +175,7 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private void CbtnEdit_Click(object sender, RoutedEventArgs e)
+        private async void CbtnEdit_Click(object sender, RoutedEventArgs e)
         {
             if (CheckDocumentField() != "")
             {
@@ -190,53 +190,59 @@ namespace OriginalScan.Views
                     return;
                 }
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn sửa tài liệu: {_currentDocument.DocumentName}?", "Xác nhận",
-                    async () => {
-                        DocumentUpdateRequest request = new DocumentUpdateRequest()
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn sửa tài liệu: {_currentDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (Result == MessageBoxResult.Yes)
+                {
+                    DocumentUpdateRequest request = new DocumentUpdateRequest()
+                    {
+                        Id = _currentDocument.Id,
+                        DocumentName = txtDocumentName.Text,
+                        Note = txtNote.Text
+                    };
+
+                    var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
+                    if (checkExistedResult && txtDocumentName.Text != _currentDocument.DocumentName)
+                    {
+                        NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
+                        return;
+                    }
+
+                    var updateResult = await _documentService.Update(request);
+
+                    if (updateResult == 0)
+                    {
+                        NotificationShow("error", "Cập nhật không thành công!");
+                        return;
+                    }
+                    else
+                    {
+                        DocumentModel documentModel = new DocumentModel()
                         {
                             Id = _currentDocument.Id,
+                            BatchId = _currentBatch.Id,
                             DocumentName = txtDocumentName.Text,
-                            Note = txtNote.Text
+                            DocumentPath = txtPath.Text
                         };
 
-                        var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
-                        if (checkExistedResult && txtDocumentName.Text != _currentDocument.DocumentName)
-                        {
-                            NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
-                            return;
-                        }
+                        _documentService.SetDocument(documentModel);
+                    }
 
-                        var updateResult = await _documentService.Update(request);
+                    BatchWindow? batchManagerWindow = System.Windows.Application.Current.Windows.OfType<BatchWindow>().FirstOrDefault();
+                    if (batchManagerWindow != null)
+                        batchManagerWindow.GetDocumentsByBatch(_currentBatch.Id);
 
-                        if (updateResult == 0)
-                        {
-                            NotificationShow("error", "Cập nhật không thành công!");
-                            return;
-                        }
-                        else
-                        {
-                            DocumentModel documentModel = new DocumentModel()
-                            {
-                                Id = _currentDocument.Id,
-                                BatchId = _currentBatch.Id,
-                                DocumentName = txtDocumentName.Text,
-                                DocumentPath = txtPath.Text
-                            };
+                    MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                    if (mainWindow != null)
+                        mainWindow.LoadDirectoryTree();
 
-                            _documentService.SetDocument(documentModel);
-                        }
-
-                        BatchWindow? batchManagerWindow = System.Windows.Application.Current.Windows.OfType<BatchWindow>().FirstOrDefault();
-                        if (batchManagerWindow != null)
-                            batchManagerWindow.GetDocumentsByBatch(_currentBatch.Id);
-
-                        MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                        if (mainWindow != null)
-                            mainWindow.LoadDirectoryTree();
-
-                        NotificationShow("success", $"Cập nhật thành công tài liệu với id: {updateResult}");
-                        this.Visibility = Visibility.Hidden;
-                    }, "OK", () => { }, "Cancel");
+                    NotificationShow("success", $"Cập nhật thành công tài liệu với id: {updateResult}");
+                    this.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {

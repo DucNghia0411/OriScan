@@ -2,8 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.Logging;
 using Notification.Wpf;
 using Notification.Wpf.Classes;
+using Notification.Wpf.Constants;
+using Notification.Wpf.Controls;
 using NTwain.Data;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
@@ -53,6 +56,7 @@ namespace OriginalScan.Views
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
         private async void CreateBatch_Click(object sender, RoutedEventArgs e)
@@ -111,7 +115,7 @@ namespace OriginalScan.Views
 
                 lstvBatches.SelectedItems.Clear();
                 ResetData();
-                ReloadTreeView();
+                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -241,15 +245,54 @@ namespace OriginalScan.Views
                 mainWindow.LoadDirectoryTree();
         }
 
-        public void ReloadTreeView()
+        public void LoadTreeView()
         {
             MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             if (mainWindow != null)
             {
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string tempPath = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder, FolderSetting.TempData);
+                if (_batchService.SelectedBatch == null || _batchService.SelectedBatch.BatchPath == null)
+                {
+                    mainWindow.trvBatchExplorer.Items.Clear();
+                    return;
+                }
 
-                mainWindow.ExpandTreeViewItem(tempPath);
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string folderPath = _batchService.SelectedBatch.BatchPath;
+                string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
+                string name = System.IO.Path.GetFileName(path);
+
+                var directoryItem = new TreeViewItem()
+                {
+                    Header = new StackPanel()
+                    {
+                        Orientation = System.Windows.Controls.Orientation.Horizontal,
+                        Children =
+                            {
+                                new System.Windows.Controls.Image()
+                                {
+                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
+                                    Width = 16,
+                                    Height = 16,
+                                    Margin = new Thickness(0, 10, 5, 0)
+                                },
+                                new TextBlock()
+                                {
+                                    Text = name,
+                                    Margin = new Thickness(0, 10, 0, 0)
+                                }
+                            }
+                    }
+                };
+
+                if (mainWindow.IsItemAlreadyExists(directoryItem, name))
+                {
+                    mainWindow.trvBatchExplorer.Items.Clear();
+                } 
+
+                mainWindow.trvBatchExplorer.Items.Add(directoryItem);
+                mainWindow.LoadDirectory(directoryItem, path);
+                mainWindow.ExpandTreeViewItem(path);
             }
         }
 
@@ -258,8 +301,7 @@ namespace OriginalScan.Views
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
             createDocumentWindow.ShowDialog();
             lstvDocuments.SelectedItems.Clear();
-
-            ReloadTreeView();
+            LoadTreeView();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -283,16 +325,7 @@ namespace OriginalScan.Views
                 txtCurrentBatch.Text = selectedBatch.BatchName;
                 txtCurrentDocument.Text = string.Empty;
 
-                MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                if (mainWindow != null)
-                {
-                    ReloadTreeView();
-                    string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string folderPath = selectedBatch.BatchPath;
-                    string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                    mainWindow.ExpandTreeViewItem(path);
-                }
+                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -320,7 +353,7 @@ namespace OriginalScan.Views
                 batchDetailWindow.ShowDialog();
 
                 ResetData();
-                ReloadTreeView();
+                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -329,7 +362,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteBatch_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -342,41 +375,48 @@ namespace OriginalScan.Views
 
                 BatchModel selectedBatch = ValueConverter.ConvertToObject<BatchModel>(dataContext);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận",
-                    async () => {
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa gói: {selectedBatch.BatchName} và tất cả tài liệu?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (Result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        GetDocumentsByBatch(0);
+                        _documentService.SetDocument(new DocumentModel());
+
+                        var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
+
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string folderPath = selectedBatch.BatchPath;
+                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
                         try
                         {
-                            GetDocumentsByBatch(0);
-                            _documentService.SetDocument(new DocumentModel());
-
-                            var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
-
-                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            string folderPath = selectedBatch.BatchPath;
-                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                            try
-                            {
-                                Directory.Delete(path, true);
-                            }
-                            catch (DirectoryNotFoundException) { }
-
-                            var deleteResult = await _batchService.Delete(selectedBatch.Id);
-
-                            if (deleteResult)
-                            {
-                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                                ResetData();
-                                ReloadTreeView();
-                            }
+                            Directory.Delete(path, true);
                         }
-                        catch (Exception ex)
+                        catch (DirectoryNotFoundException) { }
+
+                        var deleteResult = await _batchService.Delete(selectedBatch.Id);
+
+                        if (deleteResult)
                         {
-                            NotificationShow("error", $"{ex.Message}");
-                            return;
+                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
+                            _batchService.SetBatch(new BatchModel());
 
+                            ResetData();
+                            LoadTreeView();
                         }
-                    }, "OK", () => { }, "Cancel");
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationShow("error", $"{ex.Message}");
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -520,7 +560,7 @@ namespace OriginalScan.Views
                 documentDetailWindow.ShowDialog();
 
                 txtCurrentDocument.Text = string.Empty;
-                ReloadTreeView();
+                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -529,7 +569,7 @@ namespace OriginalScan.Views
             }
         }
 
-        private void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
+        private async void btnDeleteDocument_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -542,42 +582,46 @@ namespace OriginalScan.Views
 
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 
-                _notificationManager.ShowButtonWindow($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận",
-                    async () => {
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (Result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _documentService.SetDocument(new DocumentModel());
+
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string folderPath = selectedDocument.DocumentPath;
+                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
                         try
                         {
-                            _documentService.SetDocument(new DocumentModel());
-
-                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            string folderPath = selectedDocument.DocumentPath;
-                            string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                            try
-                            {
-                                Directory.Delete(path, true);
-                            }
-                            catch (DirectoryNotFoundException) { }
-
-                            var documentDelete = await _documentService.Delete(selectedDocument.Id);
-
-                            if (documentDelete)
-                            {
-                                NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
-                                if (_batchService.SelectedBatch != null)
-                                {
-                                    GetDocumentsByBatch(_batchService.SelectedBatch.Id);
-
-                                    ReloadTreeView();
-                                }
-                            }
+                            Directory.Delete(path, true);
                         }
-                        catch (Exception ex)
+                        catch (DirectoryNotFoundException) { }
+
+                        var documentDelete = await _documentService.Delete(selectedDocument.Id);
+
+                        if (documentDelete)
                         {
-                            NotificationShow("error", $"{ex.Message}");
-                            return;
-
+                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
+                            if (_batchService.SelectedBatch != null)
+                            {
+                                GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                            }
+                            LoadTreeView();
                         }
-                    }, "OK", () => { }, "Cancel");
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationShow("error", $"{ex.Message}");
+                        return;
+                    }
+                }
+                else
+                {
+                    return;
+                }
             }
             catch (Exception ex)
             {
