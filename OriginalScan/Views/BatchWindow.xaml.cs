@@ -240,9 +240,7 @@ namespace OriginalScan.Views
             txtCurrentBatch.Text = string.Empty;
             txtCurrentDocument.Text = string.Empty;
 
-            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (mainWindow != null)
-                mainWindow.LoadDirectoryTree();
+            LoadTreeView();
         }
 
         public void LoadTreeView()
@@ -358,7 +356,6 @@ namespace OriginalScan.Views
                 batchDetailWindow.ShowDialog();
 
                 ResetData();
-                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -409,7 +406,6 @@ namespace OriginalScan.Views
                             _batchService.SetBatch(new BatchModel());
 
                             ResetData();
-                            LoadTreeView();
                         }
                     }
                     catch (Exception ex)
