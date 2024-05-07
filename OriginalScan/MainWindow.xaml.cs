@@ -14,6 +14,8 @@ using ScanApp.Data.Entities;
 using ScanApp.Intergration.ApiClients;
 using ScanApp.Intergration.Constracts;
 using ScanApp.Model.Models;
+using ScanApp.Service.Constracts;
+using ScanApp.Service.Services;
 using System;
 using System.Collections.ObjectModel;
 using System.Data.Common;
@@ -50,6 +52,9 @@ namespace OriginalScan
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
+        private readonly IBatchService _batchService;
+        private readonly IDocumentService _documentService;
+
         public MainWindow
         (
             ScanContext context
@@ -64,6 +69,8 @@ namespace OriginalScan
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
             _notificationManager = new NotificationManager();
             //LoadDirectoryTree();
+            _documentService = new DocumentService(context);
+            _batchService = new BatchService(context);
         }
 
         private void NotificationShow(string type, string message)
@@ -152,13 +159,13 @@ namespace OriginalScan
             {
                 if(_twainSession == null)
                 {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
                 }
 
                 if (dataSource == null)
                 {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
                 }
 
@@ -190,11 +197,26 @@ namespace OriginalScan
         {
             try
             {
+                BatchModel? currentBatch = _batchService.SelectedBatch;
+
+                if (currentBatch == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn gói trước khi thực hiện quét.");
+                    return;
+                }
+
+                DocumentModel? currentDocument = _documentService.SelectedDocument;
+
+                if (currentDocument == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn tài liệu trước khi thực hiện quét.");
+                    return;
+                }
+
                 DateTime now = _scanTime;
-                //string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                //string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
-                //string path = System.IO.Path.Combine(userFolderPath, systemPath, now.ToString("yyyyMMddHHmmss"));
-                //Directory.CreateDirectory(path);
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string path = Path.Combine(userFolderPath, currentDocument.DocumentPath);
+                Directory.CreateDirectory(path);
 
                 if (e.NativeData != IntPtr.Zero)
                 {
@@ -220,10 +242,10 @@ namespace OriginalScan
                             bitmapImage.Freeze();
                         }
 
-                        //Guid guid = Guid.NewGuid();
-                        //string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
-                        //string imagePath = System.IO.Path.Combine(path, imagesName);
-                        //img.Save(imagePath);
+                        Guid guid = Guid.NewGuid();
+                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
+                        string imagePath = Path.Combine(path, imagesName);
+                        img.Save(imagePath);
 
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
@@ -379,7 +401,7 @@ namespace OriginalScan
         {
             try
             {
-                BatchWindow batchWindow = new BatchWindow(_context);
+                BatchWindow batchWindow = new BatchWindow(_context, _batchService, _documentService);
                 batchWindow.ShowDialog();
             }
             catch (Exception ex)

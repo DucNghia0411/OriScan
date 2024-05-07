@@ -48,11 +48,16 @@ namespace OriginalScan.Views
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
-        public BatchWindow(ScanContext context)
+        public BatchWindow
+        (   
+            ScanContext context,
+            IBatchService batchService,
+            IDocumentService documentService
+        )
         {
-            _batchService = new BatchService(context);
-            _documentService = new DocumentService(context);
             _context = context;
+            _batchService = batchService;
+            _documentService = documentService;
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -311,7 +316,7 @@ namespace OriginalScan.Views
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
-            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService);
+            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
             createDocumentWindow.ShowDialog();
             lstvDocuments.SelectedItems.Clear();
             LoadTreeView();
@@ -508,6 +513,7 @@ namespace OriginalScan.Views
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(lstvDocuments.SelectedItem);
 
                 selectedDocument.BatchId = _batchService.SelectedBatch.Id;
+                _documentService.SetDocument(selectedDocument);
                 txtCurrentDocument.Text = selectedDocument.DocumentName;
             }
             catch (Exception ex)

@@ -40,10 +40,11 @@ namespace OriginalScan.Views
         public CreateDocumentWindow
         (
             ScanContext context, 
-            IBatchService batchService
+            IBatchService batchService,
+            IDocumentService documentService
         )
         {
-            _documentService = new DocumentService(context);
+            _documentService = documentService;
             _batchService = batchService;
             _notificationManager = new NotificationManager();
             InitializeComponent();
