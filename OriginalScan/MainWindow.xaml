@@ -194,81 +194,6 @@
                 <RowDefinition Height="5*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Column="1" Grid.RowSpan="2">
-                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
-                x:Name="ListMainImages"
-                Grid.Row="0">
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Width="1100" Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border>
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0.5" />
-                                        <Setter Property="BorderBrush" Value="Black" />
-                                        <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
-                                <Setter Property="BorderBrush" Value="#00AE72" />
-                                <Setter Property="BorderThickness" Value="2" />
-                            </DataTrigger>
-                        </Style.Triggers>-->
-                                    </Style>
-                                </Border.Style>
-
-                                <Image Stretch="Uniform"  
-                                HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" 
-                                Height="375" 
-                                Width="375"
-                                Margin="8,8,8,8"
-                                Source="{Binding}">
-                                </Image>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-
-                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
-                x:Name="ListExtraImages"
-                Grid.Row="1">
-                    <ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Width="1650" Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
-
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border>
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0.5" />
-                                        <Setter Property="BorderBrush" Value="Black" />
-                                        <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
-                                <Setter Property="BorderBrush" Value="#00AE72" />
-                                <Setter Property="BorderThickness" Value="2" />
-                            </DataTrigger>
-                        </Style.Triggers>-->
-                                    </Style>
-                                </Border.Style>
-
-                                <StackPanel>
-                                    <Image  Height="100" Width="100" Source="{Binding}" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-
             <Grid Grid.Column="0" Grid.RowSpan="2">
                 <GroupBox
                         materialDesign:ColorZoneAssist.Background="#00AE72"
@@ -297,8 +222,92 @@
                     </Grid>
                 </GroupBox>
             </Grid>
-            
-            
+
+            <Grid Grid.Column="1" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20*"></RowDefinition>
+                    <RowDefinition Height="5*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
+                        x:Name="ListMainImages"
+                        Grid.Row="0">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="1500" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Background" Value="LightGray"/>
+                                        <!--<Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#00AE72" />
+                                                <Setter Property="BorderThickness" Value="2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>-->
+                                    </Style>
+                                </Border.Style>
+
+                                <Image Stretch="Uniform"  
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center" 
+                                    Height="300" 
+                                    Width="265"
+                                    Margin="8,8,8,8"
+                                    Source="{Binding}">
+                                </Image>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
+                        x:Name="ListExtraImages"
+                        Grid.Row="1">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Width="1500" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Setter Property="Background" Value="LightGray"/>
+                                        <!--<Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
+                                                <Setter Property="BorderBrush" Value="#00AE72" />
+                                                <Setter Property="BorderThickness" Value="2" />
+                                            </DataTrigger>
+                                        </Style.Triggers>-->
+                                    </Style>
+                                </Border.Style>
+
+                                <StackPanel>
+                                    <Image Stretch="Uniform"  
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center" 
+                                        Height="135" 
+                                        Width="100" 
+                                        Margin="8,8,8,8"
+                                        Source="{Binding}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

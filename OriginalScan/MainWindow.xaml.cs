@@ -191,10 +191,10 @@ namespace OriginalScan
             try
             {
                 DateTime now = _scanTime;
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
-                string path = System.IO.Path.Combine(userFolderPath, systemPath, now.ToString("yyyyMMddHHmmss"));
-                Directory.CreateDirectory(path);
+                //string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                //string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
+                //string path = System.IO.Path.Combine(userFolderPath, systemPath, now.ToString("yyyyMMddHHmmss"));
+                //Directory.CreateDirectory(path);
 
                 if (e.NativeData != IntPtr.Zero)
                 {
@@ -220,10 +220,10 @@ namespace OriginalScan
                             bitmapImage.Freeze();
                         }
 
-                        Guid guid = Guid.NewGuid();
-                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
-                        string imagePath = System.IO.Path.Combine(path, imagesName);
-                        img.Save(imagePath);
+                        //Guid guid = Guid.NewGuid();
+                        //string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
+                        //string imagePath = System.IO.Path.Combine(path, imagesName);
+                        //img.Save(imagePath);
 
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
