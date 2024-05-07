@@ -52,7 +52,7 @@
                     Margin="10,10,10,10">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.4*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
