@@ -86,6 +86,41 @@
                            Grid.Row="3"
                            FontSize="14"/>
 
+                    <Label Content="Phông số:" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="4"
+                           FontSize="14"/>
+
+                    <Label Content="Vị trí giá:" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="5"
+                           FontSize="14"/>
+
+                    <Label Content="Vị trí kệ:" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="6"
+                           FontSize="14"/>
+
+                    <Label Content="Mục lục số:" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="7"
+                           FontSize="14"/>
+
+                    <Label Content="Hộp số:" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="8"
+                           FontSize="14"/>
+
                     <TextBox x:Name="txtBatchName" 
                      HorizontalAlignment="Stretch"
                      Margin="20,0,20,0" 
@@ -124,6 +159,56 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="3"
+                     IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtNumberingFont" 
+                     HorizontalAlignment="Stretch"
+                     Margin="20,0,20,0" 
+                     TextWrapping="NoWrap" 
+                     VerticalAlignment="Center" 
+                     Grid.Column="1"
+                     Grid.Row="4"
+                     FontSize="14"
+                     IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtDocRack" 
+                     HorizontalAlignment="Stretch"
+                     Margin="20,0,20,0" 
+                     TextWrapping="Wrap" 
+                     VerticalAlignment="Center" 
+                     Grid.Column="1"
+                     Grid.Row="5"
+                     FontSize="14"
+                     IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtDocShelf" 
+                     HorizontalAlignment="Stretch"
+                     Margin="20,0,20,0" 
+                     TextWrapping="Wrap" 
+                     FontSize="14"
+                     VerticalAlignment="Center" 
+                     Grid.Column="1"
+                     Grid.Row="6"
+                     IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtNumTableOfContents" 
+                     HorizontalAlignment="Stretch"
+                     Margin="20,0,20,0" 
+                     TextWrapping="NoWrap" 
+                     VerticalAlignment="Center" 
+                     Grid.Column="1"
+                     Grid.Row="7"
+                     FontSize="14"
+                     IsReadOnly="True"/>
+
+                    <TextBox x:Name="txtFileCabinet" 
+                     HorizontalAlignment="Stretch"
+                     Margin="20,0,20,0" 
+                     TextWrapping="Wrap" 
+                     VerticalAlignment="Center" 
+                     Grid.Column="1"
+                     Grid.Row="8"
+                     FontSize="14"
                      IsReadOnly="True"/>
                 </Grid>
             </GroupBox>

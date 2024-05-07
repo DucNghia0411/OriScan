@@ -52,7 +52,12 @@ namespace ScanApp.Service.Services
                     BatchName = request.BatchName,
                     BatchPath = request.BatchPath,
                     Note = request.Note,
-                    CreatedDate = request.CreatedDate
+                    CreatedDate = request.CreatedDate,
+                    NumberingFont = request.NumberingFont,
+                    DocumentRack = request.DocumentRack,
+                    DocumentShelf = request.DocumentShelf,
+                    NumericalTableOfContents = request.NumericalTableOfContents,
+                    FileCabinet = request.FileCabinet
                 };
 
                 await _batchRepo.AddAsync(batch);
@@ -86,6 +91,11 @@ namespace ScanApp.Service.Services
 
                 editBatch.BatchName = request.BatchName;
                 editBatch.Note = request.Note;
+                editBatch.NumberingFont = request.NumberingFont;
+                editBatch.DocumentRack = request.DocumentRack;
+                editBatch.DocumentShelf = request.DocumentShelf;
+                editBatch.NumericalTableOfContents = request.NumericalTableOfContents;
+                editBatch.FileCabinet = request.FileCabinet;
 
                 _batchRepo.Update(editBatch);
                 await _unitOfWork.Save();

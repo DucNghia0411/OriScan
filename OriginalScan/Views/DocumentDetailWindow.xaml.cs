@@ -10,6 +10,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -22,6 +23,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace OriginalScan.Views
 {
@@ -73,6 +75,26 @@ namespace OriginalScan.Views
                     txtNote.Text = document.Note;
                     txtCreatedDate.Text = document.CreatedDate;
                     txtPath.Text = document.DocumentPath;
+                    txtAgencyIdentifier.Text = document.AgencyIdentifier;
+                    txtDocIdentifier.Text = document.DocumentIdentifier;
+                    txtNumOfSheets.Text = document.NumberOfSheets.ToString();
+                    
+                    txtStoragePeriod.Text = document.StoragePeriod;
+
+                    DateTime startDate;
+                    DateTime endDate;
+
+                    if (DateTime.TryParseExact(document.StartDate, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate)
+                        || DateTime.TryParseExact(document.StartDate, "dd-MMM-yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
+                    {
+                        dpkStartDate.SelectedDate = startDate;
+                    }
+
+                    if (DateTime.TryParseExact(document.EndDate, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate)
+                        || DateTime.TryParseExact(document.EndDate, "dd-MMM-yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
+                    {
+                        dpkEndDate.SelectedDate = endDate;
+                    }
                 }
             }
             catch (Exception ex)
@@ -88,11 +110,23 @@ namespace OriginalScan.Views
             {
                 txtDocumentName.IsReadOnly = false;
                 txtNote.IsReadOnly = false;
+                txtAgencyIdentifier.IsReadOnly = false;
+                txtDocIdentifier.IsReadOnly = false;
+                txtNumOfSheets.IsReadOnly = false;
+                dpkStartDate.IsEnabled = true;
+                dpkEndDate.IsEnabled = true;
+                txtStoragePeriod.IsReadOnly = false;
             }
             else
             {
                 txtDocumentName.IsReadOnly = true;
                 txtNote.IsReadOnly = true;
+                txtAgencyIdentifier.IsReadOnly = true;
+                txtDocIdentifier.IsReadOnly = true;
+                txtNumOfSheets.IsReadOnly = true;
+                dpkStartDate.IsEnabled = false;
+                dpkEndDate.IsEnabled = false;
+                txtStoragePeriod.IsReadOnly = true;
                 btnEdit.Visibility = Visibility.Collapsed;
             }
         }
@@ -102,6 +136,9 @@ namespace OriginalScan.Views
             string notification = string.Empty;
             if (txtDocumentName.Text.Trim() == "")
                 notification += "Tên tài liệu không được để trống! \n";
+
+            if (txtNumOfSheets.Text.Trim() == "")
+                notification += "Số tờ không được để trống! \n";
 
             return notification;
         }
@@ -198,7 +235,13 @@ namespace OriginalScan.Views
                     {
                         Id = _currentDocument.Id,
                         DocumentName = txtDocumentName.Text,
-                        Note = txtNote.Text
+                        Note = txtNote.Text,
+                        AgencyIdentifier = txtAgencyIdentifier.Text,
+                        DocumentIdentifier = txtDocIdentifier.Text,
+                        NumberOfSheets = int.Parse(txtNumOfSheets.Text),
+                        StartDate = dpkStartDate.Text,
+                        EndDate = dpkEndDate.Text,
+                        StoragePeriod = txtStoragePeriod.Text
                     };
 
                     var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
@@ -222,8 +265,9 @@ namespace OriginalScan.Views
                             Id = _currentDocument.Id,
                             BatchId = _currentBatch.Id,
                             DocumentName = txtDocumentName.Text,
-                            DocumentPath = txtPath.Text
-                        };
+                            DocumentPath = txtPath.Text,
+                            
+                    };
 
                         _documentService.SetDocument(documentModel);
                     }
@@ -250,6 +294,44 @@ namespace OriginalScan.Views
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.Visibility = Visibility.Hidden;
+        }
+
+        private void txtNumOfSheets_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void dpkEndDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpkStartDate.SelectedDate == null)
+            {
+                return;
+            }
+
+            if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
+            {
+                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
+                dpkEndDate.SelectedDate = null;
+                return;
+            }
+        }
+
+        private void dpkStartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpkEndDate.SelectedDate == null)
+            {
+                return;
+            }
+
+            if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
+            {
+                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
+                dpkStartDate.SelectedDate = null;
+                return;
+            }
         }
     }
 }

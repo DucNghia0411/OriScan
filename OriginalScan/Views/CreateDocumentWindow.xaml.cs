@@ -149,7 +149,13 @@ namespace OriginalScan.Views
                     DocumentName = txtDocumentName.Text,
                     DocumentPath = systemPath,
                     Note = txtNote.Text,
-                    CreatedDate = now.ToString()
+                    CreatedDate = now.ToString(),
+                    AgencyIdentifier = txtAgencyIdentifier.Text,
+                    DocumentIdentifier = txtDocIdentifier.Text,
+                    NumberOfSheets = int.Parse(txtNumOfSheets.Text),
+                    StartDate = dpkStartDate.Text,
+                    EndDate = dpkEndDate.Text,
+                    StoragePeriod = txtStoragePeriod.Text
                 };
 
                 var checkExistedResult = await _documentService.CheckExisted(currentBatch.Id, txtDocumentName.Text);
@@ -210,6 +216,44 @@ namespace OriginalScan.Views
             if (txtDocumentName.Text.Trim() == "")
                 notification += "Tên tài liệu không được để trống! \n";
             return notification;
+        }
+
+        private void txtNumOfSheets_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (!((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void dpkEndDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpkStartDate.SelectedDate == null)
+            {
+                return;
+            }
+
+            if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
+            {
+                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
+                dpkEndDate.SelectedDate = null;
+                return;
+            }
+        }
+
+        private void dpkStartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (dpkEndDate.SelectedDate == null)
+            {
+                return;
+            }
+
+            if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
+            {
+                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
+                dpkStartDate.SelectedDate = null;
+                return;
+            }
         }
     }
 }

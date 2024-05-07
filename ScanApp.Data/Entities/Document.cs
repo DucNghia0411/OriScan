@@ -17,6 +17,18 @@ public partial class Document
 
     public string CreatedDate { get; set; } = null!;
 
+    public string? AgencyIdentifier { get; set; }
+
+    public string? DocumentIdentifier { get; set; }
+
+    public int NumberOfSheets { get; set; }
+
+    public string? StartDate { get; set; }
+
+    public string? EndDate { get; set; }
+
+    public string? StoragePeriod { get; set; }
+
     public virtual Batch Batch { get; set; } = null!;
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

@@ -15,5 +15,7 @@ namespace ScanApp.Model.Models
         public string DocumentName { get; set; } = null!;
 
         public string DocumentPath { get; set; } = null!;
+
+        public int NumberOfSheets { get; set; }
     }
 }

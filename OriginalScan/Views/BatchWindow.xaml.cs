@@ -79,7 +79,12 @@ namespace OriginalScan.Views
                     BatchName = txtBatchName.Text,
                     Note = txtBatchNote.Text,
                     BatchPath = systemPath,
-                    CreatedDate = now.ToString()
+                    CreatedDate = now.ToString(),
+                    NumberingFont = txtNumberingFont.Text,
+                    DocumentRack = txtDocRack.Text,
+                    DocumentShelf = txtDocShelf.Text,
+                    NumericalTableOfContents = txtNumTableOfContents.Text,
+                    FileCabinet = txtFileCabinet.Text
                 };
 
                 var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
@@ -239,6 +244,11 @@ namespace OriginalScan.Views
             txtBatchNote.Text = string.Empty;
             txtCurrentBatch.Text = string.Empty;
             txtCurrentDocument.Text = string.Empty;
+            txtNumberingFont.Text = string.Empty;
+            txtDocRack.Text = string.Empty;
+            txtDocShelf.Text = string.Empty;
+            txtNumTableOfContents.Text = string.Empty;
+            txtFileCabinet.Text = string.Empty;
 
             LoadTreeView();
         }

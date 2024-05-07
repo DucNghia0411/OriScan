@@ -38,6 +38,11 @@ public partial class ScanContext : DbContext
             entity.Property(e => e.BatchPath).HasColumnName("batch_path");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
             entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.NumberingFont).HasColumnName("numbering_font");
+            entity.Property(e => e.DocumentRack).HasColumnName("document_rack");
+            entity.Property(e => e.DocumentShelf).HasColumnName("document_shelf");
+            entity.Property(e => e.NumericalTableOfContents).HasColumnName("numerical_table_of_contents");
+            entity.Property(e => e.FileCabinet).HasColumnName("file_cabinet");
         });
 
         modelBuilder.Entity<Document>(entity =>
@@ -50,6 +55,12 @@ public partial class ScanContext : DbContext
             entity.Property(e => e.DocumentName).HasColumnName("document_name");
             entity.Property(e => e.DocumentPath).HasColumnName("document_path");
             entity.Property(e => e.Note).HasColumnName("note");
+            entity.Property(e => e.AgencyIdentifier).HasColumnName("agency_identifier");
+            entity.Property(e => e.DocumentIdentifier).HasColumnName("document_identifier");
+            entity.Property(e => e.NumberOfSheets).HasColumnName("number_of_sheets");
+            entity.Property(e => e.StartDate).HasColumnName("start_date");
+            entity.Property(e => e.EndDate).HasColumnName("end_date");
+            entity.Property(e => e.StoragePeriod).HasColumnName("storage_period");
 
             entity.HasOne(d => d.Batch).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.BatchId)

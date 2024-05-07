@@ -17,5 +17,17 @@ namespace ScanApp.Model.Requests.Document
         public string? Note { get; set; }
 
         public string CreatedDate { get; set; } = null!;
+
+        public string? AgencyIdentifier { get; set; }
+
+        public string? DocumentIdentifier { get; set; }
+
+        public int NumberOfSheets { get; set; }
+
+        public string? StartDate { get; set; }
+
+        public string? EndDate { get; set; }
+
+        public string? StoragePeriod { get; set; }
     }
 }

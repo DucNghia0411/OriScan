@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Tài liệu" 
-        Height="275" 
+        Height="500" 
         Width="450"
         Closing="Window_Closing">
     <Window.Resources>
@@ -26,8 +26,8 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*"></RowDefinition>
-            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="9*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -39,29 +39,137 @@
                 BorderThickness="2" 
                 Margin="10,10,10,10">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     <Label Content="Tên tài liệu:" 
-                       HorizontalAlignment="Left" 
-                       Margin="20,10,0,0" 
-                       VerticalAlignment="Top"/>
+                       HorizontalAlignment="Right" 
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
 
                     <Label Content="Ghi chú:" 
-                    HorizontalAlignment="Left" 
-                    Margin="20,50,0,0" 
-                    VerticalAlignment="Top"/>
+                       HorizontalAlignment="Right" 
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Mã cơ quan:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="2"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Số/ký hiệu hồ sơ:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="3"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Số tờ:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="4"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Thời gian bắt đầu:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="5"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Thời gian kết thúc:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="6"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
+
+                    <Label Content="Thời gian bảo quản:" 
+                       HorizontalAlignment="Right" 
+                       Grid.Row="7"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"/>
 
                     <TextBox x:Name="txtDocumentName" 
-                         HorizontalAlignment="Left" 
-                         Margin="110,10,0,0" 
-                         TextWrapping="NoWrap" 
-                         VerticalAlignment="Top" 
-                         Width="210"/>
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0" 
+                         TextWrapping="NoWrap"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260"/>
 
                     <TextBox x:Name="txtNote" 
-                         HorizontalAlignment="Left" 
-                         Margin="110,50,0,0"
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0"
                          TextWrapping="Wrap" 
-                         VerticalAlignment="Top" 
-                         Width="210"/>
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260"/>
+
+                    <TextBox x:Name="txtAgencyIdentifier" 
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0" 
+                         TextWrapping="NoWrap"
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260"/>
+
+                    <TextBox x:Name="txtDocIdentifier" 
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0"
+                         TextWrapping="Wrap" 
+                         Grid.Row="3"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260"/>
+
+                    <TextBox x:Name="txtNumOfSheets" 
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0" 
+                         TextWrapping="NoWrap"
+                         Grid.Row="4"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260" KeyDown="txtNumOfSheets_KeyDown"/>
+
+                    <DatePicker x:Name="dpkStartDate" 
+                                HorizontalAlignment="Center" 
+                                Margin="5,0,10,0" 
+                                Grid.Row="5"
+                                Grid.Column="1"
+                                VerticalAlignment="Center" 
+                                Width="260" SelectedDateChanged="dpkStartDate_SelectedDateChanged"/>
+
+                    <DatePicker x:Name="dpkEndDate" 
+                                HorizontalAlignment="Center" 
+                                Margin="5,0,10,0" 
+                                Grid.Row="6"
+                                Grid.Column="1"
+                                VerticalAlignment="Center" 
+                                Width="260" SelectedDateChanged="dpkEndDate_SelectedDateChanged"/>
+
+                    <TextBox x:Name="txtStoragePeriod" 
+                         HorizontalAlignment="Center" 
+                         Margin="5,0,10,0" 
+                         TextWrapping="Wrap" 
+                         Grid.Row="7"
+                         Grid.Column="1"
+                         VerticalAlignment="Center" 
+                         Width="260"/>
                 </Grid>
             </GroupBox>
 

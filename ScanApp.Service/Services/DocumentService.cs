@@ -54,7 +54,13 @@ namespace ScanApp.Service.Services
                     DocumentName = request.DocumentName,
                     DocumentPath = request.DocumentPath,
                     Note = request.Note,
-                    CreatedDate = request.CreatedDate
+                    CreatedDate = request.CreatedDate,
+                    AgencyIdentifier = request.AgencyIdentifier,
+                    DocumentIdentifier = request.DocumentIdentifier,
+                    NumberOfSheets = request.NumberOfSheets,
+                    StartDate = request.StartDate,
+                    EndDate = request.EndDate,
+                    StoragePeriod = request.StoragePeriod
                 };
 
                 await _documentRepo.AddAsync(document);
@@ -112,6 +118,12 @@ namespace ScanApp.Service.Services
 
                 editDocument.DocumentName = request.DocumentName;
                 editDocument.Note = request.Note;
+                editDocument.AgencyIdentifier = request.AgencyIdentifier;
+                editDocument.DocumentIdentifier = request.DocumentIdentifier;
+                editDocument.NumberOfSheets = request.NumberOfSheets;
+                editDocument.StartDate = request.StartDate;
+                editDocument.EndDate = request.EndDate;
+                editDocument.StoragePeriod = request.StoragePeriod;
 
                 _documentRepo.Update(editDocument);
                 await _unitOfWork.Save();

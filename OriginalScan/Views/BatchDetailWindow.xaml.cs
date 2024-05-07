@@ -71,9 +71,14 @@ namespace OriginalScan.Views
                     _currentBatch = batch;
 
                     txtBatchName.Text = batch.BatchName;
+                    txtPath.Text = batch.BatchPath;
                     txtNote.Text = batch.Note;
                     txtCreatedDate.Text = batch.CreatedDate;
-                    txtPath.Text = batch.BatchPath;
+                    txtNumberingFont.Text = batch.NumberingFont;
+                    txtDocRack.Text = batch.DocumentRack;
+                    txtDocShelf.Text = batch.DocumentShelf;
+                    txtNumTableOfContents.Text = batch.NumericalTableOfContents;
+                    txtFileCabinet.Text = batch.FileCabinet;
                 }
             }
             catch(Exception ex)
@@ -89,11 +94,21 @@ namespace OriginalScan.Views
             {
                 txtBatchName.IsReadOnly = false;
                 txtNote.IsReadOnly = false;
+                txtNumberingFont.IsReadOnly = false;
+                txtDocRack.IsReadOnly = false;
+                txtDocShelf.IsReadOnly = false;
+                txtNumTableOfContents.IsReadOnly = false;
+                txtFileCabinet.IsReadOnly = false;
             }
             else
             {
                 txtBatchName.IsReadOnly = true;
                 txtNote.IsReadOnly = true;
+                txtNumberingFont.IsReadOnly = true;
+                txtDocRack.IsReadOnly = true;
+                txtDocShelf.IsReadOnly = true;
+                txtNumTableOfContents.IsReadOnly = true;
+                txtFileCabinet.IsReadOnly = true;
                 btnEdit.Visibility = Visibility.Collapsed;
             }
         }
@@ -214,8 +229,13 @@ namespace OriginalScan.Views
                     {
                         Id = _currentBatch.Id,
                         BatchName = txtBatchName.Text,
-                        Note = txtNote.Text
-                    };
+                        Note = txtNote.Text,
+                        NumberingFont = txtNumberingFont.Text,
+                        DocumentRack = txtDocRack.Text,
+                        DocumentShelf = txtDocShelf.Text,
+                        NumericalTableOfContents = txtNumTableOfContents.Text,
+                        FileCabinet = txtFileCabinet.Text
+                };
 
                     var updateResult = await _batchService.Update(request);
                     NotificationConstants.MessagePosition = NotificationPosition.TopRight;
