@@ -142,7 +142,6 @@ namespace OriginalScan.Views
                             Background = new SolidColorBrush(Colors.Red),
                             Foreground = new SolidColorBrush(Colors.White),
                         };
-                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
 
                         _notificationManager.Show(errorNoti);
                         break;
@@ -166,14 +165,11 @@ namespace OriginalScan.Views
                             Foreground = new SolidColorBrush(Colors.White),
                         };
 
-                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
                         _notificationManager.Show(successNoti);
                         break;
                     }
                 case "warning":
                     {
-                        NotificationConstants.MessagePosition = NotificationPosition.TopRight;
-
                         var warningNoti = new NotificationContent
                         {
                             Title = "Thông báo!",
@@ -192,8 +188,6 @@ namespace OriginalScan.Views
                         break;
                     }
             }
-
-            NotificationConstants.MessagePosition = NotificationPosition.Center;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -238,7 +232,6 @@ namespace OriginalScan.Views
                 };
 
                     var updateResult = await _batchService.Update(request);
-                    NotificationConstants.MessagePosition = NotificationPosition.TopRight;
 
                     if (updateResult == 0)
                     {
