@@ -415,7 +415,7 @@ namespace OriginalScan
 
         public void LoadDirectoryTree()
         {
-            trvBatchExplorer.Items.Clear();
+            //trvBatchExplorer.Items.Clear();
             try
             {
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -473,7 +473,7 @@ namespace OriginalScan
                         }
                     };
                     rootItem.Items.Add(directoryItem);
-                    LoadDirectory(directoryItem, directory);
+                    //LoadDirectory(directoryItem, directory);
                 }
             }
             catch (Exception ex)
@@ -482,8 +482,13 @@ namespace OriginalScan
             }
         }
 
-        public void LoadDirectory(TreeViewItem parentItem, string folderPath)
+        public async void LoadDirectory(TreeViewItem parentItem, string folderPath)
         {
+            if (_batchService.SelectedBatch == null)
+            {
+                return;
+            }
+
             try
             {
                 var parentInfo = new DirectoryInfo(folderPath);
@@ -494,7 +499,10 @@ namespace OriginalScan
                     var directoryInfo = new DirectoryInfo(directory);
                     string directoryName = directoryInfo.Name;
 
-                    if (!IsItemAlreadyExists(parentItem, directoryName))
+                    var listDocument = await _documentService.Get(x => x.BatchId == _batchService.SelectedBatch.Id);
+                    string path = System.IO.Path.Combine(_batchService.SelectedBatch.BatchPath, directoryName);
+
+                    if (!IsItemAlreadyExists(parentItem, directoryName) && CheckExistedInDatabase(listDocument, path))
                     {
                         var directoryItem = new TreeViewItem()
                         {
@@ -560,6 +568,19 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
             }
+        }
+
+        public bool CheckExistedInDatabase(IEnumerable<Document> listDocument, string path)
+        {
+            foreach (Document document in listDocument)
+            {
+                if (document.DocumentPath == path)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool IsItemAlreadyExists(TreeViewItem parentItem, string itemName)

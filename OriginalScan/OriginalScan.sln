@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OriginalScan", "OriginalScan.csproj", "{19D1AC7B-D46F-485A-9B7A-28E16CC46F1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OriginalScan", "OriginalScan.csproj", "{19D1AC7B-D46F-485A-9B7A-28E16CC46F1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanApp.Intergration", "..\ScanApp.Intergration\ScanApp.Intergration.csproj", "{01BAE1DC-A3CF-44AD-9520-43933E617C7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanApp.Intergration", "..\ScanApp.Intergration\ScanApp.Intergration.csproj", "{01BAE1DC-A3CF-44AD-9520-43933E617C7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanApp.Data", "..\ScanApp.Data\ScanApp.Data.csproj", "{1D0168CA-D316-4AB5-A222-A371862DDFC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanApp.Data", "..\ScanApp.Data\ScanApp.Data.csproj", "{1D0168CA-D316-4AB5-A222-A371862DDFC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanApp.Service", "..\ScanApp.Service\ScanApp.Service.csproj", "{B4E865B9-D2CD-417B-87C6-5CBEA52A4B36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanApp.Service", "..\ScanApp.Service\ScanApp.Service.csproj", "{B4E865B9-D2CD-417B-87C6-5CBEA52A4B36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanApp.Model", "..\ScanApp.Model\ScanApp.Model.csproj", "{B3B7AC6F-903B-4719-BF71-C791DB010E07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanApp.Model", "..\ScanApp.Model\ScanApp.Model.csproj", "{B3B7AC6F-903B-4719-BF71-C791DB010E07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScanApp.Common", "..\ScanApp.Common\ScanApp.Common.csproj", "{D6D828BC-4D02-4596-9819-10C630536796}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScanApp.Common", "..\ScanApp.Common\ScanApp.Common.csproj", "{D6D828BC-4D02-4596-9819-10C630536796}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

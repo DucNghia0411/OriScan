@@ -109,7 +109,7 @@
                            FontSize="14"
                            Margin="0,15,0,0"
                            Grid.Row="3"/>
-                    
+
                     <TextBox 
                             x:Name="txtNumberingFont"
                             HorizontalAlignment="Stretch" 
@@ -126,7 +126,7 @@
                            FontSize="14"
                            Margin="0,15,0,0"
                            Grid.Row="4"/>
-                    
+
                     <TextBox 
                             x:Name="txtDocRack"
                             HorizontalAlignment="Stretch" 
@@ -143,7 +143,7 @@
                            FontSize="14"
                            Margin="0,15,0,0"
                            Grid.Row="5"/>
-                    
+
                     <TextBox 
                             x:Name="txtDocShelf"
                             HorizontalAlignment="Stretch" 
@@ -160,7 +160,7 @@
                            FontSize="14"
                            Margin="0,15,0,0"
                            Grid.Row="6"/>
-                    
+
                     <TextBox 
                             x:Name="txtNumTableOfContents"
                             HorizontalAlignment="Stretch" 
@@ -205,7 +205,6 @@
 
                     </Button>
                 </Grid>
-
             </GroupBox>
         </Grid>
 
@@ -473,7 +472,6 @@
                                         <Setter Property="BorderThickness" Value="0" />
                                     </Trigger>
                                 </Style.Triggers>-->
-
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>

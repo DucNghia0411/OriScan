@@ -133,7 +133,7 @@ namespace OriginalScan.Views
 
                 BatchModel? currentBatch = _batchService.SelectedBatch;
 
-                if(currentBatch == null)
+                if (currentBatch == null)
                 {
                     NotificationShow("warning", "Vui lòng chọn gói trước khi tạo tài liệu.");
                     return;

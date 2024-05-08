@@ -215,26 +215,6 @@
                  Grid.Row="7"
                  IsReadOnly="True" KeyDown="txtNumOfSheets_KeyDown"/>
 
-                    <!--<TextBox x:Name="txtStartDate" 
-                 HorizontalAlignment="Stretch"
-                 Margin="20,0,20,0" 
-                 TextWrapping="NoWrap" 
-                 VerticalAlignment="Center" 
-                 Grid.Column="1"
-                 Grid.Row="8"
-                 FontSize="14"
-                 IsReadOnly="True"/>
-
-                    <TextBox x:Name="txtEndDate" 
-                 HorizontalAlignment="Stretch"
-                 Margin="20,0,20,0" 
-                 TextWrapping="Wrap" 
-                 VerticalAlignment="Center" 
-                 Grid.Column="1"
-                 Grid.Row="9"
-                 FontSize="14"
-                 IsReadOnly="True"/>-->
-
                     <DatePicker x:Name="dpkStartDate" 
                  HorizontalAlignment="Stretch"
                  Margin="20,0,20,0" 
