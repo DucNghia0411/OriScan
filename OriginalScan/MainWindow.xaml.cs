@@ -701,29 +701,35 @@ namespace OriginalScan
                     return;
                 }
 
-                List<ScanApp.Data.Entities.Image> listSavedImage = new List<ScanApp.Data.Entities.Image>();
-
-                foreach (ScannedImage scannedImage in listImages)
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn lưu {totalImages} ảnh vào tài liệu {currentDocument.DocumentName} của gói {currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (Result == MessageBoxResult.Yes)
                 {
-                    DateTime now = DateTime.Now;
-                    string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
+                    List<ScanApp.Data.Entities.Image> listSavedImage = new List<ScanApp.Data.Entities.Image>();
 
-                    ScanApp.Data.Entities.Image image = new ScanApp.Data.Entities.Image()
-                    { 
-                        DocumentId = currentDocument.Id,
-                        ImageName = scannedImage.ImageName,
-                        ImagePath = imagePath,
-                        CreatedDate = now.ToString(),
-                        Order = scannedImage.Order
-                    };
+                    foreach (ScannedImage scannedImage in listImages)
+                    {
+                        DateTime now = DateTime.Now;
+                        string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
 
-                    listSavedImage.Add(image);
+                        ScanApp.Data.Entities.Image image = new ScanApp.Data.Entities.Image()
+                        {
+                            DocumentId = currentDocument.Id,
+                            ImageName = scannedImage.ImageName,
+                            ImagePath = imagePath,
+                            CreatedDate = now.ToString(),
+                            Order = scannedImage.Order
+                        };
+
+                        listSavedImage.Add(image);
+                    }
+
+                    await _imageService.AddRange(listSavedImage);
+                    await _imageService.Save();
+
+                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
                 }
-
-                await _imageService.AddRange(listSavedImage);
-                await _imageService.Save();
-
-                NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
+                else
+                    return;
             }
             catch (Exception ex)
             {
