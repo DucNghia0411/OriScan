@@ -412,7 +412,13 @@ namespace OriginalScan.Views
                         {
                             Directory.Delete(path, true);
                         }
-                        catch (DirectoryNotFoundException) { }
+                        catch (Exception ex)
+                        {
+                            if (!(ex is DirectoryNotFoundException))
+                            {
+                                throw;
+                            }
+                        }
 
                         var deleteResult = await _batchService.Delete(selectedBatch.Id);
 
@@ -614,7 +620,13 @@ namespace OriginalScan.Views
                         {
                             Directory.Delete(path, true);
                         }
-                        catch (DirectoryNotFoundException) { }
+                        catch (Exception ex)
+                        {
+                            if (!(ex is DirectoryNotFoundException))
+                            {
+                                throw;
+                            }
+                        }
 
                         var documentDelete = await _documentService.Delete(selectedDocument.Id);
 
