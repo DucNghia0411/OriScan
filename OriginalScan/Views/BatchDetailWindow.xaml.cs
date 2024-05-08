@@ -235,12 +235,10 @@ namespace OriginalScan.Views
 
                     if (updateResult == 0)
                     {
-
                         NotificationShow("error", "Cập nhật không thành công!");
                     }
                     else
                     {
-
                         NotificationShow("success", $"Cập nhật thành công gói tài liệu với id: {updateResult}");
                     }
 

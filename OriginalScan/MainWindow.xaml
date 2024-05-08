@@ -91,7 +91,6 @@
                             <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
                         </Grid>
                         <ControlTemplate.Triggers>
-
                             <Trigger Property="IsExpanded" Value="false">
                                 <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                             </Trigger>

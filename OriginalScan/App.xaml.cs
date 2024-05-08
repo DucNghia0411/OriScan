@@ -13,6 +13,7 @@ using ScanApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
+using System.Windows.Threading;
 
 namespace OriginalScan
 {
@@ -25,6 +26,8 @@ namespace OriginalScan
 
         public App()
         {
+            TaskScheduler.UnobservedTaskException += App_UnobservedTaskException!;
+
             try
             {
                 _host = Host.CreateDefaultBuilder()
@@ -59,6 +62,25 @@ namespace OriginalScan
             WriteToFile("Stop at: " + DateTime.Now);
             await _host!.StopAsync();
             base.OnExit(e);
+        }
+
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            WriteToFile("Error DispatcherUnhandled at: " + DateTime.Now + $"{args.Exception}");
+            args.Handled = true;
+            Environment.Exit(0);
+        }
+
+        void App_UnhandledException(object sender, UnhandledExceptionEventArgs args)
+        {
+            WriteToFile("Error UnhandledException at: " + DateTime.Now + $"{args}");
+            Environment.Exit(0);
+        }
+
+        void App_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
+        {
+            WriteToFile("Error UnobservedTaskException at: " + DateTime.Now + $"{args.Exception}");
+            Environment.Exit(0);
         }
 
         public void WriteToFile(string Message)
