@@ -9,6 +9,7 @@ using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain.Data;
 using OriginalScan.Models;
+using PdfSharp.Drawing;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
@@ -520,6 +521,8 @@ namespace OriginalScan.Views
 
                 selectedDocument.BatchId = _batchService.SelectedBatch.Id;
                 _documentService.SetDocument(selectedDocument);
+
+                GetImagesByDocument(selectedDocument.Id);
                 txtCurrentDocument.Text = selectedDocument.DocumentName;
             }
             catch (Exception ex)
@@ -655,23 +658,82 @@ namespace OriginalScan.Views
 
         public async void GetImagesByDocument(int documentId)
         {
-            IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
-            ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
+            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 
-            foreach (var item in images)
+            if (mainWindow != null)
             {
-                ScannedImage scannedImage = new ScannedImage()
-                { 
-                    Id = item.Id,
-                    DocumentId = documentId,
-                    ImagePath = item.ImagePath,
-                    IsSelected = false,
-                    Order = item.Order
-                };
+                IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
+                images.OrderBy(x => x.Order).ToList();
 
-                scannedImages.Add(scannedImage);
+                ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+                foreach (var item in images)
+                {
+                    string path = System.IO.Path.Combine(userFolderPath, item.ImagePath);
+                    BitmapImage bitmapImage = ImagePathToBitmap(path);
+
+                    ScannedImage scannedImage = new ScannedImage()
+                    {
+                        Id = item.Id,
+                        DocumentId = documentId,
+                        ImagePath = item.ImagePath,
+                        IsSelected = false,
+                        Order = item.Order,
+                        bitmapImage = bitmapImage
+                    };
+
+                    scannedImages.Add(scannedImage);
+                }
+
+                mainWindow.ListImagesMain.Clear();
+                mainWindow.ListImagesMain = scannedImages;
             }
+        }
 
+        private BitmapImage ImagePathToBitmap(string imagePath)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            try
+            {
+                BitmapImage bitmapImageFromPath = new BitmapImage(new Uri(imagePath));
+                WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapImageFromPath);
+                bitmapImage = ConvertWriteableBitmapToBitmapImage(writeableBitmap);
+                return bitmapImage;
+            }
+            catch (Exception)
+            {
+                return bitmapImage;
+            }
+        }
+
+        private BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap writeableBitmap)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            try
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
+                    encoder.Save(stream);
+                    stream.Seek(0, System.IO.SeekOrigin.Begin);
+
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                    bitmapImage.Freeze();
+                }
+
+                return bitmapImage;
+            }
+            catch (Exception)
+            {
+                return bitmapImage;
+            }
         }
     }
 }
