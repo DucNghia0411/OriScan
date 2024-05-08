@@ -677,7 +677,8 @@ namespace OriginalScan.Views
                     {
                         Id = item.Id,
                         DocumentId = documentId,
-                        ImagePath = item.ImagePath,
+                        ImageName = item.ImageName,
+                        ImagePath = path,
                         IsSelected = false,
                         Order = item.Order,
                         bitmapImage = bitmapImage

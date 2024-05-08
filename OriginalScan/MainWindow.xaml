@@ -177,7 +177,15 @@
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            Click="SaveImages_Click">
+                            Click="btnDeleteImages_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Images\deleteicon.png" Width="35" Height="35" />
+                            <Label Content="Xóa" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="btnSaveImages_Click">
                         <StackPanel>
                             <Image Source="\Resource\Images\saveicon.png" Width="35" Height="35" />
                             <Label Content="Lưu" FontWeight="Bold" HorizontalAlignment="Center"/>

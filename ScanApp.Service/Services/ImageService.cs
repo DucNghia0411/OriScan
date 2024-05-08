@@ -70,5 +70,19 @@ namespace ScanApp.Service.Services
         {
             await _unitOfWork.Save();
         }
+
+        public async Task DeleteMultiById(List<int> listIds)
+        {
+            try
+            {
+                IEnumerable<Image> images = await Get(x => listIds.Contains(x.Id));
+                _imageRepo.DeleteRange(images);
+                await _unitOfWork.Save();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

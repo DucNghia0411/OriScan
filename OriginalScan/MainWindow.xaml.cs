@@ -37,6 +37,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OriginalScan
 {
@@ -669,7 +670,7 @@ namespace OriginalScan
             }
         }
 
-        private async void SaveImages_Click(object sender, EventArgs e)
+        private async void btnSaveImages_Click(object sender, EventArgs e)
         {
             try
             {
@@ -758,6 +759,56 @@ namespace OriginalScan
             }
         }
 
+        private async void btnDeleteImages_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int totalDeleted = ListImagesSelected.Count;
+
+                if (totalDeleted == 0)
+                {
+                    NotificationShow("warning", $"Vui lòng chọn hình ảnh để xóa.");
+                    return;
+                }
+
+                List<string> isSavedImages = ListImagesSelected.Where(x => x.Id != 0).Select(x => x.ImageName).ToList();
+                if(isSavedImages.Count() > 0)
+                {
+                    MessageBoxResult checkSavedResult = System.Windows.MessageBox.Show($"Bạn có {isSavedImages.Count} ảnh đã được lưu trữ theo tài liệu ({string.Join(", ", isSavedImages)}). Bạn có chắc chắn muốn tiếp tục?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (checkSavedResult != MessageBoxResult.Yes)
+                        return;
+                }
+
+                MessageBoxResult confirmCheckResult = System.Windows.MessageBox.Show($"Bạn có chắc chắn muốn xóa {totalDeleted} ảnh?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (confirmCheckResult != MessageBoxResult.Yes)
+                    return;
+
+                List<int> listIdsDelete = new List<int>();
+                foreach (var image in ListImagesSelected) 
+                {
+                    if(image.Id != 0)
+                        listIdsDelete.Add(image.Id);
+
+                    File.Delete(image.ImagePath);
+                }
+
+                await _imageService.DeleteMultiById(listIdsDelete);
+
+                foreach (var image in ListImagesSelected)
+                {
+                    ListImagesMain.Remove(image);
+                }
+
+                ListImagesSelected.Clear();
+                NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                return;
+            }
+        }
+
         private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
 
         public ObservableCollection<ScannedImage> ListImagesMain
@@ -781,6 +832,7 @@ namespace OriginalScan
                 OnPropertyChanged("ListImagesSelected");
             }
         }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

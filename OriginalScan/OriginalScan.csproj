@@ -25,6 +25,7 @@
     <None Remove="Resource\Icons\submit.png" />
     <None Remove="Resource\Images\addscanicon.png" />
     <None Remove="Resource\Images\completeicon.png" />
+    <None Remove="Resource\Images\deleteicon.png" />
     <None Remove="Resource\Images\documenticon.png" />
     <None Remove="Resource\Images\documents.png" />
     <None Remove="Resource\Images\foldericon.png" />
@@ -70,6 +71,7 @@
     <Resource Include="Resource\Icons\submit.png" />
     <Resource Include="Resource\Images\addscanicon.png" />
     <Resource Include="Resource\Images\completeicon.png" />
+    <Resource Include="Resource\Images\deleteicon.png" />
     <Resource Include="Resource\Images\documenticon.png" />
     <Resource Include="Resource\Images\documents.png" />
     <Resource Include="Resource\Images\foldericon.png" />

@@ -23,5 +23,7 @@ namespace ScanApp.Service.Constracts
         Task AddRange(List<Image> images);
 
         Task Save();
+
+        Task DeleteMultiById(List<int> listIds);
     }
 }
