@@ -140,7 +140,7 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Border BorderBrush="LightGray" BorderThickness="1">
+        <Border BorderBrush="LightGray" BorderThickness="0,0,0,1">
             <ToolBarTray Grid.Row="0">
                 <ToolBar ClipToBounds="False"
                     Style="{StaticResource MaterialDesignToolBar}">
