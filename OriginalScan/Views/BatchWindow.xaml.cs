@@ -8,6 +8,7 @@ using Notification.Wpf.Classes;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain.Data;
+using OriginalScan.Models;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
@@ -18,6 +19,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -45,6 +47,7 @@ namespace OriginalScan.Views
     {
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
+        private readonly IImageService _imageService;
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
@@ -52,12 +55,14 @@ namespace OriginalScan.Views
         (   
             ScanContext context,
             IBatchService batchService,
-            IDocumentService documentService
+            IDocumentService documentService,
+            IImageService imageService
         )
         {
             _context = context;
             _batchService = batchService;
             _documentService = documentService;
+            _imageService = imageService;
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -645,6 +650,27 @@ namespace OriginalScan.Views
                 NotificationShow("error", $"Xóa thất bại! {ex.Message}");
                 return;
             }
+        }
+
+        public async void GetImagesByDocument(int documentId)
+        {
+            IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
+            ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
+
+            foreach (var item in images)
+            {
+                ScannedImage scannedImage = new ScannedImage()
+                { 
+                    Id = item.Id,
+                    DocumentId = documentId,
+                    ImagePath = item.ImagePath,
+                    IsSelected = false,
+                    Order = item.Order
+                };
+
+                scannedImages.Add(scannedImage);
+            }
+
         }
     }
 }

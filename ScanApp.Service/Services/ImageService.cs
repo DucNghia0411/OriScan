@@ -8,6 +8,7 @@ using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,11 @@ namespace ScanApp.Service.Services
         public void SetImage(ImageModel image)
         {
             SelectedImage = image;
+        }
+
+        public async Task<IEnumerable<Image>> Get(Expression<Func<Image, bool>> predicate)
+        {
+            return await _imageRepo.GetAsync(predicate);
         }
 
         public async Task<int> Create(ImageCreateRequest request)
@@ -53,6 +59,16 @@ namespace ScanApp.Service.Services
             {
                 throw;
             }
+        }
+
+        public async Task AddRange(List<Image> images)
+        {
+            await _imageRepo.AddRangeAsync(images);
+        }
+
+        public async Task Save()
+        {
+            await _unitOfWork.Save();
         }
     }
 }

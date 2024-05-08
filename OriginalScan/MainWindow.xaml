@@ -178,6 +178,14 @@
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
+                            Click="SaveImages_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Images\saveicon.png" Width="35" Height="35" />
+                            <Label Content="Lưu" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
                             Click="TransferToPortal_Click">
                         <StackPanel>
                             <Image Source="\Resource\Icons\submit.png" Width="35" Height="35" />

@@ -37,7 +37,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace OriginalScan
 {
@@ -57,6 +56,7 @@ namespace OriginalScan
 
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
+        private readonly IImageService _imageService;
 
         public MainWindow (ScanContext context)
         {
@@ -69,6 +69,7 @@ namespace OriginalScan
             _notificationManager = new NotificationManager();
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
+            _imageService = new ImageService(context);
             _listImagesMain = new ObservableCollection<ScannedImage>();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
@@ -179,7 +180,7 @@ namespace OriginalScan
 
                 if (!_twainSession.IsSourceOpen)
                 {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
                 }
 
@@ -245,14 +246,18 @@ namespace OriginalScan
                         Guid guid = Guid.NewGuid();
                         string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
                         string imagePath = Path.Combine(path, imagesName);
-                        //img.Save(imagePath);
+                        img.Save(imagePath);
+
+                        int totalImages = ListImagesMain.Count;
 
                         ScannedImage imageViewModel = new ScannedImage()
                         { 
                             DocumentId = currentDocument.Id,
+                            ImageName = imagesName,
                             ImagePath = imagePath,
                             IsSelected = false,
-                            bitmapImage = bitmapImage
+                            bitmapImage = bitmapImage,
+                            Order = totalImages++,
                         };
 
                         App.Current.Dispatcher.Invoke((Action)delegate
@@ -403,7 +408,13 @@ namespace OriginalScan
         {
             try
             {
-                BatchWindow batchWindow = new BatchWindow(_context, _batchService, _documentService);
+                BatchWindow batchWindow = new BatchWindow
+                (
+                    _context, 
+                    _batchService, 
+                    _documentService,
+                    _imageService
+                );
                 batchWindow.ShowDialog();
             }
             catch (Exception ex)
@@ -633,6 +644,69 @@ namespace OriginalScan
 
                     ExpandTreeViewItem(treeViewItem.Items, folderPath);
                 }
+            }
+        }
+
+        private async void SaveImages_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BatchModel? currentBatch = _batchService.SelectedBatch;
+
+                if (currentBatch == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn gói trước khi thực hiện lưu hình ảnh.");
+                    return;
+                }
+
+                DocumentModel? currentDocument = _documentService.SelectedDocument;
+
+                if (currentDocument == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn tài liệu trước khi thực hiện lưu hình ảnh.");
+                    return;
+                }
+
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string path = Path.Combine(userFolderPath, currentDocument.DocumentPath);
+
+                ObservableCollection<ScannedImage> listImages = ListImagesMain;
+                int totalImages = listImages.Count;
+
+                if (totalImages == 0)
+                {
+                    NotificationShow("warning", "Không tìm thấy hình ảnh để thực hiện.");
+                    return;
+                }
+
+                List<ScanApp.Data.Entities.Image> listSavedImage = new List<ScanApp.Data.Entities.Image>();
+
+                foreach (ScannedImage scannedImage in listImages)
+                {
+                    DateTime now = DateTime.Now;
+                    string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
+
+                    ScanApp.Data.Entities.Image image = new ScanApp.Data.Entities.Image()
+                    { 
+                        DocumentId = currentDocument.Id,
+                        ImageName = scannedImage.ImageName,
+                        ImagePath = imagePath,
+                        CreatedDate = now.ToString(),
+                        Order = scannedImage.Order
+                    };
+
+                    listSavedImage.Add(image);
+                }
+
+                await _imageService.AddRange(listSavedImage);
+                await _imageService.Save();
+
+                NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+                return;
             }
         }
 

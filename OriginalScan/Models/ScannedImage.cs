@@ -34,6 +34,18 @@ namespace OriginalScan.Models
             }
         }
 
+        private string _imageName { get; set; } = null!;
+
+        public string ImageName
+        {
+            get => _imageName;
+            set
+            {
+                _imageName = value;
+                OnPropertyChanged("ImageName");
+            }
+        }
+
         private string _imagePath { get; set; } = null!;
 
         public string ImagePath
@@ -67,6 +79,18 @@ namespace OriginalScan.Models
             {
                 _bitmapImage = value;
                 OnPropertyChanged("BitmapImage");
+            }
+        }
+
+        private int _order { get; set; }
+
+        public int Order
+        {
+            get => _order;
+            set
+            {
+                _order = value;
+                OnPropertyChanged("Order");
             }
         }
     }
