@@ -15,5 +15,7 @@ public partial class Image
 
     public string CreatedDate { get; set; } = null!;
 
+    public int Order { get; set; }
+
     public virtual Document Document { get; set; } = null!;
 }

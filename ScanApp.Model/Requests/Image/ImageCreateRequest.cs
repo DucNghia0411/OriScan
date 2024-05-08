@@ -15,5 +15,7 @@ namespace ScanApp.Model.Requests.Image
         public string ImagePath { get; set; } = null!;
 
         public string CreatedDate { get; set; } = null!;
+
+        public int Order { get; set; }
     }
 }

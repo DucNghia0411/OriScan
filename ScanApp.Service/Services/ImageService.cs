@@ -40,7 +40,8 @@ namespace ScanApp.Service.Services
                     DocumentId = request.DocumentId,
                     ImageName = request.ImageName,
                     ImagePath = request.ImagePath,
-                    CreatedDate = request.CreatedDate
+                    CreatedDate = request.CreatedDate,
+                    Order = request.Order
                 };
 
                 await _imageRepo.AddAsync(image);

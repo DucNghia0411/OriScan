@@ -13,5 +13,7 @@ namespace ScanApp.Model.Models
         public int DocumentId { get; set; }
 
         public string ImagePath { get; set; } = null!;
+
+        public int Order { get; set; }
     }
 }

@@ -15,7 +15,8 @@
         Title="MainWindow"         
         Height="1000" 
         Width="1500"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        Icon="/Resource/Images/scannericon.png">
     <Window.Resources>
         <!-- Toggle Button -->
         <local:TreeViewLineConverter x:Key="LineConverter"/>
@@ -139,52 +140,54 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <ToolBarTray Grid.Row="0">
-            <ToolBar ClipToBounds="False"
-                Style="{StaticResource MaterialDesignToolBar}">
-                <Button HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Click="OpenBatch_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Icons\document.png" Width="35" Height="35" />
-                        <Label Content="Tài liệu" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Click="ScanButton_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Icons\play.png" Width="35" Height="35" />
-                        <Label Content="Quét" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Click="ChooseDevice_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Images\addscanicon.png" Width="35" Height="35" />
-                        <Label Content="Thiết bị" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Click="ConvertToPdfButton_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Icons\pdf.png" Width="35" Height="35" />
-                        <Label Content="PDF" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-                <Button HorizontalAlignment="Center" 
-                        VerticalAlignment="Center"
-                        Click="TransferToPortal_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Icons\submit.png" Width="35" Height="35" />
-                        <Label Content="Gửi" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-            </ToolBar>
-        </ToolBarTray>
-        <Grid Grid.Row="1">
+        <Border BorderBrush="LightGray" BorderThickness="1">
+            <ToolBarTray Grid.Row="0">
+                <ToolBar ClipToBounds="False"
+                    Style="{StaticResource MaterialDesignToolBar}">
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="OpenBatch_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Icons\document.png" Width="35" Height="35" />
+                            <Label Content="Tài liệu" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="ScanButton_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Icons\play.png" Width="35" Height="35" />
+                            <Label Content="Quét" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="ChooseDevice_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Images\addscanicon.png" Width="35" Height="35" />
+                            <Label Content="Thiết bị" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="ConvertToPdfButton_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Icons\pdf.png" Width="35" Height="35" />
+                            <Label Content="PDF" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="TransferToPortal_Click">
+                        <StackPanel>
+                            <Image Source="\Resource\Icons\submit.png" Width="35" Height="35" />
+                            <Label Content="Gửi" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </ToolBar>
+            </ToolBarTray>
+        </Border>
+        <Grid Grid.Row="1" Background="White">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.6*"/>
                 <ColumnDefinition Width="3*"/>
@@ -205,7 +208,7 @@
                         Grid.Row="4" 
                         Grid.RowSpan="2" 
                         Grid.Column="0"
-                        Grid.ColumnSpan="2" Margin="5">
+                        Grid.ColumnSpan="2" Margin="3">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -223,7 +226,7 @@
                 </GroupBox>
             </Grid>
 
-            <Grid Grid.Column="1" Grid.RowSpan="2">
+            <Grid Grid.Column="1" Grid.RowSpan="2" Margin="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="20*"></RowDefinition>
                     <RowDefinition Height="5*"></RowDefinition>

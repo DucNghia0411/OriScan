@@ -144,7 +144,7 @@
                          Grid.Row="4"
                          Grid.Column="1"
                          VerticalAlignment="Center" 
-                         Width="260" KeyDown="txtNumOfSheets_KeyDown"/>
+                         Width="260" KeyDown="txtNumOfSheets_KeyDown" Text="0"/>
 
                     <DatePicker x:Name="dpkStartDate" 
                                 HorizontalAlignment="Center" 

@@ -76,7 +76,7 @@ public partial class ScanContext : DbContext
             entity.Property(e => e.DocumentId).HasColumnName("document_id");
             entity.Property(e => e.ImageName).HasColumnName("image_name");
             entity.Property(e => e.ImagePath).HasColumnName("image_path");
-
+            entity.Property(e => e.Order).HasColumnName("order");
             entity.HasOne(d => d.Document).WithMany(p => p.Images)
                 .HasForeignKey(d => d.DocumentId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
