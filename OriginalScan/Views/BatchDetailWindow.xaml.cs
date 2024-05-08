@@ -148,8 +148,6 @@ namespace OriginalScan.Views
                     }
                 case "success":
                     {
-                        
-
                         var successNoti = new NotificationContent
                         {
                             Title = "Thành công!",
