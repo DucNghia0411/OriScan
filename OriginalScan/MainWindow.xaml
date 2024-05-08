@@ -233,7 +233,7 @@
                 </Grid.RowDefinitions>
 
                 <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
-                        x:Name="ListMainImages"
+                        ItemsSource="{Binding ListImagesMain}"
                         Grid.Row="0">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -264,7 +264,7 @@
                                     Height="300" 
                                     Width="265"
                                     Margin="8,8,8,8"
-                                    Source="{Binding}">
+                                    Source="{Binding bitmapImage}">
                                 </Image>
                             </Border>
                         </DataTemplate>
@@ -272,7 +272,7 @@
                 </ListView>
 
                 <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
-                        x:Name="ListExtraImages"
+                        ItemsSource="{Binding ListImagesMain}"
                         Grid.Row="1">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -304,7 +304,7 @@
                                         Height="135" 
                                         Width="100" 
                                         Margin="8,8,8,8"
-                                        Source="{Binding}"/>
+                                        Source="{Binding bitmapImage}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

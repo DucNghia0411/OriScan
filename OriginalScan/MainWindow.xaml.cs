@@ -5,6 +5,7 @@ using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain;
 using NTwain.Data;
+using OriginalScan.Models;
 using OriginalScan.Views;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -18,6 +19,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -25,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Printing;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -41,7 +44,7 @@ namespace OriginalScan
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public DataSource? dataSource;
         public TwainSession? _twainSession;
@@ -55,10 +58,7 @@ namespace OriginalScan
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
 
-        public MainWindow
-        (
-            ScanContext context
-        )
+        public MainWindow (ScanContext context)
         {
             InitializeComponent();
             _context = context;
@@ -66,11 +66,11 @@ namespace OriginalScan
             DataContext = this;
             CreateSession();
             _transferApiClient = new TransferApiClient();
-            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
             _notificationManager = new NotificationManager();
-            //LoadDirectoryTree();
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
+            _listImagesMain = new ObservableCollection<ScannedImage>();
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
         private void NotificationShow(string type, string message)
@@ -245,19 +245,21 @@ namespace OriginalScan
                         Guid guid = Guid.NewGuid();
                         string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
                         string imagePath = Path.Combine(path, imagesName);
-                        img.Save(imagePath);
+                        //img.Save(imagePath);
+
+                        ScannedImage imageViewModel = new ScannedImage()
+                        { 
+                            DocumentId = currentDocument.Id,
+                            ImagePath = imagePath,
+                            IsSelected = false,
+                            bitmapImage = bitmapImage
+                        };
 
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            listImages.Add(bitmapImage);
+                           ListImagesMain.Add(imageViewModel);
                         });
                     }
-
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        ListMainImages.ItemsSource = listImages;
-                        ListExtraImages.ItemsSource = listImages;
-                    });
                 }
             }
             catch (Exception)
@@ -632,6 +634,25 @@ namespace OriginalScan
                     ExpandTreeViewItem(treeViewItem.Items, folderPath);
                 }
             }
+        }
+
+        private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesMain
+        {
+            get => _listImagesMain;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesMain");
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
