@@ -656,7 +656,7 @@ namespace OriginalScan.Views
             }
         }
 
-        public async void GetImagesByDocument(int documentId)
+        private async void GetImagesByDocument(int documentId)
         {
             MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
 

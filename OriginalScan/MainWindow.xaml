@@ -241,6 +241,7 @@
 
                 <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
                         ItemsSource="{Binding ListImagesMain}"
+                        PreviewMouseLeftButtonUp="ListImagesMain_Click"
                         Grid.Row="0">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -256,12 +257,12 @@
                                         <Setter Property="BorderThickness" Value="1" />
                                         <Setter Property="BorderBrush" Value="Black" />
                                         <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="2" />
+                                                <Setter Property="BorderThickness" Value="4" />
                                             </DataTrigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>
                                     </Style>
                                 </Border.Style>
 
@@ -295,12 +296,12 @@
                                         <Setter Property="BorderThickness" Value="1" />
                                         <Setter Property="BorderBrush" Value="Black" />
                                         <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="2" />
+                                                <Setter Property="BorderThickness" Value="4" />
                                             </DataTrigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>
                                     </Style>
                                 </Border.Style>
 

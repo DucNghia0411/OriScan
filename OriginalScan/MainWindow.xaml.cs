@@ -71,6 +71,7 @@ namespace OriginalScan
             _batchService = new BatchService(context);
             _imageService = new ImageService(context);
             _listImagesMain = new ObservableCollection<ScannedImage>();
+            _listImagesSelected = new ObservableCollection<ScannedImage>();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
@@ -731,6 +732,26 @@ namespace OriginalScan
             }
         }
 
+        private void ListImagesMain_Click(object sender, RoutedEventArgs e)
+        {
+            var clickedItem = (sender as System.Windows.Controls.ListView);
+            if (clickedItem == null) return;
+
+            ScannedImage? selectedImage = clickedItem.SelectedItem as ScannedImage;
+            if (selectedImage == null) return;
+
+            if(!selectedImage.IsSelected)
+            {
+                selectedImage.IsSelected = true;
+                ListImagesSelected.Add(selectedImage);
+            }
+            else
+            {
+                selectedImage.IsSelected = false;
+                ListImagesSelected.Remove(selectedImage);
+            }
+        }
+
         private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
 
         public ObservableCollection<ScannedImage> ListImagesMain
@@ -743,6 +764,17 @@ namespace OriginalScan
             }
         }
 
+        private ObservableCollection<ScannedImage> _listImagesSelected { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesSelected
+        {
+            get => _listImagesSelected;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesSelected");
+            }
+        }
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
