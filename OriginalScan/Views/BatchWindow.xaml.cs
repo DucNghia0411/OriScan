@@ -265,7 +265,7 @@ namespace OriginalScan.Views
             {
                 if (_batchService.SelectedBatch == null || _batchService.SelectedBatch.BatchPath == null)
                 {
-                    mainWindow.trvBatchExplorer.Items.Clear();
+                    mainWindow.ClearTreeViewItems();
                     return;
                 }
 
@@ -275,7 +275,7 @@ namespace OriginalScan.Views
 
                 if (!Directory.Exists(path))
                 {
-                    mainWindow.trvBatchExplorer.Items.Clear();
+                    mainWindow.ClearTreeViewItems();
                     return;
                 }
 
@@ -306,7 +306,7 @@ namespace OriginalScan.Views
 
                 if (mainWindow.IsItemAlreadyExists(directoryItem, name))
                 {
-                    mainWindow.trvBatchExplorer.Items.Clear();
+                    mainWindow.ClearTreeViewItems();
                 }
 
                 mainWindow.trvBatchExplorer.Items.Add(directoryItem);
@@ -538,7 +538,6 @@ namespace OriginalScan.Views
                 if (_batchService.SelectedBatch == null)
                 {
                     return;
-
                 }
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 
@@ -568,7 +567,6 @@ namespace OriginalScan.Views
                 if (_batchService.SelectedBatch == null)
                 {
                     return;
-
                 }
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 

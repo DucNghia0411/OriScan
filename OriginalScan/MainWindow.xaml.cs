@@ -68,7 +68,6 @@ namespace OriginalScan
             _transferApiClient = new TransferApiClient();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
             _notificationManager = new NotificationManager();
-            //LoadDirectoryTree();
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
         }
@@ -411,75 +410,6 @@ namespace OriginalScan
             }
         }
 
-        public void LoadDirectoryTree()
-        {
-            //trvBatchExplorer.Items.Clear();
-            try
-            {
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                userFolderPath = userFolderPath.Replace("/", "\\");
-                string path = System.IO.Path.Combine(userFolderPath, FolderSetting.AppFolder, FolderSetting.TempData);
-
-                var rootItem = new TreeViewItem()
-                {
-                    Header = new StackPanel()
-                    {
-                        Orientation = System.Windows.Controls.Orientation.Horizontal,
-                        Children =
-                            {
-                                new System.Windows.Controls.Image()
-                                {
-                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
-                                    Width = 16,
-                                    Height = 16,
-                                    Margin = new Thickness(0, 10, 5, 0)
-                                },
-                                new TextBlock()
-                                {
-                                    Text = FolderSetting.AppFolder,
-                                    Margin = new Thickness(0, 10, 0, 0)
-                                }
-                            }
-                    }
-                };
-                trvBatchExplorer.Items.Add(rootItem);
-
-                foreach (string directory in Directory.GetDirectories(path))
-                {
-
-                    var directoryInfo = new DirectoryInfo(directory);
-                    var directoryItem = new TreeViewItem()
-                    {
-                        Header = new StackPanel()
-                        {
-                            Orientation = System.Windows.Controls.Orientation.Horizontal,
-                            Children =
-                            {
-                                new System.Windows.Controls.Image()
-                                {
-                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
-                                    Width = 16,
-                                    Height = 16,
-                                    Margin = new Thickness(0, 10, 5, 0)
-                                },
-                                new TextBlock()
-                                {
-                                    Text = directoryInfo.Name,
-                                    Margin = new Thickness(0, 10, 0, 0)
-                                }
-                            }
-                        }
-                    };
-                    rootItem.Items.Add(directoryItem);
-                    //LoadDirectory(directoryItem, directory);
-                }
-            }
-            catch (Exception ex)
-            {
-                NotificationShow("error", ex.Message);
-            }
-        }
-
         public async void LoadDirectory(TreeViewItem parentItem, string folderPath)
         {
             if (_batchService.SelectedBatch == null)
@@ -653,6 +583,20 @@ namespace OriginalScan
                     ExpandTreeViewItem(treeViewItem.Items, folderPath);
                 }
             }
+        }
+
+        public void ClearTreeViewItems()
+        {
+            foreach (TreeViewItem item in trvBatchExplorer.Items)
+            {
+                if (item != null)
+                {
+                    item.Style = null;
+                    item.Foreground = null;
+                }
+            }
+
+            trvBatchExplorer.Items.Clear();
         }
     }
 }

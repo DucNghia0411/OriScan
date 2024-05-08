@@ -227,7 +227,7 @@ namespace OriginalScan.Views
                         DocumentShelf = txtDocShelf.Text,
                         NumericalTableOfContents = txtNumTableOfContents.Text,
                         FileCabinet = txtFileCabinet.Text
-                };
+                    };
 
                     var updateResult = await _batchService.Update(request);
 

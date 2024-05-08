@@ -267,7 +267,7 @@ namespace OriginalScan.Views
                             DocumentName = txtDocumentName.Text,
                             DocumentPath = txtPath.Text,
                             
-                    };
+                        };
 
                         _documentService.SetDocument(documentModel);
                     }
