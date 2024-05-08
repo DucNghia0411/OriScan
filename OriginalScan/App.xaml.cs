@@ -13,6 +13,9 @@ using ScanApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
+using System.Windows.Threading;
+using FontAwesome5;
+using System.Windows.Media;
 
 namespace OriginalScan
 {
@@ -21,10 +24,15 @@ namespace OriginalScan
     /// </summary>
     public partial class App : Application
     {
+        private readonly NotificationManager _notificationManager;
+
         public static IHost? _host { get; private set; }
 
         public App()
         {
+            TaskScheduler.UnobservedTaskException += App_UnobservedTaskException!;
+            _notificationManager = new NotificationManager();
+
             try
             {
                 _host = Host.CreateDefaultBuilder()
@@ -47,6 +55,70 @@ namespace OriginalScan
             }
         }
 
+        private void NotificationShow(string type, string message)
+        {
+            switch (type)
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
+        }
+
         protected override async void OnStartup(StartupEventArgs e)
         {
             await _host!.StartAsync();
@@ -60,6 +132,31 @@ namespace OriginalScan
             WriteToFile("Stop at: " + DateTime.Now);
             await _host!.StopAsync();
             base.OnExit(e);
+        }
+
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            NotificationShow("error", "Lỗi xử lý luồng " + $"{args.Exception}" + " vào thời gian: " + DateTime.Now);
+
+            WriteToFile("Error DispatcherUnhandled at: " + DateTime.Now + $"{args.Exception}");
+            args.Handled = true;
+            Environment.Exit(0);
+        }
+
+        void App_UnhandledException(object sender, UnhandledExceptionEventArgs args)
+        {
+            NotificationShow("error", "Lỗi " + $"{args}" + " vào thời gian: " + DateTime.Now);
+
+            WriteToFile("Error UnhandledException at: " + DateTime.Now + $"{args}");
+            Environment.Exit(0);
+        }
+
+        void App_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
+        {
+            NotificationShow("error", "Lỗi tác vụ " + $"{args.Exception}" + " vào thời gian: " + DateTime.Now);
+
+            WriteToFile("Error UnobservedTaskException at: " + DateTime.Now + $"{args.Exception}");
+            Environment.Exit(0);
         }
 
         public void WriteToFile(string Message)

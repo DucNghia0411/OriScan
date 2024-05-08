@@ -172,7 +172,6 @@
                          Width="260"/>
                 </Grid>
             </GroupBox>
-
         </Grid>
 
         <Grid Grid.Row="1">

@@ -280,6 +280,7 @@ namespace OriginalScan.Views
 
                 if (!Directory.Exists(path))
                 {
+                    mainWindow.trvBatchExplorer.Items.Clear();
                     return;
                 }
 
@@ -291,27 +292,27 @@ namespace OriginalScan.Views
                     {
                         Orientation = System.Windows.Controls.Orientation.Horizontal,
                         Children =
+                        {
+                            new System.Windows.Controls.Image()
                             {
-                                new System.Windows.Controls.Image()
-                                {
-                                    Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
-                                    Width = 16,
-                                    Height = 16,
-                                    Margin = new Thickness(0, 10, 5, 0)
-                                },
-                                new TextBlock()
-                                {
-                                    Text = name,
-                                    Margin = new Thickness(0, 10, 0, 0)
-                                }
+                                Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
+                                Width = 16,
+                                Height = 16,
+                                Margin = new Thickness(0, 10, 5, 0)
+                            },
+                            new TextBlock()
+                            {
+                                Text = name,
+                                Margin = new Thickness(0, 10, 0, 0)
                             }
+                        }
                     }
                 };
 
                 if (mainWindow.IsItemAlreadyExists(directoryItem, name))
                 {
                     mainWindow.trvBatchExplorer.Items.Clear();
-                } 
+                }
 
                 mainWindow.trvBatchExplorer.Items.Add(directoryItem);
                 mainWindow.LoadDirectory(directoryItem, path);
