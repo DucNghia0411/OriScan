@@ -662,11 +662,31 @@ namespace OriginalScan.Views
 
             if (mainWindow != null)
             {
+                ScanApp.Data.Entities.Document? document = await _documentService.FirstOrDefault(e => e.Id == documentId);
+
+                if(document == null)
+                {
+                    NotificationShow("warning", $"Không tìm thấy tài liệu với mã {documentId}.");
+                    return;
+                }
+
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string documentPath = System.IO.Path.Combine(userFolderPath, document.DocumentPath);
+
+                if (!Directory.Exists(documentPath))
+                {
+                    NotificationShow("warning", $"Không tìm thấy thư mục tài liệu theo đường dẫn.");
+                    return;
+                }
+
+                string[] filesInDocumentPath = Directory.GetFiles(documentPath);
+                int totalImagesInPath = filesInDocumentPath.Count();
+
                 IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
                 images.OrderBy(x => x.Order).ToList();
+                int totalImagesInDatabase = images.Count();
 
                 ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
                 foreach (var item in images)
                 {
@@ -685,6 +705,45 @@ namespace OriginalScan.Views
                     };
 
                     scannedImages.Add(scannedImage);
+                }
+
+                int latestOrder = scannedImages.Count != 0 
+                    ? scannedImages.Max(x => x.Order) + 1 
+                    : 0;
+
+                if (totalImagesInPath > totalImagesInDatabase)
+                {
+                    int totalImageUnsaved = totalImagesInPath - totalImagesInDatabase;
+                    MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (checkImageResult == MessageBoxResult.Yes)
+                    {
+                        List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
+                        List<string> imagesInPathFileName = filesInDocumentPath
+                            .Select(x => System.IO.Path.GetFileName(x))
+                            .ToList();
+
+                        List<string> unsavedImagesName = imagesInPathFileName.Except(savedImagesName, StringComparer.OrdinalIgnoreCase).ToList();
+
+                        foreach (var item in unsavedImagesName)
+                        {
+                            string path = System.IO.Path.Combine(documentPath, item);
+                            BitmapImage bitmapImage = ImagePathToBitmap(path);
+
+                            ScannedImage scannedImage = new ScannedImage()
+                            {
+                                Id = 0,
+                                DocumentId = documentId,
+                                ImageName = item,
+                                ImagePath = path,
+                                IsSelected = false,
+                                Order = latestOrder,
+                                bitmapImage = bitmapImage
+                            };
+
+                            scannedImages.Add(scannedImage);
+                            latestOrder++;
+                        }
+                    }
                 }
 
                 mainWindow.ListImagesMain.Clear();
