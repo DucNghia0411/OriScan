@@ -281,28 +281,7 @@ namespace OriginalScan.Views
 
                 string name = System.IO.Path.GetFileName(path);
 
-                var directoryItem = new TreeViewItem()
-                {
-                    Header = new StackPanel()
-                    {
-                        Orientation = System.Windows.Controls.Orientation.Horizontal,
-                        Children =
-                        {
-                            new System.Windows.Controls.Image()
-                            {
-                                Source = new BitmapImage(new Uri("/Resource/Images/foldericon.png", UriKind.Relative)),
-                                Width = 16,
-                                Height = 16,
-                                Margin = new Thickness(0, 10, 5, 0)
-                            },
-                            new TextBlock()
-                            {
-                                Text = name,
-                                Margin = new Thickness(0, 10, 0, 0)
-                            }
-                        }
-                    }
-                };
+                var directoryItem = mainWindow.CreateTreeViewItem(name, "folder");
 
                 if (mainWindow.IsItemAlreadyExists(directoryItem, name))
                 {
@@ -317,13 +296,13 @@ namespace OriginalScan.Views
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
-            //CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
-            //createDocumentWindow.ShowDialog();
-            //lstvDocuments.SelectedItems.Clear();
-            //LoadTreeView();
+            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
+            createDocumentWindow.ShowDialog();
+            lstvDocuments.SelectedItems.Clear();
+            LoadTreeView();
 
-            ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow();
-            profileSettingWindow.ShowDialog();
+            //ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow();
+            //profileSettingWindow.ShowDialog();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)

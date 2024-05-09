@@ -432,28 +432,7 @@ namespace OriginalScan
 
                     if (!IsItemAlreadyExists(parentItem, directoryName) && CheckExistedInDatabase(listDocument, path))
                     {
-                        var directoryItem = new TreeViewItem()
-                        {
-                            Header = new StackPanel()
-                            {
-                                Orientation = System.Windows.Controls.Orientation.Horizontal,
-                                Children =
-                                {
-                                    new System.Windows.Controls.Image()
-                                    {
-                                        Source = new BitmapImage(new Uri("/Resource/Images/documents.png", UriKind.Relative)),
-                                        Width = 16,
-                                        Height = 16,
-                                        Margin = new Thickness(0, 10, 5, 0)
-                                    },
-                                    new TextBlock()
-                                    {
-                                        Text = directoryName,
-                                        Margin = new Thickness(0, 10, 0, 0)
-                                    }
-                                }
-                            }
-                        };
+                        var directoryItem = CreateTreeViewItem(directoryName, "document");
                         parentItem.Items.Add(directoryItem);
                         LoadDirectory(directoryItem, directory);
                     }
@@ -466,28 +445,7 @@ namespace OriginalScan
 
                     if (!IsItemAlreadyExists(parentItem, fileName))
                     {
-                        var fileItem = new TreeViewItem()
-                        {
-                            Header = new StackPanel()
-                            {
-                                Orientation = System.Windows.Controls.Orientation.Horizontal,
-                                Children =
-                                {
-                                    new System.Windows.Controls.Image()
-                                    {
-                                        Source = new BitmapImage(new Uri("/Resource/Icons/crop.png", UriKind.Relative)),
-                                        Width = 16,
-                                        Height = 16,
-                                        Margin = new Thickness(0, 10, 5, 0)
-                                    },
-                                    new TextBlock()
-                                    {
-                                        Text = fileName,
-                                        Margin = new Thickness(0, 10, 0, 0)
-                                    }
-                                }
-                            }
-                        };
+                        var fileItem = CreateTreeViewItem(fileName, "image");
                         parentItem.Items.Add(fileItem);
                     }
                 }
@@ -496,6 +454,56 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
             }
+        }
+
+        public TreeViewItem CreateTreeViewItem(string directoryName, string icon)
+        {
+            string iconSource = "";
+
+            switch (icon)
+            {
+                case "folder":
+                    {
+                        iconSource = "/Resource/Images/foldericon.png";
+                        break;
+                    }
+                case "document":
+                    {
+                        iconSource = "/Resource/Images/documents.png";
+                        break;
+                    }
+                case "image":
+                    {
+                        iconSource = "/Resource/Icons/crop.png";
+                        break;
+                    }
+            }
+
+
+            var item = new TreeViewItem()
+            {
+                Header = new StackPanel()
+                {
+                    Orientation = System.Windows.Controls.Orientation.Horizontal,
+                    Children =
+                    {
+                        new System.Windows.Controls.Image()
+                        {
+                            Source = new BitmapImage(new Uri(iconSource, UriKind.Relative)),
+                            Width = 16,
+                            Height = 16,
+                            Margin = new Thickness(0, 10, 5, 0)
+                        },
+                        new TextBlock()
+                        {
+                            Text = directoryName,
+                            Margin = new Thickness(0, 10, 0, 0)
+                        }
+                    }
+                }
+            };
+
+            return item;
         }
 
         public bool CheckExistedInDatabase(IEnumerable<Document> listDocument, string path)
