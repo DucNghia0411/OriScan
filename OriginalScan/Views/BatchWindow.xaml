@@ -229,7 +229,7 @@
                     <ListView  x:Name="lstvBatches" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1" MouseDoubleClick="lstvBatches_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn Width="60" >
+                                <GridViewColumn Width="60">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock x:Name="textBlock" Text="#"
@@ -243,7 +243,8 @@
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Id}"
                                                        HorizontalAlignment="Center"
-                                                       TextAlignment="Center"/>
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -262,12 +263,12 @@
                                             <TextBlock Text="{Binding BatchName}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       TextAlignment="Center"/>
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding BatchPath}" 
-                                                Width="300">
+                                <GridViewColumn Width="400">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Đường dẫn"
@@ -277,9 +278,17 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                        <TextBlock Text="{Binding BatchPath}"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   TextAlignment="Left"
+                                                   FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Note}" 
-                                                Width="200">
+                                <GridViewColumn Width="200">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ghi chú"
@@ -289,9 +298,17 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Note}"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding CreatedDate}"
-                                                Width="175">
+                                <GridViewColumn Width="175">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ngày tạo"
@@ -301,6 +318,15 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding CreatedDate}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="150">
@@ -374,7 +400,8 @@
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Id}"
                                                        HorizontalAlignment="Center"
-                                                       TextAlignment="Center"/>
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -393,12 +420,12 @@
                                             <TextBlock Text="{Binding DocumentName}"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       TextAlignment="Center"/>
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding DocumentPath}" 
-                                                Width="400">
+                                <GridViewColumn Width="400">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Đường dẫn"
@@ -408,9 +435,16 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DocumentPath}"
+                                                        HorizontalAlignment="Right"
+                                                        TextAlignment="Center"
+                                                        FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Note}" 
-                                                Width="200">
+                                <GridViewColumn Width="200">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ghi chú"
@@ -420,9 +454,16 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Note}"
+                                                       HorizontalAlignment="Left"
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding CreatedDate}"
-                                                Width="175">
+                                <GridViewColumn Width="175">
                                     <GridViewColumn.HeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="Ngày tạo"
@@ -432,6 +473,14 @@
                                                        TextAlignment="Center"></TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.HeaderTemplate>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding CreatedDate}"
+                                                       HorizontalAlignment="Center"
+                                                       TextAlignment="Center"
+                                                       FontWeight="Normal"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
                                 <GridViewColumn Width="150">

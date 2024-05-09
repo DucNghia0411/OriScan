@@ -256,6 +256,14 @@ namespace OriginalScan.Views
             txtFileCabinet.Text = string.Empty;
 
             LoadTreeView();
+
+            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (mainWindow != null)
+            {
+                mainWindow.lblBatchName.Content = string.Empty;
+                mainWindow.lblDocumentName.Content = string.Empty;
+                mainWindow.lblCurrentBatch.Visibility = mainWindow.lblBatchName.Visibility = mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
+            }
         }
 
         public void LoadTreeView()
@@ -325,6 +333,16 @@ namespace OriginalScan.Views
                 GetDocumentsByBatch(selectedBatch.Id);
                 txtCurrentBatch.Text = selectedBatch.BatchName;
                 txtCurrentDocument.Text = string.Empty;
+
+                MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (mainWindow != null)
+                {
+                    mainWindow.lblBatchName.Content = selectedBatch.BatchName;
+                    mainWindow.lblCurrentBatch.Visibility = Visibility.Visible;
+                    mainWindow.lblBatchName.Visibility = Visibility.Visible;
+
+                    mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
+                }
 
                 LoadTreeView();
             }
@@ -501,6 +519,14 @@ namespace OriginalScan.Views
                 selectedDocument.BatchId = _batchService.SelectedBatch.Id;
                 _documentService.SetDocument(selectedDocument);
                 txtCurrentDocument.Text = selectedDocument.DocumentName;
+
+                MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                if (mainWindow != null)
+                {
+                    mainWindow.lblDocumentName.Content = selectedDocument.DocumentName;
+                    mainWindow.lblCurrentDocument.Visibility = Visibility.Visible;
+                    mainWindow.lblDocumentName.Visibility = Visibility.Visible;
+                }
             }
             catch (Exception ex)
             {

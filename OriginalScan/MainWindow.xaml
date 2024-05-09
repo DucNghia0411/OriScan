@@ -132,6 +132,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Border BorderBrush="LightGray" BorderThickness="0,0,0,1">
@@ -209,13 +210,10 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
 
                         <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0"></TreeView>
 
-                        <ListView x:Name="lstvBatchExplorer" Grid.Row="2" Grid.Column="0" />
+                        <!--<ListView x:Name="lstvBatchExplorer" Grid.Row="2" Grid.Column="0" />-->
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -306,5 +304,54 @@
                 </ListView>
             </Grid>
         </Grid>
+
+        <Border Grid.Row="2"  BorderBrush="LightGray" BorderThickness="0,1,0,1">
+            <Grid Margin="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="lblCurrentBatch" Content="Đang chọn gói:" 
+                HorizontalAlignment="Left" 
+                Margin="10,0,0,0" 
+                VerticalAlignment="Center"
+                FontSize="13"
+                Grid.Column="0"
+                Width="Auto"
+                FontWeight="Bold"
+                Visibility="Hidden"/>
+
+                <Label x:Name="lblBatchName"
+                HorizontalAlignment="Left" 
+                Margin="10,0,10,0" 
+                VerticalAlignment="Center"
+                FontSize="13"
+                Grid.Column="1"
+                Width="Auto"
+                FontWeight="Normal"/>
+
+                <Label x:Name="lblCurrentDocument" Content="| Đang chọn tài liệu:" 
+                HorizontalAlignment="Left" 
+                Margin="0,0,0,0" 
+                VerticalAlignment="Center"
+                FontSize="13"
+                Grid.Column="2"
+                Width="Auto"
+                FontWeight="Bold"
+                Visibility="Hidden"/>
+
+                <Label x:Name="lblDocumentName" 
+                HorizontalAlignment="Left" 
+                Margin="0,0,0,0" 
+                VerticalAlignment="Center"
+                FontSize="13"
+                Grid.Column="3"
+                Width="Auto"
+                FontWeight="Normal"/>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
