@@ -17,6 +17,8 @@ namespace ScanApp.Service.Constracts
 
         void SetDocument(DocumentModel document);
 
+        void ClearSelectedDocument();
+
         Task<IEnumerable<Document>> Get(Expression<Func<Document, bool>> predicate);
 
         Task<Document?> FirstOrDefault(Expression<Func<Document, bool>> predicate);

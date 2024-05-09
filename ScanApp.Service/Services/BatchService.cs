@@ -33,6 +33,11 @@ namespace ScanApp.Service.Services
             SelectedBatch = batch;
         }
 
+        public void ClearSelectedBatch()
+        {
+            SelectedBatch = null;
+        }
+
         public async Task<IEnumerable<Batch>> Get(Expression<Func<Batch, bool>> predicate)
         {
             return await _batchRepo.GetAsync(predicate);

@@ -317,10 +317,13 @@ namespace OriginalScan.Views
 
         private void btnCreateDocument_Click(object sender, RoutedEventArgs e)
         {
-            CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
-            createDocumentWindow.ShowDialog();
-            lstvDocuments.SelectedItems.Clear();
-            LoadTreeView();
+            //CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
+            //createDocumentWindow.ShowDialog();
+            //lstvDocuments.SelectedItems.Clear();
+            //LoadTreeView();
+
+            ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow();
+            profileSettingWindow.ShowDialog();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -400,7 +403,7 @@ namespace OriginalScan.Views
                     try
                     {
                         GetDocumentsByBatch(0);
-                        _documentService.SetDocument(new DocumentModel());
+                        _documentService.ClearSelectedDocument();
 
                         var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
 
@@ -414,10 +417,7 @@ namespace OriginalScan.Views
                         }
                         catch (Exception ex)
                         {
-                            if (!(ex is DirectoryNotFoundException))
-                            {
-                                throw;
-                            }
+                            NotificationShow("error", $"{ex.Message}");
                         }
 
                         var deleteResult = await _batchService.Delete(selectedBatch.Id);
@@ -425,7 +425,7 @@ namespace OriginalScan.Views
                         if (deleteResult)
                         {
                             NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
-                            _batchService.SetBatch(new BatchModel());
+                            _batchService.ClearSelectedBatch();
 
                             ResetData();
                         }
@@ -610,7 +610,7 @@ namespace OriginalScan.Views
                 {
                     try
                     {
-                        _documentService.SetDocument(new DocumentModel());
+                        _documentService.ClearSelectedDocument();
 
                         string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                         string folderPath = selectedDocument.DocumentPath;
@@ -622,10 +622,7 @@ namespace OriginalScan.Views
                         }
                         catch (Exception ex)
                         {
-                            if (!(ex is DirectoryNotFoundException))
-                            {
-                                throw;
-                            }
+                            NotificationShow("error", $"{ex.Message}");
                         }
 
                         var documentDelete = await _documentService.Delete(selectedDocument.Id);

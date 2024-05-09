@@ -34,6 +34,11 @@ namespace ScanApp.Service.Services
             SelectedDocument = document;
         }
 
+        public void ClearSelectedDocument()
+        {
+            SelectedDocument = null;
+        }
+
         public async Task<IEnumerable<Document>> Get(Expression<Func<Document, bool>> predicate)
         {
             return await _documentRepo.GetAsync(predicate);
