@@ -19,6 +19,11 @@
             <Setter Property="Width" Value="100" />
             <Setter Property="Height" Value="35" />
         </Style>
+
+        <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="FontSize" Value="10" />
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -56,7 +61,7 @@
                     VerticalAlignment="Bottom"
                     Margin="5,0,0,0"/>
 
-                    <TextBox x:Name="txtNote" 
+                    <TextBox x:Name="txtDevice" 
                     HorizontalAlignment="Left" 
                     Margin="5,0,10,0"
                     TextWrapping="Wrap" 
@@ -65,7 +70,8 @@
                     FontSize="12"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="250"/>
+                    Padding="5,0,0,0"
+                    Width="250" Height="22"/>
                 </Grid>
 
                 <Grid Grid.Row="3">
@@ -119,7 +125,7 @@
                     VerticalAlignment="Bottom"
                     Margin="15,0,0,0"/>
 
-                    <Label Content="Căn ngang:" FontSize="11"
+                    <Label Content="Căn lề:" FontSize="11"
                     HorizontalAlignment="Left" 
                     Grid.Row="2"
                     Grid.Column="1"
@@ -140,34 +146,37 @@
                     VerticalAlignment="Bottom"
                     Margin="15,0,0,0"/>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbPaperSource" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="5,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="1"
                     Grid.Column="0"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbPageSize" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="5,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="3"
                     Grid.Column="0"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbResolution" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="5,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="5"
                     Grid.Column="0"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
                     <Slider x:Name="sldBrightness" Minimum="0" Maximum="100"  
@@ -193,34 +202,37 @@
                     FontSize="10"
                     Width="35"/>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbBitDepth" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="15,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="1"
                     Grid.Column="1"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbHorAlign" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="15,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="3"
                     Grid.Column="1"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
-                    <ComboBox
+                    <ComboBox x:Name="cbScale" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="15,0,0,0"
+                    Padding="5,0,0,0"
                     Grid.Row="5"
                     Grid.Column="1"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
-                    Width="180">
+                    Width="180" Height="23">
                     </ComboBox>
 
                     <Slider x:Name="sldContrast" Minimum="0" Maximum="100"
