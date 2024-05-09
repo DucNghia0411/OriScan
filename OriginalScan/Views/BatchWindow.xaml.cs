@@ -675,7 +675,7 @@ namespace OriginalScan.Views
 
                 if (!Directory.Exists(documentPath))
                 {
-                    NotificationShow("warning", $"Không tìm thấy thư mục tài liệu theo đường dẫn.");
+                    NotificationShow("warning", $"Không tìm thấy thư mục tài liệu theo đường dẫn {documentPath}.");
                     return;
                 }
 

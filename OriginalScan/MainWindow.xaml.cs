@@ -37,7 +37,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OriginalScan
 {
@@ -702,12 +701,21 @@ namespace OriginalScan
                     return;
                 }
 
+                ObservableCollection<ScannedImage> listImagesNeedToSave = new ObservableCollection<ScannedImage>(listImages.Where(x => x.Id == 0));
+                if(listImagesNeedToSave.Count() == 0)
+                {
+                    NotificationShow("warning", "Không tìm thấy hình ảnh để thực hiện.");
+                    return;
+                }
+
+                totalImages = listImagesNeedToSave.Count();
+
                 MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn lưu {totalImages} ảnh vào tài liệu {currentDocument.DocumentName} của gói {currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (Result == MessageBoxResult.Yes)
                 {
                     List<ScanApp.Data.Entities.Image> listSavedImage = new List<ScanApp.Data.Entities.Image>();
 
-                    foreach (ScannedImage scannedImage in listImages)
+                    foreach (ScannedImage scannedImage in listImagesNeedToSave)
                     {
                         DateTime now = DateTime.Now;
                         string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
@@ -727,7 +735,8 @@ namespace OriginalScan
                     await _imageService.AddRange(listSavedImage);
                     await _imageService.Save();
 
-                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
+                    ListImagesMain.Clear();
+                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
                 }
                 else
                     return;
