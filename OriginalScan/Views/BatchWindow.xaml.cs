@@ -298,7 +298,6 @@ namespace OriginalScan.Views
 
                 mainWindow.trvBatchExplorer.Items.Add(directoryItem);
                 mainWindow.LoadDirectory(directoryItem, path);
-                mainWindow.ExpandTreeViewItem(path);
             }
         }
 

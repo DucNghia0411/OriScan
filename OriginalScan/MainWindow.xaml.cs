@@ -449,6 +449,8 @@ namespace OriginalScan
                         parentItem.Items.Add(fileItem);
                     }
                 }
+
+                ExpandTreeViewItem(folderPath);
             }
             catch (Exception ex)
             {
