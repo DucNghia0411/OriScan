@@ -54,5 +54,27 @@ namespace ScanApp.Service.Services
                 throw;
             }
         }
+
+        public async Task<bool> DeleteByDocument(int documentId)
+        {
+            try
+            {
+                var images = await _imageRepo.GetAsync(x => x.DocumentId == documentId);
+
+                if (images == null || !images.Any())
+                {
+                    return false;
+                }
+
+                _imageRepo.DeleteRange(images);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -54,6 +54,7 @@ namespace OriginalScan
 
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
+        private readonly IImageService _imageService;
 
         public MainWindow
         (
@@ -70,6 +71,7 @@ namespace OriginalScan
             _notificationManager = new NotificationManager();
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
+            _imageService = new ImageService(context);
         }
 
         private void NotificationShow(string type, string message)
@@ -400,7 +402,7 @@ namespace OriginalScan
         {
             try
             {
-                BatchWindow batchWindow = new BatchWindow(_context, _batchService, _documentService);
+                BatchWindow batchWindow = new BatchWindow(_context, _batchService, _documentService, _imageService);
                 batchWindow.ShowDialog();
             }
             catch (Exception ex)

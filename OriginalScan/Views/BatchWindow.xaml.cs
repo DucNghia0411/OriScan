@@ -45,6 +45,7 @@ namespace OriginalScan.Views
     {
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
+        private readonly IImageService _imageService;
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
 
@@ -52,12 +53,14 @@ namespace OriginalScan.Views
         (   
             ScanContext context,
             IBatchService batchService,
-            IDocumentService documentService
+            IDocumentService documentService, 
+            IImageService imageService
         )
         {
             _context = context;
             _batchService = batchService;
             _documentService = documentService;
+            _imageService = imageService;
             _notificationManager = new NotificationManager();
             InitializeComponent();
             GetBatches();
@@ -398,7 +401,6 @@ namespace OriginalScan.Views
                 {
                     try
                     {
-                        GetDocumentsByBatch(0);
                         _documentService.ClearSelectedDocument();
 
                         var documentDelete = await _documentService.DeleteByBatch(selectedBatch.Id);
@@ -422,6 +424,7 @@ namespace OriginalScan.Views
                         {
                             NotificationShow("success", $"Xóa thành công gói tài liệu {selectedBatch.BatchName}");
                             _batchService.ClearSelectedBatch();
+                            GetDocumentsByBatch(0);
 
                             ResetData();
                         }
@@ -526,6 +529,8 @@ namespace OriginalScan.Views
                     mainWindow.lblCurrentDocument.Visibility = Visibility.Visible;
                     mainWindow.lblDocumentName.Visibility = Visibility.Visible;
                 }
+
+                LoadTreeView();
             }
             catch (Exception ex)
             {
@@ -608,13 +613,13 @@ namespace OriginalScan.Views
 
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
 
-                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa tài liệu: {selectedDocument.DocumentName} cùng tất cả các ảnh?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (Result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        _documentService.ClearSelectedDocument();
+                        var imageDelete = await _imageService.DeleteByDocument(selectedDocument.Id);
 
                         string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                         string folderPath = selectedDocument.DocumentPath;
@@ -633,11 +638,13 @@ namespace OriginalScan.Views
 
                         if (documentDelete)
                         {
-                            NotificationShow("success", $"Xóa thành công gói tài liệu {selectedDocument.DocumentName}");
+                            NotificationShow("success", $"Xóa thành công tài liệu {selectedDocument.DocumentName}");
                             if (_batchService.SelectedBatch != null)
                             {
                                 GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                                _documentService.ClearSelectedDocument();
                             }
+
                             LoadTreeView();
                         }
                     }

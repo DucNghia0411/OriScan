@@ -15,5 +15,7 @@ namespace ScanApp.Service.Constracts
         void SetImage(ImageModel image);
 
         Task<int> Create(ImageCreateRequest request);
+
+        Task<bool> DeleteByDocument(int documentId);
     }
 }
