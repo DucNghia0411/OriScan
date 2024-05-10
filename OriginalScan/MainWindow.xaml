@@ -145,6 +145,11 @@
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\document.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Tài liệu
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Separator/>
                     <Button HorizontalAlignment="Center" 
@@ -153,6 +158,11 @@
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\play.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Quét
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
@@ -160,6 +170,11 @@
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Images\addscanicon.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Thiết bị
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Separator/>
                     <Button HorizontalAlignment="Center" 
@@ -168,20 +183,35 @@
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="35" VerticalOffset="-10">
+                                Convert thành PDF
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="btnDeleteImages_Click">
                         <StackPanel Margin="-10">
-                            <Image Source="\Resource\Images\deleteicon.png" Width="35" Height="35" />
+                            <Image Source="\Resource\Images\deleteicon.png" Width="35" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Xóa
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="btnSaveImages_Click">
                         <StackPanel Margin="-10">
-                            <Image Source="\Resource\Images\saveicon.png" Width="35" Height="35" />
+                            <Image Source="\Resource\Images\saveicon.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Lưu
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
@@ -189,6 +219,11 @@
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\submit.png" Width="25" Height="25" />
                         </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Gửi
+                            </ToolTip>
+                        </Button.ToolTip>
                     </Button>
                 </ToolBar>
             </ToolBarTray>
