@@ -5,6 +5,7 @@ using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain;
 using NTwain.Data;
+using OriginalScan.Models;
 using OriginalScan.Views;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
@@ -18,6 +19,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -25,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Printing;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,14 +37,13 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace OriginalScan
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public DataSource? dataSource;
         public TwainSession? _twainSession;
@@ -56,10 +58,7 @@ namespace OriginalScan
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
 
-        public MainWindow
-        (
-            ScanContext context
-        )
+        public MainWindow (ScanContext context)
         {
             InitializeComponent();
             _context = context;
@@ -67,12 +66,16 @@ namespace OriginalScan
             DataContext = this;
             CreateSession();
             _transferApiClient = new TransferApiClient();
-            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
             _notificationManager = new NotificationManager();
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
             _imageService = new ImageService(context);
+            _listImagesMain = new ObservableCollection<ScannedImage>();
+            _listImagesSelected = new ObservableCollection<ScannedImage>();
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
+
+        public string? RootPath { get; set; }
 
         private void NotificationShow(string type, string message)
         {
@@ -180,7 +183,7 @@ namespace OriginalScan
 
                 if (!_twainSession.IsSourceOpen)
                 {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện Scan!");
+                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
                 }
 
@@ -248,17 +251,23 @@ namespace OriginalScan
                         string imagePath = Path.Combine(path, imagesName);
                         img.Save(imagePath);
 
+                        int totalImages = ListImagesMain.Count;
+
+                        ScannedImage imageViewModel = new ScannedImage()
+                        { 
+                            DocumentId = currentDocument.Id,
+                            ImageName = imagesName,
+                            ImagePath = imagePath,
+                            IsSelected = false,
+                            bitmapImage = bitmapImage,
+                            Order = totalImages++,
+                        };
+
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
-                            listImages.Add(bitmapImage);
+                           ListImagesMain.Add(imageViewModel);
                         });
                     }
-
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        ListMainImages.ItemsSource = listImages;
-                        ListExtraImages.ItemsSource = listImages;
-                    });
                 }
             }
             catch (Exception)
@@ -402,7 +411,13 @@ namespace OriginalScan
         {
             try
             {
-                BatchWindow batchWindow = new BatchWindow(_context, _batchService, _documentService, _imageService);
+                BatchWindow batchWindow = new BatchWindow
+                (
+                    _context, 
+                    _batchService, 
+                    _documentService,
+                    _imageService
+                );
                 batchWindow.ShowDialog();
             }
             catch (Exception ex)
@@ -458,6 +473,28 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
             }
+        }
+
+        public void ReloadTreeViewItem()
+        {
+            trvBatchExplorer.Items.Clear();
+            
+            if (RootPath == null)
+            {
+                return;
+            }
+
+            if (!Directory.Exists(RootPath))
+            {
+                trvBatchExplorer.Items.Clear();
+                return;
+            }
+
+            string name = System.IO.Path.GetFileName(RootPath);
+            var directoryItem = CreateTreeViewItem(name, "folder");
+
+            trvBatchExplorer.Items.Add(directoryItem);
+            LoadDirectory(directoryItem, RootPath);
         }
 
         public TreeViewItem CreateTreeViewItem(string directoryName, string icon)
@@ -597,18 +634,184 @@ namespace OriginalScan
             }
         }
 
-        public void ClearTreeViewItems()
+        private async void btnSaveImages_Click(object sender, EventArgs e)
         {
-            foreach (TreeViewItem item in trvBatchExplorer.Items)
+            try
             {
-                if (item != null)
-                {
-                    item.Style = null;
-                    item.Foreground = null;
-                }
-            }
+                BatchModel? currentBatch = _batchService.SelectedBatch;
 
-            trvBatchExplorer.Items.Clear();
+                if (currentBatch == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn gói trước khi thực hiện lưu hình ảnh.");
+                    return;
+                }
+
+                DocumentModel? currentDocument = _documentService.SelectedDocument;
+
+                if (currentDocument == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn tài liệu trước khi thực hiện lưu hình ảnh.");
+                    return;
+                }
+
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string path = Path.Combine(userFolderPath, currentDocument.DocumentPath);
+
+                ObservableCollection<ScannedImage> listImages = ListImagesMain;
+                int totalImages = listImages.Count;
+
+                if (totalImages == 0)
+                {
+                    NotificationShow("warning", "Không tìm thấy hình ảnh để thực hiện.");
+                    return;
+                }
+
+                ObservableCollection<ScannedImage> listImagesNeedToSave = new ObservableCollection<ScannedImage>(listImages.Where(x => x.Id == 0));
+                if(listImagesNeedToSave.Count() == 0)
+                {
+                    NotificationShow("warning", "Không tìm thấy hình ảnh để thực hiện.");
+                    return;
+                }
+
+                totalImages = listImagesNeedToSave.Count();
+
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn lưu {totalImages} ảnh vào tài liệu {currentDocument.DocumentName} của gói {currentBatch.BatchName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (Result == MessageBoxResult.Yes)
+                {
+                    List<ScanApp.Data.Entities.Image> listSavedImage = new List<ScanApp.Data.Entities.Image>();
+
+                    foreach (ScannedImage scannedImage in listImagesNeedToSave)
+                    {
+                        DateTime now = DateTime.Now;
+                        string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
+
+                        ScanApp.Data.Entities.Image image = new ScanApp.Data.Entities.Image()
+                        {
+                            DocumentId = currentDocument.Id,
+                            ImageName = scannedImage.ImageName,
+                            ImagePath = imagePath,
+                            CreatedDate = now.ToString(),
+                            Order = scannedImage.Order
+                        };
+
+                        listSavedImage.Add(image);
+                    }
+
+                    await _imageService.AddRange(listSavedImage);
+                    await _imageService.Save();
+
+                    ListImagesMain.Clear();
+                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
+                }
+                else
+                    return;
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+                return;
+            }
+        }
+
+        private void ListImagesMain_Click(object sender, RoutedEventArgs e)
+        {
+            var clickedItem = (sender as System.Windows.Controls.ListView);
+            if (clickedItem == null) return;
+
+            ScannedImage? selectedImage = clickedItem.SelectedItem as ScannedImage;
+            if (selectedImage == null) return;
+
+            if(!selectedImage.IsSelected)
+            {
+                selectedImage.IsSelected = true;
+                ListImagesSelected.Add(selectedImage);
+            }
+            else
+            {
+                selectedImage.IsSelected = false;
+                ListImagesSelected.Remove(selectedImage);
+            }
+        }
+
+        private async void btnDeleteImages_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int totalDeleted = ListImagesSelected.Count;
+
+                if (totalDeleted == 0)
+                {
+                    NotificationShow("warning", $"Vui lòng chọn hình ảnh để xóa.");
+                    return;
+                }
+
+                List<string> isSavedImages = ListImagesSelected.Where(x => x.Id != 0).Select(x => x.ImageName).ToList();
+                if(isSavedImages.Count() > 0)
+                {
+                    MessageBoxResult checkSavedResult = System.Windows.MessageBox.Show($"Bạn có {isSavedImages.Count} ảnh đã được lưu trữ theo tài liệu ({string.Join(", ", isSavedImages)}). Bạn có chắc chắn muốn tiếp tục?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (checkSavedResult != MessageBoxResult.Yes)
+                        return;
+                }
+
+                MessageBoxResult confirmCheckResult = System.Windows.MessageBox.Show($"Bạn có chắc chắn muốn xóa {totalDeleted} ảnh?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (confirmCheckResult != MessageBoxResult.Yes)
+                    return;
+
+                List<int> listIdsDelete = new List<int>();
+                foreach (var image in ListImagesSelected) 
+                {
+                    if (image.Id != 0)
+                        listIdsDelete.Add(image.Id);
+
+                    File.Delete(image.ImagePath);
+                    ReloadTreeViewItem();
+                }
+
+                await _imageService.DeleteMultiById(listIdsDelete);
+
+                foreach (var image in ListImagesSelected)
+                {
+                    ListImagesMain.Remove(image);
+                }
+
+                ListImagesSelected.Clear();
+                NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                return;
+            }
+        }
+
+        private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesMain
+        {
+            get => _listImagesMain;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesMain");
+            }
+        }
+
+        private ObservableCollection<ScannedImage> _listImagesSelected { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesSelected
+        {
+            get => _listImagesSelected;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesSelected");
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

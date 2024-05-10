@@ -144,7 +144,6 @@
                             Click="OpenBatch_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\document.png" Width="25" Height="25" />
-                            <!--<Label Content="Tài liệu" FontWeight="Medium" FontSize="11" HorizontalAlignment="Center"/>-->
                         </StackPanel>
                     </Button>
                     <Separator/>
@@ -153,7 +152,6 @@
                             Click="ScanButton_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\play.png" Width="25" Height="25" />
-                            <!--<Label Content="Quét" FontWeight="Medium" FontSize="11" HorizontalAlignment="Center"/>-->
                         </StackPanel>
                     </Button>
                     <Button HorizontalAlignment="Center" 
@@ -169,6 +167,20 @@
                             Click="ConvertToPdfButton_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="btnDeleteImages_Click">
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Images\deleteicon.png" Width="35" Height="35" />
+                        </StackPanel>
+                    </Button>
+                    <Button HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Click="btnSaveImages_Click">
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Images\saveicon.png" Width="35" Height="35" />
                         </StackPanel>
                     </Button>
                     <Button HorizontalAlignment="Center" 
@@ -223,7 +235,8 @@
                 </Grid.RowDefinitions>
 
                 <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
-                        x:Name="ListMainImages"
+                        ItemsSource="{Binding ListImagesMain}"
+                        PreviewMouseLeftButtonUp="ListImagesMain_Click"
                         Grid.Row="0">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -239,12 +252,12 @@
                                         <Setter Property="BorderThickness" Value="1" />
                                         <Setter Property="BorderBrush" Value="Black" />
                                         <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected, Mode=TwoWay}" Value="True">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="2" />
+                                                <Setter Property="BorderThickness" Value="4" />
                                             </DataTrigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>
                                     </Style>
                                 </Border.Style>
 
@@ -254,7 +267,7 @@
                                     Height="300" 
                                     Width="265"
                                     Margin="8,8,8,8"
-                                    Source="{Binding}">
+                                    Source="{Binding bitmapImage}">
                                 </Image>
                             </Border>
                         </DataTemplate>
@@ -262,7 +275,7 @@
                 </ListView>
 
                 <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
-                        x:Name="ListExtraImages"
+                        ItemsSource="{Binding ListImagesMain}"
                         Grid.Row="1">
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -278,12 +291,12 @@
                                         <Setter Property="BorderThickness" Value="1" />
                                         <Setter Property="BorderBrush" Value="Black" />
                                         <Setter Property="Background" Value="LightGray"/>
-                                        <!--<Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsSelected,RelativeSource={RelativeSource AncestorType=ListBoxItem}, Mode=TwoWay}" Value="True">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="2" />
+                                                <Setter Property="BorderThickness" Value="4" />
                                             </DataTrigger>
-                                        </Style.Triggers>-->
+                                        </Style.Triggers>
                                     </Style>
                                 </Border.Style>
 
@@ -294,7 +307,7 @@
                                         Height="135" 
                                         Width="100" 
                                         Margin="8,8,8,8"
-                                        Source="{Binding}"/>
+                                        Source="{Binding bitmapImage}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
