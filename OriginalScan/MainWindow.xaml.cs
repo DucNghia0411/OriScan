@@ -161,7 +161,7 @@ namespace OriginalScan
         {
             try
             {
-                if(_twainSession == null)
+                if (_twainSession == null)
                 {
                     NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
@@ -178,7 +178,7 @@ namespace OriginalScan
                 _twainSession.DataTransferred -= DataTransferred;
                 _twainSession.DataTransferred += DataTransferred;
 
-                if(!_twainSession.IsSourceOpen)
+                if (!_twainSession.IsSourceOpen)
                     dataSource.Open();
 
                 if (!_twainSession.IsSourceOpen)
