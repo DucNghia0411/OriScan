@@ -141,13 +141,29 @@
 
                     <TextBox x:Name="txtPath" 
                      HorizontalAlignment="Stretch"
-                     Margin="20,0,20,0" 
+                     Margin="20,0,70,0" 
                      TextWrapping="Wrap" 
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="2"
                      FontSize="14"
                      IsReadOnly="True"/>
+
+                    <Button x:Name="btnPath"
+                     Style="{StaticResource ButtonStyle}"
+                     HorizontalAlignment="Right"
+                     Click="CbtnPath_Click" 
+                     Margin="0,7,20,0" 
+                     Grid.Column="1"
+                     Grid.Row="2"
+                     Width="40" 
+                     Background="Transparent"
+                     BorderThickness="0"
+                     VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Background="Transparent">
+                            <Image Source="/Resource/Images/foldericon.png" Width="30" Height="30"/>
+                        </StackPanel>
+                    </Button>
 
                     <TextBox x:Name="txtNote" 
                      HorizontalAlignment="Stretch"

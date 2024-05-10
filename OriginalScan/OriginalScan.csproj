@@ -19,9 +19,11 @@
     <None Remove="Resource\Icons\document.png" />
     <None Remove="Resource\Icons\edit.png" />
     <None Remove="Resource\Icons\eye.png" />
+    <None Remove="Resource\Icons\filelocation.png" />
     <None Remove="Resource\Icons\logout.png" />
     <None Remove="Resource\Icons\pdf.png" />
     <None Remove="Resource\Icons\play.png" />
+    <None Remove="Resource\Icons\redo.png" />
     <None Remove="Resource\Icons\submit.png" />
     <None Remove="Resource\Images\addscanicon.png" />
     <None Remove="Resource\Images\completeicon.png" />
@@ -66,6 +68,7 @@
     <Resource Include="Resource\Icons\logout.png" />
     <Resource Include="Resource\Icons\pdf.png" />
     <Resource Include="Resource\Icons\play.png" />
+    <Resource Include="Resource\Icons\redo.png" />
     <Resource Include="Resource\Icons\submit.png" />
     <Resource Include="Resource\Images\addscanicon.png" />
     <Resource Include="Resource\Images\completeicon.png" />

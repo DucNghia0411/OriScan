@@ -10,6 +10,7 @@ using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -330,6 +331,23 @@ namespace OriginalScan.Views
             {
                 NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
                 dpkStartDate.SelectedDate = null;
+                return;
+            }
+        }
+
+        private void CbtnPath_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                userFolderPath = userFolderPath.Replace("/", "\\");
+                string folderPath = System.IO.Path.Combine(userFolderPath, txtPath.Text);
+
+                Process.Start("explorer.exe", folderPath);
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
                 return;
             }
         }
