@@ -324,7 +324,7 @@ namespace OriginalScan
                             {
                                 try
                                 {
-                                    File.Delete(pdfFileName);
+                                    await Task.Run(() => File.Delete(pdfFileName));
                                 }
                                 catch (Exception ex)
                                 {

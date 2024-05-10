@@ -290,7 +290,7 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="4" />
+                                                <Setter Property="BorderThickness" Value="3" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -300,7 +300,7 @@
                                     HorizontalAlignment="Center" 
                                     VerticalAlignment="Center" 
                                     Height="300" 
-                                    Width="265"
+                                    Width="260"
                                     Margin="8,8,8,8"
                                     Source="{Binding bitmapImage}">
                                 </Image>
@@ -329,7 +329,7 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="#00AE72" />
-                                                <Setter Property="BorderThickness" Value="4" />
+                                                <Setter Property="BorderThickness" Value="3" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
