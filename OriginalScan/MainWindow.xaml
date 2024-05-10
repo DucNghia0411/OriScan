@@ -74,10 +74,10 @@
                                         <MultiBinding.Bindings>
                                             <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualHeight"></Binding>
                                             <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualWidth"></Binding>
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"></Binding>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}"></Binding>
                                             <Binding RelativeSource="{RelativeSource Self}"></Binding>
-                                            <Binding ElementName="Expander" Path="IsChecked"></Binding>
-                                        </MultiBinding.Bindings>
+                                            <Binding Path="IsExpanded" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}"></Binding>
+                                    </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </Rectangle.Height>
                                 
@@ -142,41 +142,40 @@
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="OpenBatch_Click">
-                        <StackPanel>
-                            <Image Source="\Resource\Icons\document.png" Width="35" Height="35" />
-                            <Label Content="Tài liệu" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Icons\document.png" Width="25" Height="25" />
+                            <!--<Label Content="Tài liệu" FontWeight="Medium" FontSize="11" HorizontalAlignment="Center"/>-->
                         </StackPanel>
                     </Button>
+                    <Separator/>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="ScanButton_Click">
-                        <StackPanel>
-                            <Image Source="\Resource\Icons\play.png" Width="35" Height="35" />
-                            <Label Content="Quét" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Icons\play.png" Width="25" Height="25" />
+                            <!--<Label Content="Quét" FontWeight="Medium" FontSize="11" HorizontalAlignment="Center"/>-->
                         </StackPanel>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="ChooseDevice_Click">
-                        <StackPanel>
-                            <Image Source="\Resource\Images\addscanicon.png" Width="35" Height="35" />
-                            <Label Content="Thiết bị" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Images\addscanicon.png" Width="25" Height="25" />
                         </StackPanel>
                     </Button>
+                    <Separator/>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="ConvertToPdfButton_Click">
-                        <StackPanel>
-                            <Image Source="\Resource\Icons\pdf.png" Width="35" Height="35" />
-                            <Label Content="PDF" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
                         </StackPanel>
                     </Button>
                     <Button HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             Click="TransferToPortal_Click">
-                        <StackPanel>
-                            <Image Source="\Resource\Icons\submit.png" Width="35" Height="35" />
-                            <Label Content="Gửi" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Icons\submit.png" Width="25" Height="25" />
                         </StackPanel>
                     </Button>
                 </ToolBar>
@@ -199,6 +198,7 @@
                         materialDesign:ColorZoneAssist.Mode="Custom"                    
                         Header="Gói tài liệu"
                         FontSize="13"
+                        FontWeight="Medium"
                         BorderThickness="1" 
                         Grid.Row="4" 
                         Grid.RowSpan="2" 
@@ -212,8 +212,6 @@
                         </Grid.RowDefinitions>
 
                         <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0"></TreeView>
-
-                        <!--<ListView x:Name="lstvBatchExplorer" Grid.Row="2" Grid.Column="0" />-->
                     </Grid>
                 </GroupBox>
             </Grid>
