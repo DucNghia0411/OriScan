@@ -459,7 +459,7 @@ namespace OriginalScan
                     }
                 }
 
-                var files = Directory.GetFiles(folderPath);
+                var files = Directory.GetFiles(folderPath).Select(d => new DirectoryInfo(d)).OrderBy(d => d.CreationTime).Select(d => d.FullName).ToArray();
 
                 for (int i = 0; i < files.Count(); i++)
                 {
