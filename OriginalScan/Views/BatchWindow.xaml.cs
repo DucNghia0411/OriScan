@@ -349,6 +349,7 @@ namespace OriginalScan.Views
                     mainWindow.lblCurrentBatch.Visibility = Visibility.Visible;
                     mainWindow.lblBatchName.Visibility = Visibility.Visible;
 
+                    mainWindow.ListImagesMain.Clear();
                     mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
                 }
 

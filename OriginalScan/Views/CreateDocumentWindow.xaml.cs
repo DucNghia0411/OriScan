@@ -216,6 +216,8 @@ namespace OriginalScan.Views
             string notification = string.Empty;
             if (txtDocumentName.Text.Trim() == "")
                 notification += "Tên tài liệu không được để trống! \n";
+            if (txtNumOfSheets.Text.Trim() == "")
+                notification += "Số tờ không được để trống! \n";
             return notification;
         }
 
