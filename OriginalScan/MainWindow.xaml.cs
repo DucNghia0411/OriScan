@@ -27,6 +27,7 @@ using System.Globalization;
 using System.IO;
 using System.Printing;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
@@ -76,6 +77,8 @@ namespace OriginalScan
         }
 
         public string? RootPath { get; set; }
+
+        public string? BatchPath { get; set; }
 
         private void NotificationShow(string type, string message)
         {
@@ -266,8 +269,13 @@ namespace OriginalScan
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
                            ListImagesMain.Add(imageViewModel);
-                        });
+                        });                        
                     }
+
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        ReloadTreeViewItem();
+                    });
                 }
             }
             catch (Exception)
@@ -315,24 +323,19 @@ namespace OriginalScan
                             MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                             if (pdfConfirm == MessageBoxResult.Yes)
-                                File.Delete(pdfFileName);
-                            else
-                                return;
-
-                            _notificationManager.ShowButtonWindow("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Xác nhận",
-                            async () =>
                             {
                                 try
                                 {
-                                    await Task.Run(() => File.Delete(pdfFileName));
+                                    File.Delete(pdfFileName);
                                 }
                                 catch (Exception ex)
                                 {
                                     NotificationShow("error", $"{ex.Message}");
                                     return;
-
                                 }
-                            }, "OK", () => { }, "Cancel");
+                            }
+                            else
+                                return;
                         }
 
                         PdfDocument pdfDocument = new PdfDocument();
@@ -547,9 +550,9 @@ namespace OriginalScan
             return item;
         }
 
-        public bool CheckExistedInDatabase(IEnumerable<Document> listDocument, string path)
+        public bool CheckExistedInDatabase(IEnumerable<ScanApp.Data.Entities.Document> listDocument, string path)
         {
-            foreach (Document document in listDocument)
+            foreach (ScanApp.Data.Entities.Document document in listDocument)
             {
                 if (document.DocumentPath == path)
                 {
@@ -701,6 +704,7 @@ namespace OriginalScan
                     await _imageService.Save();
 
                     ListImagesMain.Clear();
+                    ReloadTreeViewItem();
                     NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
                 }
                 else
@@ -775,7 +779,8 @@ namespace OriginalScan
                 }
 
                 ListImagesSelected.Clear();
-                NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");            }
+                NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");            
+            }
             catch (Exception ex)
             {
                 NotificationShow("error", $"Có lỗi: {ex.Message}");
@@ -812,6 +817,216 @@ namespace OriginalScan
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private async void trvBatchExplorer_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            try
+            {
+                if (trvBatchExplorer.SelectedItem == null)
+                {
+                    return;
+                }
+
+                if (trvBatchExplorer.SelectedItem is TreeViewItem selectedItem)
+                {
+                    if (selectedItem.Header is StackPanel parentStackPanel)
+                    {
+                        var textBlock = parentStackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+
+                        if (BatchPath != null && textBlock != null)
+                        {
+                            string filePath = System.IO.Path.Combine(BatchPath, textBlock.Text);
+                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                            string path = System.IO.Path.Combine(userFolderPath, filePath);
+
+                            if (Directory.Exists(path))
+                            {
+                                var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
+
+                                if (selectedDocument != null)
+                                {
+                                    GetImagesByDocument(selectedDocument.Id);
+                                    DocumentModel docModel = new DocumentModel()
+                                    {
+                                        Id = selectedDocument.Id,
+                                        BatchId = selectedDocument.BatchId,
+                                        DocumentName = selectedDocument.DocumentName,
+                                        DocumentPath = selectedDocument.DocumentPath,
+                                        NumberOfSheets = selectedDocument.NumberOfSheets
+                                    };
+                                    _documentService.SetDocument(docModel);
+                                }
+                            }
+
+                            else
+                            {
+                                foreach (var img in ListImagesMain)
+                                {
+                                    if (_documentService.SelectedDocument == null)
+                                    {
+                                        return;
+                                    }
+                                    string imagePath = System.IO.Path.Combine(userFolderPath, _documentService.SelectedDocument.DocumentPath, textBlock.Text);
+
+                                    if (img.ImagePath == imagePath)
+                                    {
+                                        if (!img.IsSelected)
+                                        {
+                                            img.IsSelected = true;
+                                            ListImagesSelected.Add(img);
+                                        }
+                                        else
+                                        {
+                                            img.IsSelected = false;
+                                            ListImagesSelected.Remove(img);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+            }
+        }
+
+        public async void GetImagesByDocument(int documentId)
+        {
+            ScanApp.Data.Entities.Document? document = await _documentService.FirstOrDefault(e => e.Id == documentId);
+
+            if (document == null)
+            {
+                NotificationShow("warning", $"Không tìm thấy tài liệu với mã {documentId}.");
+                return;
+            }
+
+            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string documentPath = System.IO.Path.Combine(userFolderPath, document.DocumentPath);
+
+            if (!Directory.Exists(documentPath))
+            {
+                NotificationShow("warning", $"Không tìm thấy thư mục tài liệu theo đường dẫn {documentPath}.");
+                return;
+            }
+
+            string[] filesInDocumentPath = Directory.GetFiles(documentPath);
+            int totalImagesInPath = filesInDocumentPath.Count();
+
+            IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
+            images.OrderBy(x => x.Order).ToList();
+            int totalImagesInDatabase = images.Count();
+
+            ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
+
+            foreach (var item in images)
+            {
+                string path = System.IO.Path.Combine(userFolderPath, item.ImagePath);
+                BitmapImage bitmapImage = ImagePathToBitmap(path);
+
+                ScannedImage scannedImage = new ScannedImage()
+                {
+                    Id = item.Id,
+                    DocumentId = documentId,
+                    ImageName = item.ImageName,
+                    ImagePath = path,
+                    IsSelected = false,
+                    Order = item.Order,
+                    bitmapImage = bitmapImage
+                };
+
+                scannedImages.Add(scannedImage);
+            }
+
+            int latestOrder = scannedImages.Count != 0
+                ? scannedImages.Max(x => x.Order) + 1
+                : 0;
+
+            if (totalImagesInPath > totalImagesInDatabase)
+            {
+                int totalImageUnsaved = totalImagesInPath - totalImagesInDatabase;
+                MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (checkImageResult == MessageBoxResult.Yes)
+                {
+                    List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
+                    List<string> imagesInPathFileName = filesInDocumentPath
+                        .Select(x => System.IO.Path.GetFileName(x))
+                        .ToList();
+
+                    List<string> unsavedImagesName = imagesInPathFileName.Except(savedImagesName, StringComparer.OrdinalIgnoreCase).ToList();
+
+                    foreach (var item in unsavedImagesName)
+                    {
+                        string path = System.IO.Path.Combine(documentPath, item);
+                        BitmapImage bitmapImage = ImagePathToBitmap(path);
+
+                        ScannedImage scannedImage = new ScannedImage()
+                        {
+                            Id = 0,
+                            DocumentId = documentId,
+                            ImageName = item,
+                            ImagePath = path,
+                            IsSelected = false,
+                            Order = latestOrder,
+                            bitmapImage = bitmapImage
+                        };
+
+                        scannedImages.Add(scannedImage);
+                        latestOrder++;
+                    }
+                }
+            }
+
+            ListImagesMain.Clear();
+            ListImagesMain = scannedImages;
+        }
+
+        private BitmapImage ImagePathToBitmap(string imagePath)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            try
+            {
+                BitmapImage bitmapImageFromPath = new BitmapImage(new Uri(imagePath));
+                WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapImageFromPath);
+                bitmapImage = ConvertWriteableBitmapToBitmapImage(writeableBitmap);
+                return bitmapImage;
+            }
+            catch (Exception)
+            {
+                return bitmapImage;
+            }
+        }
+
+        private BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap writeableBitmap)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
+
+            try
+            {
+                using (var stream = new System.IO.MemoryStream())
+                {
+                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
+                    encoder.Save(stream);
+                    stream.Seek(0, System.IO.SeekOrigin.Begin);
+
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = stream;
+                    bitmapImage.EndInit();
+                    bitmapImage.Freeze();
+                }
+
+                return bitmapImage;
+            }
+            catch (Exception)
+            {
+                return bitmapImage;
+            }
         }
     }
 }

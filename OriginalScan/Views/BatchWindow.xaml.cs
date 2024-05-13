@@ -305,6 +305,7 @@ namespace OriginalScan.Views
                 mainWindow.trvBatchExplorer.Items.Add(directoryItem);
 
                 mainWindow.RootPath = path;
+                mainWindow.BatchPath = folderPath;
                 mainWindow.LoadDirectory(directoryItem, path);
             }
         }
@@ -528,12 +529,13 @@ namespace OriginalScan.Views
                 selectedDocument.BatchId = _batchService.SelectedBatch.Id;
                 _documentService.SetDocument(selectedDocument);
 
-                GetImagesByDocument(selectedDocument.Id);
+                
                 txtCurrentDocument.Text = selectedDocument.DocumentName;
 
                 MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (mainWindow != null)
                 {
+                    mainWindow.GetImagesByDocument(selectedDocument.Id);
                     mainWindow.lblDocumentName.Content = selectedDocument.DocumentName;
                     mainWindow.lblCurrentDocument.Visibility = Visibility.Visible;
                     mainWindow.lblDocumentName.Visibility = Visibility.Visible;
@@ -672,146 +674,6 @@ namespace OriginalScan.Views
             {
                 NotificationShow("error", $"Xóa thất bại! {ex.Message}");
                 return;
-            }
-        }
-
-        private async void GetImagesByDocument(int documentId)
-        {
-            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-
-            if (mainWindow != null)
-            {
-                ScanApp.Data.Entities.Document? document = await _documentService.FirstOrDefault(e => e.Id == documentId);
-
-                if(document == null)
-                {
-                    NotificationShow("warning", $"Không tìm thấy tài liệu với mã {documentId}.");
-                    return;
-                }
-
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string documentPath = System.IO.Path.Combine(userFolderPath, document.DocumentPath);
-
-                if (!Directory.Exists(documentPath))
-                {
-                    NotificationShow("warning", $"Không tìm thấy thư mục tài liệu theo đường dẫn {documentPath}.");
-                    return;
-                }
-
-                string[] filesInDocumentPath = Directory.GetFiles(documentPath);
-                int totalImagesInPath = filesInDocumentPath.Count();
-
-                IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
-                images.OrderBy(x => x.Order).ToList();
-                int totalImagesInDatabase = images.Count();
-
-                ObservableCollection<ScannedImage> scannedImages = new ObservableCollection<ScannedImage>();
-
-                foreach (var item in images)
-                {
-                    string path = System.IO.Path.Combine(userFolderPath, item.ImagePath);
-                    BitmapImage bitmapImage = ImagePathToBitmap(path);
-
-                    ScannedImage scannedImage = new ScannedImage()
-                    {
-                        Id = item.Id,
-                        DocumentId = documentId,
-                        ImageName = item.ImageName,
-                        ImagePath = path,
-                        IsSelected = false,
-                        Order = item.Order,
-                        bitmapImage = bitmapImage
-                    };
-
-                    scannedImages.Add(scannedImage);
-                }
-
-                int latestOrder = scannedImages.Count != 0 
-                    ? scannedImages.Max(x => x.Order) + 1 
-                    : 0;
-
-                if (totalImagesInPath > totalImagesInDatabase)
-                {
-                    int totalImageUnsaved = totalImagesInPath - totalImagesInDatabase;
-                    MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (checkImageResult == MessageBoxResult.Yes)
-                    {
-                        List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
-                        List<string> imagesInPathFileName = filesInDocumentPath
-                            .Select(x => System.IO.Path.GetFileName(x))
-                            .ToList();
-
-                        List<string> unsavedImagesName = imagesInPathFileName.Except(savedImagesName, StringComparer.OrdinalIgnoreCase).ToList();
-
-                        foreach (var item in unsavedImagesName)
-                        {
-                            string path = System.IO.Path.Combine(documentPath, item);
-                            BitmapImage bitmapImage = ImagePathToBitmap(path);
-
-                            ScannedImage scannedImage = new ScannedImage()
-                            {
-                                Id = 0,
-                                DocumentId = documentId,
-                                ImageName = item,
-                                ImagePath = path,
-                                IsSelected = false,
-                                Order = latestOrder,
-                                bitmapImage = bitmapImage
-                            };
-
-                            scannedImages.Add(scannedImage);
-                            latestOrder++;
-                        }
-                    }
-                }
-
-                mainWindow.ListImagesMain.Clear();
-                mainWindow.ListImagesMain = scannedImages;
-            }
-        }
-
-        private BitmapImage ImagePathToBitmap(string imagePath)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-
-            try
-            {
-                BitmapImage bitmapImageFromPath = new BitmapImage(new Uri(imagePath));
-                WriteableBitmap writeableBitmap = new WriteableBitmap(bitmapImageFromPath);
-                bitmapImage = ConvertWriteableBitmapToBitmapImage(writeableBitmap);
-                return bitmapImage;
-            }
-            catch (Exception)
-            {
-                return bitmapImage;
-            }
-        }
-
-        private BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap writeableBitmap)
-        {
-            BitmapImage bitmapImage = new BitmapImage();
-
-            try
-            {
-                using (var stream = new System.IO.MemoryStream())
-                {
-                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
-                    encoder.Save(stream);
-                    stream.Seek(0, System.IO.SeekOrigin.Begin);
-
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze();
-                }
-
-                return bitmapImage;
-            }
-            catch (Exception)
-            {
-                return bitmapImage;
             }
         }
     }

@@ -80,7 +80,7 @@
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </Rectangle.Height>
-                                
+
                             </Rectangle>
                             <ToggleButton Margin="0,10,0,0" x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press"/>
                             <Border Name="Bd" Grid.Column="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
@@ -110,8 +110,8 @@
                                 <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
                             </MultiTrigger>
                             <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="Bd" Property="Background" Value="Green"/>
-                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
                             </Trigger>
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
@@ -121,6 +121,9 @@
                                 <Setter TargetName="Bd" Property="Background" Value="Green"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </MultiTrigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -258,7 +261,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0"></TreeView>
+                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0" SelectedItemChanged="trvBatchExplorer_SelectedItemChanged"></TreeView>
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -269,7 +272,7 @@
                     <RowDefinition Height="5*"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False"   
+                <ListView x:Name="lstvImages" materialDesign:ListBoxItemAssist.ShowSelection="False"   
                         ItemsSource="{Binding ListImagesMain}"
                         PreviewMouseLeftButtonUp="ListImagesMain_Click"
                         Grid.Row="0">
@@ -309,7 +312,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <ListView materialDesign:ListBoxItemAssist.ShowSelection="False" 
+                <ListView x:Name="lstvMiniImages" materialDesign:ListBoxItemAssist.ShowSelection="False" 
                         ItemsSource="{Binding ListImagesMain}"
                         Grid.Row="1">
                     <ListView.ItemsPanel>
