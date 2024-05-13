@@ -295,7 +295,7 @@ namespace OriginalScan.Views
 
                 string name = System.IO.Path.GetFileName(path);
 
-                var directoryItem = mainWindow.CreateTreeViewItem(name, "folder");
+                var directoryItem = mainWindow.CreateTreeViewItem(name, "folder", name);
 
                 if (mainWindow.IsItemAlreadyExists(directoryItem, name))
                 {

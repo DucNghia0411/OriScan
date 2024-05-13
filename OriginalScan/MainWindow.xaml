@@ -261,7 +261,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0" SelectedItemChanged="trvBatchExplorer_SelectedItemChanged"></TreeView>
+                        <TreeView x:Name="trvBatchExplorer" Grid.Row="1" Grid.Column="0" MouseLeftButtonUp="trvBatchExplorer_MouseLeftButtonUp"/>
                     </Grid>
                 </GroupBox>
             </Grid>

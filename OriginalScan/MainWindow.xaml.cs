@@ -441,10 +441,11 @@ namespace OriginalScan
             {
                 var parentInfo = new DirectoryInfo(folderPath);
                 string parentName = parentInfo.Name;
+                var directories = Directory.GetDirectories(folderPath).Select(d => new DirectoryInfo(d)).OrderBy(d => d.CreationTime).Select(d => d.FullName).ToArray();
 
-                foreach (string directory in Directory.GetDirectories(folderPath))
+                for (int i = 0; i < directories.Count(); i++)
                 {
-                    var directoryInfo = new DirectoryInfo(directory);
+                    var directoryInfo = new DirectoryInfo(directories[i]);
                     string directoryName = directoryInfo.Name;
 
                     var listDocument = await _documentService.Get(x => x.BatchId == _batchService.SelectedBatch.Id);
@@ -452,20 +453,22 @@ namespace OriginalScan
 
                     if (!IsItemAlreadyExists(parentItem, directoryName) && CheckExistedInDatabase(listDocument, path))
                     {
-                        var directoryItem = CreateTreeViewItem(directoryName, "document");
+                        var directoryItem = CreateTreeViewItem(directoryName, "document", $"Tài liệu {i + 1}");
                         parentItem.Items.Add(directoryItem);
-                        LoadDirectory(directoryItem, directory);
+                        LoadDirectory(directoryItem, directories[i]);
                     }
                 }
 
-                foreach (string file in Directory.GetFiles(folderPath))
+                var files = Directory.GetFiles(folderPath);
+
+                for (int i = 0; i < files.Count(); i++)
                 {
-                    var fileInfo = new FileInfo(file);
+                    var fileInfo = new FileInfo(files[i]);
                     string fileName = fileInfo.Name;
 
                     if (!IsItemAlreadyExists(parentItem, fileName))
                     {
-                        var fileItem = CreateTreeViewItem(fileName, "image");
+                        var fileItem = CreateTreeViewItem(fileName, "image", $"Trang {i + 1}");
                         parentItem.Items.Add(fileItem);
                     }
                 }
@@ -494,13 +497,13 @@ namespace OriginalScan
             }
 
             string name = System.IO.Path.GetFileName(RootPath);
-            var directoryItem = CreateTreeViewItem(name, "folder");
+            var directoryItem = CreateTreeViewItem(name, "folder", name);
 
             trvBatchExplorer.Items.Add(directoryItem);
             LoadDirectory(directoryItem, RootPath);
         }
 
-        public TreeViewItem CreateTreeViewItem(string directoryName, string icon)
+        public TreeViewItem CreateTreeViewItem(string directoryName, string icon, string itemName)
         {
             string iconSource = "";
 
@@ -523,7 +526,6 @@ namespace OriginalScan
                     }
             }
 
-
             var item = new TreeViewItem()
             {
                 Header = new StackPanel()
@@ -540,11 +542,12 @@ namespace OriginalScan
                         },
                         new TextBlock()
                         {
-                            Text = directoryName,
+                            Text = itemName,
                             Margin = new Thickness(0, 10, 0, 0)
                         }
                     }
-                }
+                },
+                Tag = directoryName
             };
 
             return item;
@@ -570,24 +573,16 @@ namespace OriginalScan
                 return false;
             }
 
-            if (parentItem.Header is StackPanel parentStackPanel)
+            if (parentItem.Tag != null && parentItem.Tag.ToString() == itemName)
             {
-                var textBlock = parentStackPanel.Children.OfType<TextBlock>().FirstOrDefault();
-                if (textBlock != null && textBlock.Text == itemName)
-                {
-                    return true;
-                }
+                return true;
             }
 
             foreach (TreeViewItem item in parentItem.Items)
             {
-                if (item.Header is StackPanel stackPanel)
+                if (item.Tag != null && item.Tag.ToString() == itemName)
                 {
-                    var textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
-                    if (textBlock != null && textBlock.Text == itemName)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;
@@ -620,9 +615,9 @@ namespace OriginalScan
         {
             foreach (var item in items)
             {
-                if (item is TreeViewItem treeViewItem && treeViewItem.Header is StackPanel stackPanel)
+                if (item is TreeViewItem treeViewItem)
                 {
-                    if ((stackPanel.Children.OfType<TextBlock>().FirstOrDefault()?.Text == Path.GetFileName(folderPath)) || Path.GetFileName(folderPath) == FolderSetting.TempData)
+                    if ((treeViewItem.Tag.ToString() == Path.GetFileName(folderPath)) || Path.GetFileName(folderPath) == FolderSetting.TempData)
                     {
                         if (!IsTreeViewItemExpanded(treeViewItem))
                         {
@@ -735,6 +730,7 @@ namespace OriginalScan
                 selectedImage.IsSelected = false;
                 ListImagesSelected.Remove(selectedImage);
             }
+            clickedItem.SelectedItems.Clear();
         }
 
         private async void btnDeleteImages_Click(object sender, EventArgs e)
@@ -788,7 +784,7 @@ namespace OriginalScan
             }
         }
 
-        private async void trvBatchExplorer_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private async void trvBatchExplorer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             try
             {
@@ -799,57 +795,58 @@ namespace OriginalScan
 
                 if (trvBatchExplorer.SelectedItem is TreeViewItem selectedItem)
                 {
-                    if (selectedItem.Header is StackPanel parentStackPanel)
+                    if (BatchPath != null && selectedItem.Tag != null)
                     {
-                        var textBlock = parentStackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+                        string filePath = System.IO.Path.Combine(BatchPath, selectedItem.Tag.ToString()!);
+                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string path = System.IO.Path.Combine(userFolderPath, filePath);
 
-                        if (BatchPath != null && textBlock != null)
+                        if (Directory.Exists(path))
                         {
-                            string filePath = System.IO.Path.Combine(BatchPath, textBlock.Text);
-                            string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                            string path = System.IO.Path.Combine(userFolderPath, filePath);
+                            var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
 
-                            if (Directory.Exists(path))
+                            if (selectedDocument != null)
                             {
-                                var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
-
-                                if (selectedDocument != null)
+                                DocumentModel docModel = new DocumentModel()
                                 {
-                                    GetImagesByDocument(selectedDocument.Id);
-                                    DocumentModel docModel = new DocumentModel()
-                                    {
-                                        Id = selectedDocument.Id,
-                                        BatchId = selectedDocument.BatchId,
-                                        DocumentName = selectedDocument.DocumentName,
-                                        DocumentPath = selectedDocument.DocumentPath,
-                                        NumberOfSheets = selectedDocument.NumberOfSheets
-                                    };
-                                    _documentService.SetDocument(docModel);
+                                    Id = selectedDocument.Id,
+                                    BatchId = selectedDocument.BatchId,
+                                    DocumentName = selectedDocument.DocumentName,
+                                    DocumentPath = selectedDocument.DocumentPath,
+                                    NumberOfSheets = selectedDocument.NumberOfSheets
+                                };
+
+                                if (_documentService.SelectedDocument != null && _documentService.SelectedDocument.Id == docModel.Id)
+                                {
+                                    return;
                                 }
+
+                                _documentService.SetDocument(docModel);
+                                GetImagesByDocument(selectedDocument.Id);
                             }
+                        }
 
-                            else
+                        else
+                        {
+                            foreach (var img in ListImagesMain)
                             {
-                                foreach (var img in ListImagesMain)
+                                if (_documentService.SelectedDocument == null)
                                 {
-                                    if (_documentService.SelectedDocument == null)
-                                    {
-                                        return;
-                                    }
-                                    string imagePath = System.IO.Path.Combine(userFolderPath, _documentService.SelectedDocument.DocumentPath, textBlock.Text);
+                                    return;
+                                }
+                                string imagePath = System.IO.Path.Combine(userFolderPath, _documentService.SelectedDocument.DocumentPath, selectedItem.Tag.ToString()!);
 
-                                    if (img.ImagePath == imagePath)
+                                if (img.ImagePath == imagePath)
+                                {
+                                    if (!img.IsSelected)
                                     {
-                                        if (!img.IsSelected)
-                                        {
-                                            img.IsSelected = true;
-                                            ListImagesSelected.Add(img);
-                                        }
-                                        else
-                                        {
-                                            img.IsSelected = false;
-                                            ListImagesSelected.Remove(img);
-                                        }
+                                        img.IsSelected = true;
+                                        ListImagesSelected.Add(img);
+                                    }
+                                    else
+                                    {
+                                        img.IsSelected = false;
+                                        ListImagesSelected.Remove(img);
                                     }
                                 }
                             }
