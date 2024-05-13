@@ -788,37 +788,6 @@ namespace OriginalScan
             }
         }
 
-        private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
-
-        public ObservableCollection<ScannedImage> ListImagesMain
-        {
-            get => _listImagesMain;
-            set
-            {
-                _listImagesMain = value;
-                OnPropertyChanged("ListImagesMain");
-            }
-        }
-
-        private ObservableCollection<ScannedImage> _listImagesSelected { get; set; }
-
-        public ObservableCollection<ScannedImage> ListImagesSelected
-        {
-            get => _listImagesSelected;
-            set
-            {
-                _listImagesMain = value;
-                OnPropertyChanged("ListImagesSelected");
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private async void trvBatchExplorer_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             try
@@ -1027,6 +996,37 @@ namespace OriginalScan
             {
                 return bitmapImage;
             }
+        }
+
+        private ObservableCollection<ScannedImage> _listImagesMain { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesMain
+        {
+            get => _listImagesMain;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesMain");
+            }
+        }
+
+        private ObservableCollection<ScannedImage> _listImagesSelected { get; set; }
+
+        public ObservableCollection<ScannedImage> ListImagesSelected
+        {
+            get => _listImagesSelected;
+            set
+            {
+                _listImagesMain = value;
+                OnPropertyChanged("ListImagesSelected");
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

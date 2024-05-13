@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -342,6 +343,12 @@ namespace OriginalScan.Views
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 userFolderPath = userFolderPath.Replace("/", "\\");
                 string folderPath = System.IO.Path.Combine(userFolderPath, txtPath.Text);
+
+                if (!Directory.Exists(folderPath))
+                {
+                    NotificationShow("error", $"Không tìm thấy đường dẫn: {folderPath}");
+                    return;
+                }
 
                 Process.Start("explorer.exe", folderPath);
             }

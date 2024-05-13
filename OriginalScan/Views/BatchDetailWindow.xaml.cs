@@ -271,6 +271,12 @@ namespace OriginalScan.Views
                 userFolderPath = userFolderPath.Replace("/", "\\");
                 string folderPath = System.IO.Path.Combine(userFolderPath, txtPath.Text);
 
+                if (!Directory.Exists(folderPath))
+                {
+                    NotificationShow("error", $"Không tìm thấy đường dẫn: {folderPath}");
+                    return;
+                }
+
                 Process.Start("explorer.exe", folderPath);
             }
             catch (Exception ex)
