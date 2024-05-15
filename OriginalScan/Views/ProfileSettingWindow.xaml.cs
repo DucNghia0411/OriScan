@@ -38,16 +38,16 @@ namespace OriginalScan.Views
 
         void LoadData()
         {
-            List<string> pageSources = new List<string>() { "Kính", "Khay" };
-            List<string> resolutions = new List<string>() { "100 dpi", "150 dpi", "300 dpi" };
-            List<string> bitDepths = new List<string>() { "24 bit", "30 bit", "36 bit" };
-            List<string> horAligns = new List<string>() { "Phải", "Trái", "Giữa" };
+            List<string> capDuplexes = new List<string>() { "1 mặt", "2 mặt" };                                             // false/true
+            List<string> resolutions = new List<string>() { "100 dpi", "150 dpi", "300 dpi" };                              // 100/150/300
+            List<string> bitDepths = new List<string>() { "24 bit", "30 bit", "36 bit" };                                   // 24/30/36
+            List<string> rotateDegrees = new List<string>() { "Giữ nguyên", "Ngang phải", "Đứng ngược", "Ngang trái" };     // 0/90/180/270
 
-            foreach (string pageSource in pageSources)
+            foreach (string capDuplex in capDuplexes)
             {
-                cbPaperSource.Items.Add(pageSource);
+                cbCapDuplex.Items.Add(capDuplex);
             }
-            cbPaperSource.SelectedIndex = 0;
+            cbCapDuplex.SelectedIndex = 0;
 
             for (int i = 0; i < 8; i++)
             {
@@ -68,11 +68,11 @@ namespace OriginalScan.Views
             }
             cbBitDepth.SelectedIndex = 0;
 
-            foreach (string horAlign in horAligns)
+            foreach (string rotateDegree in rotateDegrees)
             {
-                cbHorAlign.Items.Add(horAlign);
+                cbRotateDegree.Items.Add(rotateDegree);
             }
-            cbHorAlign.SelectedIndex = 0;
+            cbRotateDegree.SelectedIndex = 0;
 
             for (int i = 1; i < 5; i++)
             {
@@ -167,11 +167,11 @@ namespace OriginalScan.Views
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             NotificationShow("success", $"Cài đặt thành công thiết bị {txtDevice.Text} với các thuộc tính:\n"
-                                        + $"- Nguồn giấy: {cbPaperSource.Text}\n"
+                                        + $"- Số mặt: {cbCapDuplex.Text}\n"
                                         + $"- Cỡ giấy: {cbPageSize.Text}\n"
                                         + $"- Độ phân giải: {cbResolution.Text}\n"
                                         + $"- Độ sâu Bit: {cbBitDepth.Text}\n"
-                                        + $"- Căn lề: {cbHorAlign.Text}\n"
+                                        + $"- Xoay: {cbRotateDegree.Text}\n"
                                         + $"- Tỉ lệ: {cbScale.Text}\n"
                                         + $"- Độ sáng: {txtBrightness.Text}\n"
                                         + $"- Độ tương phản: {txtContrast.Text}");

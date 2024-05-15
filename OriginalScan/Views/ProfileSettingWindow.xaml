@@ -90,7 +90,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Nguồn giấy:" FontSize="11"
+                    <Label Content="Kiểu quét:" FontSize="11"
                     HorizontalAlignment="Left" 
                     Grid.Row="0"
                     Grid.Column="0"
@@ -125,7 +125,7 @@
                     VerticalAlignment="Bottom"
                     Margin="15,0,0,0"/>
 
-                    <Label Content="Căn lề:" FontSize="11"
+                    <Label Content="Xoay:" FontSize="11"
                     HorizontalAlignment="Left" 
                     Grid.Row="2"
                     Grid.Column="1"
@@ -146,7 +146,7 @@
                     VerticalAlignment="Bottom"
                     Margin="15,0,0,0"/>
 
-                    <ComboBox x:Name="cbPaperSource" FontSize="10"
+                    <ComboBox x:Name="cbCapDuplex" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="5,0,0,0"
                     Padding="5,0,0,0"
@@ -213,7 +213,7 @@
                     Width="180" Height="23">
                     </ComboBox>
 
-                    <ComboBox x:Name="cbHorAlign" FontSize="10"
+                    <ComboBox x:Name="cbRotateDegree" FontSize="10"
                     HorizontalAlignment="Left" 
                     Margin="15,0,0,0"
                     Padding="5,0,0,0"
