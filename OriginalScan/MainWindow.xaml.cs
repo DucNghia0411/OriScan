@@ -412,6 +412,25 @@ namespace OriginalScan
             deviceWindow.ShowDialog();
         }
 
+        public void ClearSetting()
+        {
+            if (dataSource == null || _twainSession == null)
+            {
+                return;
+            }
+
+            _twainSession.CurrentSource.Capabilities.ResetAll();
+            DeviceSettingConverter.SetIsDefault(true);
+            DeviceSettingConverter.SetDuplex(false);
+            DeviceSettingConverter.SetSize(null);
+            DeviceSettingConverter.SetDpi(null);
+            DeviceSettingConverter.SetPixeType(null);
+            DeviceSettingConverter.SetBitDepth(null);
+            DeviceSettingConverter.SetRotateDegree(null);
+            DeviceSettingConverter.SetBrightness(null);
+            DeviceSettingConverter.SetContrast(null);
+        }
+
         public void SetupDevice()
         {
             if (dataSource == null || _twainSession == null)

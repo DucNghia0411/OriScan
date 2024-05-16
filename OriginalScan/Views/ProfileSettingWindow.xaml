@@ -68,6 +68,7 @@
                     Grid.Row="1"
                     Grid.Column="1"
                     FontSize="12"
+                    IsReadOnly="True"
                     VerticalAlignment="Top" 
                     BorderThickness="1,1,1,1"
                     Padding="5,0,0,0"

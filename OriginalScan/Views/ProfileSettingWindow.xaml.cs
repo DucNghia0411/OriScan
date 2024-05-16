@@ -149,7 +149,7 @@ namespace OriginalScan.Views
 
         private void LoadRotate(ICapWrapper<TWFix32> cap)
         {
-            var list = cap.GetValues().Where(degree => (degree % 90) == 0).ToList();
+            var list = cap.GetValues().Where(degree => ((degree % 90) == 0) && (degree <= 270) && (degree >= 0)).ToList();
             cbRotateDegree.ItemsSource = list;
             var cur = cap.GetCurrent();
             if (list.Contains(cur))
@@ -257,7 +257,8 @@ namespace OriginalScan.Views
         {
             try
             {
-                if (dataSource == null) return;
+                if (dataSource == null || mainWindow == null) return;
+                mainWindow.ClearSetting();
 
                 if (cbCapDuplex.Text == "1 mặt")
                 {
