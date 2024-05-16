@@ -244,13 +244,16 @@ namespace OriginalScan.Views
                         StartDate = dpkStartDate.Text,
                         EndDate = dpkEndDate.Text,
                         StoragePeriod = txtStoragePeriod.Text
-                    };
+                    };                    
 
-                    var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
-                    if (checkExistedResult && txtDocumentName.Text != _currentDocument.DocumentName)
+                    if (txtDocumentName.Text != _currentDocument.DocumentName)
                     {
-                        NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
-                        return;
+                        var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
+                        if (checkExistedResult)
+                        {
+                            NotificationShow("warning", "Tên tài liệu bị trùng lặp!");
+                            return;
+                        }
                     }
 
                     var updateResult = await _documentService.Update(request);

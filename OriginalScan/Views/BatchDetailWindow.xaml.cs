@@ -230,14 +230,17 @@ namespace OriginalScan.Views
                         FileCabinet = txtFileCabinet.Text
                     };
 
-                    var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
-
-                    if (checkExistedResult)
+                    if (txtBatchName.Text != _currentBatch.BatchName)
                     {
-                        NotificationShow("warning", "Tên gói bị trùng lặp!");
-                        return;
-                    }
+                        var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
 
+                        if (checkExistedResult)
+                        {
+                            NotificationShow("warning", "Tên gói bị trùng lặp!");
+                            return;
+                        }
+                    }
+                    
                     var updateResult = await _batchService.Update(request);
 
                     if (updateResult == 0)
