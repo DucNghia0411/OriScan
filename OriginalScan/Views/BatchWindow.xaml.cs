@@ -316,9 +316,6 @@ namespace OriginalScan.Views
             createDocumentWindow.ShowDialog();
             lstvDocuments.SelectedItems.Clear();
             LoadTreeView();
-
-            //ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow();
-            //profileSettingWindow.ShowDialog();
         }
 
         private void lstvBatches_MouseDoubleClick(object sender, MouseButtonEventArgs e)

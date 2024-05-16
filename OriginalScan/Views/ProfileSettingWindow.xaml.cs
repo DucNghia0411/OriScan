@@ -1,10 +1,19 @@
 ﻿using FontAwesome5;
+using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
 using Notification.Wpf;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
+using NTwain;
+using NTwain.Data;
+using OriginalScan.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,65 +33,143 @@ namespace OriginalScan.Views
     public partial class ProfileSettingWindow : Window
     {
         private readonly NotificationManager _notificationManager;
+        public DataSource? dataSource;
+        public DeviceWindow? deviceWindow;
+        public MainWindow? mainWindow;
+        public TwainSession? twainSession;
 
         public ProfileSettingWindow()
         {
             _notificationManager = new NotificationManager();
             InitializeComponent();
 
-            LoadData();
-
             this.ResizeMode = ResizeMode.NoResize;
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
-        void LoadData()
+        public void LoadData(DataSource src)
         {
-            List<string> capDuplexes = new List<string>() { "1 mặt", "2 mặt" };                                             // false/true
-            List<string> resolutions = new List<string>() { "100 dpi", "150 dpi", "300 dpi" };                              // 100/150/300
-            List<string> bitDepths = new List<string>() { "24 bit", "30 bit", "36 bit" };                                   // 24/30/36
-            List<string> rotateDegrees = new List<string>() { "Giữ nguyên", "Ngang phải", "Đứng ngược", "Ngang trái" };     // 0/90/180/270
+            if (dataSource == null) return;
 
-            foreach (string capDuplex in capDuplexes)
+            txtDevice.Text = dataSource.Name;
+
+            List<string> listCapDup = new List<string>() { "1 mặt", "2 mặt" };
+            cbCapDuplex.ItemsSource = listCapDup;
+            cbCapDuplex.SelectedIndex = 1;
+
+            if (!DeviceSettingConverter._isDefault && mainWindow != null)
             {
-                cbCapDuplex.Items.Add(capDuplex);
+                mainWindow.SetupDevice();
+                if (DeviceSettingConverter._duplex == true)
+                {
+                    cbCapDuplex.SelectedIndex = 1;
+                }
+                else cbCapDuplex.SelectedIndex = 0;
             }
-            cbCapDuplex.SelectedIndex = 0;
 
-            for (int i = 0; i < 8; i++)
+            if (src.Capabilities.ICapBitDepth.IsSupported)
             {
-                string pageSize = "A" + i;
-                cbPageSize.Items.Add(pageSize);
+                LoadDepth(src.Capabilities.ICapBitDepth);
             }
-            cbPageSize.SelectedIndex = 0;
 
-            foreach (string resolution in resolutions)
+            if (src.Capabilities.ICapXResolution.IsSupported && src.Capabilities.ICapYResolution.IsSupported)
             {
-                cbResolution.Items.Add(resolution);
+                LoadDPI(src.Capabilities.ICapXResolution);
             }
-            cbResolution.SelectedIndex = 0;
 
-            foreach (string bitDepth in bitDepths)
+            if (src.Capabilities.ICapSupportedSizes.IsSupported)
             {
-                cbBitDepth.Items.Add(bitDepth);
+                LoadPaperSize(src.Capabilities.ICapSupportedSizes);
             }
-            cbBitDepth.SelectedIndex = 0;
 
-            foreach (string rotateDegree in rotateDegrees)
+            if (src.Capabilities.ICapRotation.IsSupported)
             {
-                cbRotateDegree.Items.Add(rotateDegree);
+                LoadRotate(src.Capabilities.ICapRotation);
             }
-            cbRotateDegree.SelectedIndex = 0;
 
-            for (int i = 1; i < 5; i++)
+            if (src.Capabilities.ICapPixelType.IsSupported)
             {
-                string scale = "1:" + i;
-                cbScale.Items.Add(scale);
+                LoadPixelType(src.Capabilities.ICapPixelType);
             }
-            cbScale.SelectedIndex = 0;
 
-            sldBrightness.Value = 50;
-            sldContrast.Value = 50;
+            if (src.Capabilities.ICapBrightness.IsSupported)
+            {
+                LoadBrightness(src.Capabilities.ICapBrightness);
+            }
+
+            if (src.Capabilities.ICapContrast.IsSupported)
+            {
+                LoadContrast(src.Capabilities.ICapContrast);
+            }
+        }
+
+        private void LoadDepth(ICapWrapper<int> cap)
+        {
+            var list = cap.GetValues().ToList();
+            cbBitDepth.ItemsSource = list;
+            var cur = cap.GetCurrent();
+            if (list.Contains(cur))
+            {
+                cbBitDepth.SelectedItem = cur;
+            }
+        }
+
+        private void LoadDPI(ICapWrapper<TWFix32> cap)
+        {
+            var list = cap.GetValues().Where(dpi => (dpi % 50) == 0).ToList();
+            cbResolution.ItemsSource = list;
+            var cur = cap.GetCurrent();
+            if (list.Contains(cur))
+            {
+                cbResolution.SelectedItem = cur;
+            }
+        }
+
+        private void LoadPaperSize(ICapWrapper<SupportedSize> cap)
+        {
+            var list = cap.GetValues().ToList();
+            cbPageSize.ItemsSource = list;
+            var cur = cap.GetCurrent();
+            if (list.Contains(cur))
+            {
+                cbPageSize.SelectedItem = cur;
+            }
+        }
+
+        private void LoadPixelType(ICapWrapper<PixelType> cap)
+        {
+            var list = cap.GetValues().ToList();
+            cbPixelType.ItemsSource = list;
+            var cur = cap.GetCurrent();
+            if (list.Contains(cur))
+            {
+                cbPixelType.SelectedItem = cur;
+            }
+        }
+
+        private void LoadRotate(ICapWrapper<TWFix32> cap)
+        {
+            var list = cap.GetValues().Where(degree => (degree % 90) == 0).ToList();
+            cbRotateDegree.ItemsSource = list;
+            var cur = cap.GetCurrent();
+            if (list.Contains(cur))
+            {
+                cbRotateDegree.SelectedItem = cur;
+            }
+        }
+
+        private void LoadContrast(ICapWrapper<TWFix32> cap)
+        {
+            var cur = cap.GetCurrent();
+            sldContrast.Value = cur;
+            txtContrast.Text = cur.ToString();
+        }
+
+        private void LoadBrightness(ICapWrapper<TWFix32> cap)
+        {
+            var cur = cap.GetCurrent();
+            sldBrightness.Value = cur;
+            txtBrightness.Text = cur.ToString();
         }
 
         private void NotificationShow(string type, string message)
@@ -151,12 +238,14 @@ namespace OriginalScan.Views
 
         private void sldBrightness_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            txtBrightness.Text = sldBrightness.Value.ToString("N1");
+            sldBrightness.Value = Math.Round(sldBrightness.Value / 8) * 8;
+            txtBrightness.Text = sldBrightness.Value.ToString("N0");
         }
 
         private void sldContrast_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            txtContrast.Text = sldContrast.Value.ToString("N1");
+            sldContrast.Value = Math.Round(sldContrast.Value / 8) * 8;
+            txtContrast.Text = sldContrast.Value.ToString("N0");
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -166,16 +255,68 @@ namespace OriginalScan.Views
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            NotificationShow("success", $"Cài đặt thành công thiết bị {txtDevice.Text} với các thuộc tính:\n"
-                                        + $"- Số mặt: {cbCapDuplex.Text}\n"
-                                        + $"- Cỡ giấy: {cbPageSize.Text}\n"
-                                        + $"- Độ phân giải: {cbResolution.Text}\n"
-                                        + $"- Độ sâu Bit: {cbBitDepth.Text}\n"
-                                        + $"- Xoay: {cbRotateDegree.Text}\n"
-                                        + $"- Tỉ lệ: {cbScale.Text}\n"
-                                        + $"- Độ sáng: {txtBrightness.Text}\n"
-                                        + $"- Độ tương phản: {txtContrast.Text}");
-            this.Visibility = Visibility.Hidden;
+            try
+            {
+                if (dataSource == null) return;
+
+                if (cbCapDuplex.Text == "1 mặt")
+                {
+                    DeviceSettingConverter.SetDuplex(false);
+                }
+                else
+                {
+                    DeviceSettingConverter.SetDuplex(true);
+                }
+
+                if (cbPageSize.SelectedItem is SupportedSize selectedSize)
+                {
+                    DeviceSettingConverter.SetSize(selectedSize);
+                }
+
+                if (cbResolution.SelectedItem is TWFix32 selectedResolution)
+                {
+                    DeviceSettingConverter.SetDpi(selectedResolution);
+                }
+
+                if (cbPixelType.SelectedItem is PixelType selectedPixelType)
+                {
+                    DeviceSettingConverter.SetPixeType(selectedPixelType);
+                }
+
+                if (cbBitDepth.SelectedItem is int selectedBitDepth)
+                {
+                    DeviceSettingConverter.SetBitDepth(selectedBitDepth);
+                }
+
+                if (cbRotateDegree.SelectedItem is TWFix32 selectedRotateDegree)
+                {
+                    DeviceSettingConverter.SetRotateDegree(selectedRotateDegree);
+                }
+
+                int brightnessValue = int.Parse(txtBrightness.Text);
+                TWFix32 brightness = new TWFix32
+                {
+                    Whole = (short)brightnessValue,
+                    Fraction = 0
+                };
+                DeviceSettingConverter.SetBrightness(brightness);
+
+                int contrastValue = int.Parse(txtContrast.Text);
+                TWFix32 contrast = new TWFix32
+                {
+                    Whole = (short)contrastValue,
+                    Fraction = 0
+                };
+                DeviceSettingConverter.SetContrast(contrast);
+
+                DeviceSettingConverter._isDefault = false;
+                NotificationShow("success", $"Cài đặt thiết bị {txtDevice.Text} thành công!");
+                this.Visibility = Visibility.Hidden;
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+            }
         }
     }
 }

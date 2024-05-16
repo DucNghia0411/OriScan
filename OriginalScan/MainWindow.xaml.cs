@@ -29,6 +29,8 @@ using System.Printing;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Policy;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -189,8 +191,8 @@ namespace OriginalScan
                     NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
                     return;
                 }
-
-                dataSource.Capabilities.CapDuplexEnabled.SetValue(BoolType.True);
+                
+                SetupDevice();
                 dataSource.Enable(SourceEnableMode.NoUI, false, IntPtr.Zero);
             }
             catch (Exception ex)
@@ -408,6 +410,69 @@ namespace OriginalScan
             deviceWindow.mainWindow = this;
             deviceWindow.GetListDevice();
             deviceWindow.ShowDialog();
+        }
+
+        public void SetupDevice()
+        {
+            if (dataSource == null || _twainSession == null)
+            {
+                return;
+            }
+
+            if (!DeviceSettingConverter._isDefault)
+            {
+                BoolType isDuplex;
+
+                if (DeviceSettingConverter._duplex == true)
+                    isDuplex = BoolType.True;
+                else
+                    isDuplex = BoolType.False;
+
+                _twainSession.CurrentSource.Capabilities.CapDuplexEnabled.SetValue(isDuplex);
+
+                if (DeviceSettingConverter._size != null)
+                {
+                    SupportedSize size = (SupportedSize)DeviceSettingConverter._size;
+                    _twainSession.CurrentSource.Capabilities.ICapSupportedSizes.SetValue(size);
+                }
+
+                if (DeviceSettingConverter._dpi != null)
+                {
+                    TWFix32 dpi = (TWFix32)DeviceSettingConverter._dpi;
+                    _twainSession.CurrentSource.Capabilities.ICapXResolution.SetValue(dpi);
+                    _twainSession.CurrentSource.Capabilities.ICapYResolution.SetValue(dpi);
+                }
+
+                if (DeviceSettingConverter._pixelType != null)
+                {
+                    PixelType pixelType = (PixelType)DeviceSettingConverter._pixelType;
+                    _twainSession.CurrentSource.Capabilities.ICapPixelType.SetValue(pixelType);
+                }
+
+                if (DeviceSettingConverter._bitDepth != null)
+                {
+                    int bitDepth = (int)DeviceSettingConverter._bitDepth;
+                    _twainSession.CurrentSource.Capabilities.ICapBitDepth.SetValue(bitDepth);
+                }
+
+                if (DeviceSettingConverter._rotateDegree != null)
+                {
+                    TWFix32 rotateDegree = (TWFix32)DeviceSettingConverter._rotateDegree;
+                    _twainSession.CurrentSource.Capabilities.ICapRotation.SetValue(rotateDegree);
+                }
+
+                if (DeviceSettingConverter._brightness != null)
+                {
+                    TWFix32 brightness = (TWFix32)DeviceSettingConverter._brightness;
+                    _twainSession.CurrentSource.Capabilities.ICapBrightness.SetValue(brightness);
+                }
+
+                if (DeviceSettingConverter._contrast != null)
+                {
+                    TWFix32 contrast = (TWFix32)DeviceSettingConverter._contrast;
+                    _twainSession.CurrentSource.Capabilities.ICapContrast.SetValue(contrast);
+                }
+            }
         }
 
         private void OpenBatch_Click(object sender, RoutedEventArgs e)
