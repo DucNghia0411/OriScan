@@ -552,7 +552,7 @@ namespace OriginalScan
 
                     if (!IsItemAlreadyExists(parentItem, fileName))
                     {
-                        var fileItem = CreateTreeViewItem(fileName, "image", $"Trang {i + 1}");
+                        var fileItem = CreateTreeViewItem(fileName, "image", $"Ảnh {i + 1}");
                         parentItem.Items.Add(fileItem);
                     }
                 }
@@ -783,8 +783,9 @@ namespace OriginalScan
                     await _imageService.Save();
 
                     ListImagesMain.Clear();
+                    GetImagesByDocument(currentDocument.Id);
                     ReloadTreeViewItem();
-                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
+                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
                 }
                 else
                     return;
