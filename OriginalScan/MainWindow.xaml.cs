@@ -783,9 +783,8 @@ namespace OriginalScan
                     await _imageService.Save();
 
                     ListImagesMain.Clear();
-                    GetImagesByDocument(currentDocument.Id);
                     ReloadTreeViewItem();
-                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}.");
+                    NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
                 }
                 else
                     return;
@@ -889,7 +888,7 @@ namespace OriginalScan
                         if (Directory.Exists(path))
                         {
                             var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
-
+                            
                             if (selectedDocument != null)
                             {
                                 DocumentModel docModel = new DocumentModel()
@@ -900,11 +899,6 @@ namespace OriginalScan
                                     DocumentPath = selectedDocument.DocumentPath,
                                     NumberOfSheets = selectedDocument.NumberOfSheets
                                 };
-
-                                if (_documentService.SelectedDocument != null && _documentService.SelectedDocument.Id == docModel.Id)
-                                {
-                                    return;
-                                }
 
                                 _documentService.SetDocument(docModel);
                                 GetImagesByDocument(selectedDocument.Id);
@@ -966,7 +960,6 @@ namespace OriginalScan
 
             string[] filesInDocumentPath = Directory.GetFiles(documentPath);
             int totalImagesInPath = filesInDocumentPath.Count();
-
             IEnumerable<ScanApp.Data.Entities.Image> images = await _imageService.Get(x => x.DocumentId == documentId);
             images.OrderBy(x => x.Order).ToList();
             int totalImagesInDatabase = images.Count();
