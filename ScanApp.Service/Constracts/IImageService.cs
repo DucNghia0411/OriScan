@@ -27,5 +27,7 @@ namespace ScanApp.Service.Constracts
         Task DeleteMultiById(List<int> listIds);
 
         Task<bool> DeleteByDocument(int documentId);
+
+        Task<int> CountByDocument(int documentId);
     }
 }

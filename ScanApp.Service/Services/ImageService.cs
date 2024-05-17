@@ -107,5 +107,18 @@ namespace ScanApp.Service.Services
                 throw;
             }
         }
+
+        public async Task<int> CountByDocument(int documentId)
+        {
+            try
+            {
+                int countResult = await _imageRepo.CountAsync(e => e.DocumentId == documentId);
+                return countResult;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

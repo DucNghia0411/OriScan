@@ -15,6 +15,7 @@ using ScanApp.Data.Entities;
 using ScanApp.Intergration.ApiClients;
 using ScanApp.Intergration.Constracts;
 using ScanApp.Model.Models;
+using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
 using ScanApp.Service.Services;
 using System;
@@ -691,6 +692,56 @@ namespace OriginalScan
             }
         }
 
+        public async void UpdateDocNumOfSheets(int numOfSheets)
+        {
+            try
+            {
+                if (_documentService.SelectedDocument == null) return;
+                var document = await _documentService.FirstOrDefault(e => e.Id == _documentService.SelectedDocument.Id);
+
+                if (document == null) return;
+
+                DocumentUpdateRequest request = new DocumentUpdateRequest()
+                {
+                    Id = _documentService.SelectedDocument.Id,
+                    DocumentName = document.DocumentName,
+                    Note = document.Note,
+                    AgencyIdentifier = document.AgencyIdentifier,
+                    DocumentIdentifier = document.DocumentIdentifier,
+                    NumberOfSheets = numOfSheets,
+                    StartDate = document.StartDate,
+                    EndDate = document.EndDate,
+                    StoragePeriod = document.StoragePeriod
+                };
+
+                var updateResult = await _documentService.Update(request);
+
+                if (updateResult == 0)
+                {
+                    NotificationShow("error", "Cập nhật số tờ không thành công!");
+                    return;
+                }
+                else
+                {
+                    DocumentModel documentModel = new DocumentModel()
+                    {
+                        Id = request.Id,
+                        BatchId = _documentService.SelectedDocument.BatchId,
+                        DocumentName = _documentService.SelectedDocument.DocumentName,
+                        DocumentPath = _documentService.SelectedDocument.DocumentPath,
+                        NumberOfSheets = _documentService.SelectedDocument.NumberOfSheets
+                    };
+
+                    _documentService.SetDocument(documentModel);
+                }
+            }
+            catch(Exception ex)
+            {
+                NotificationShow("error", ex.Message);
+                return;
+            }
+        }
+
         private bool IsTreeViewItemExpanded(TreeViewItem treeViewItem)
         {
             if (treeViewItem == null)
@@ -788,6 +839,9 @@ namespace OriginalScan
 
                     ListImagesMain.Clear();
                     ReloadTreeViewItem();
+
+                    var count = await _imageService.CountByDocument(currentDocument.Id);
+                    UpdateDocNumOfSheets(count);
                     NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
                 }
                 else
@@ -863,6 +917,13 @@ namespace OriginalScan
                 }
 
                 ListImagesSelected.Clear();
+
+                if (_documentService.SelectedDocument != null)
+                {
+                    var count = await _imageService.CountByDocument(_documentService.SelectedDocument.Id);
+                    UpdateDocNumOfSheets(count);
+                }
+                
                 NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");            
             }
             catch (Exception ex)

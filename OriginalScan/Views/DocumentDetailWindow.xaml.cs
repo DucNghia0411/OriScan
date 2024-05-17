@@ -271,7 +271,7 @@ namespace OriginalScan.Views
                             BatchId = _currentBatch.Id,
                             DocumentName = txtDocumentName.Text,
                             DocumentPath = txtPath.Text,
-                            
+                            NumberOfSheets = int.Parse(txtNumOfSheets.Text)
                         };
 
                         _documentService.SetDocument(documentModel);
