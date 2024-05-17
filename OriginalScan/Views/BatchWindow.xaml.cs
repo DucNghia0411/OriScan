@@ -148,6 +148,7 @@ namespace OriginalScan.Views
 
             IEnumerable<Batch> batches = await _batchService.GetAll();
             List<object> return_data = new List<object>();
+            object? selectedItem = null;
 
             foreach (Batch batch in batches)
             {
@@ -170,9 +171,20 @@ namespace OriginalScan.Views
                     CreatedDate = formattedCreatedDate
                 };
                 return_data.Add(obj);
+
+                if (_batchService.SelectedBatch != null && _batchService.SelectedBatch.Id == batch.Id)
+                {
+                    selectedItem = obj;
+                }
             }
 
             lstvBatches.ItemsSource = return_data;
+
+            if (selectedItem != null)
+            {
+                lstvBatches.SelectedItem = selectedItem;
+                GetDocumentsByBatch(_batchService.SelectedBatch!.Id);
+            }
         }
 
         private string CheckBatchCreateField()
@@ -334,6 +346,7 @@ namespace OriginalScan.Views
                     return;
                 }
                 _batchService.SetBatch(selectedBatch);
+                _documentService.ClearSelectedDocument();
 
                 GetDocumentsByBatch(selectedBatch.Id);
                 txtCurrentBatch.Text = selectedBatch.BatchName;
@@ -461,6 +474,7 @@ namespace OriginalScan.Views
             IEnumerable<ScanApp.Data.Entities.Document> documents = await _documentService.Get(x => x.BatchId == batchId);
 
             List<object> return_data = new List<object>();
+            object? selectedItem = null;
 
             foreach (ScanApp.Data.Entities.Document document in documents)
             {
@@ -483,9 +497,19 @@ namespace OriginalScan.Views
                     CreatedDate = formattedCreatedDate
                 };
                 return_data.Add(obj);
+
+                if (_documentService.SelectedDocument != null && _documentService.SelectedDocument.Id == document.Id)
+                {
+                    selectedItem = obj;
+                }
             }
 
             lstvDocuments.ItemsSource = return_data;
+
+            if (selectedItem != null)
+            {
+                lstvDocuments.SelectedItem = selectedItem;
+            }
         }
 
         private void btnViewBatch_Click(object sender, RoutedEventArgs e)
