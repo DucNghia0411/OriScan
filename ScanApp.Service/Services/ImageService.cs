@@ -64,6 +64,7 @@ namespace ScanApp.Service.Services
         public async Task AddRange(List<Image> images)
         {
             await _imageRepo.AddRangeAsync(images);
+            _unitOfWork.ClearChangeTracker();
         }
 
         public async Task Save()
