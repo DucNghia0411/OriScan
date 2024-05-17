@@ -1,6 +1,7 @@
 ﻿using FontAwesome5;
 using Notification.Wpf;
 using NTwain;
+using NTwain.Data;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -110,6 +111,20 @@ namespace OriginalScan.Views
                 {
                     dataSources = twainSession.GetSources().ToList();
                     lbDevice.ItemsSource = dataSources;
+
+                    if (dataSource != null)
+                    {
+                        foreach (var item in lbDevice.Items)
+                        {
+                            DataSource source = (DataSource)item;
+
+                            if (source == dataSource)
+                            {
+                                lbDevice.SelectedItem = item;
+                                SettingDevice(dataSource);
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -148,7 +163,6 @@ namespace OriginalScan.Views
             try
             {
                 DataSource dataSource = (DataSource)lbDevice.SelectedItem;
-                
                 SettingDevice(dataSource);
             }
             catch (Exception ex)

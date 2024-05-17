@@ -408,6 +408,10 @@ namespace OriginalScan
             DeviceWindow deviceWindow = new DeviceWindow();
             deviceWindow.twainSession = _twainSession;
             deviceWindow.mainWindow = this;
+            if (dataSource != null)
+            {
+                deviceWindow.dataSource = dataSource;
+            }
             deviceWindow.GetListDevice();
             deviceWindow.ShowDialog();
         }
