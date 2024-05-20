@@ -966,6 +966,9 @@ namespace OriginalScan
                                 };
 
                                 _documentService.SetDocument(docModel);
+                                lblCurrentDocument.Visibility = Visibility.Visible;
+                                lblDocumentName.Visibility = Visibility.Visible;
+                                lblDocumentName.Content = docModel.DocumentName;
                                 GetImagesByDocument(selectedDocument.Id);
                             }
                         }

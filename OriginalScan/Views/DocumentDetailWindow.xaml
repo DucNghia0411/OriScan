@@ -11,6 +11,7 @@
         Height="660" 
         Width="1200"
         MinHeight="615"
+        Icon="/Resource/Images/file.png"
         Closing="Window_Closing">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">

@@ -16,6 +16,7 @@ namespace ScanApp.Service.Constracts
         BatchModel? SelectedBatch { get; set; }
 
         void SetBatch(BatchModel batch);
+
         void ClearSelectedBatch();
 
         Task<Batch?> FirstOrDefault(Expression<Func<Batch, bool>> predicate);

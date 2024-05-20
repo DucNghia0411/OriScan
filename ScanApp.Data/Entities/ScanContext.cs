@@ -87,6 +87,23 @@ public partial class ScanContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
 
+        modelBuilder.Entity<DeviceSetting>(entity =>
+        {
+            entity.ToTable("device_setting");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.DeviceName).HasColumnName("document_id");
+            entity.Property(e => e.IsDuplex).HasColumnName("is_duplex");
+            entity.Property(e => e.Size).HasColumnName("size");
+            entity.Property(e => e.Dpi).HasColumnName("dpi");
+            entity.Property(e => e.PixelType).HasColumnName("pixel_type");
+            entity.Property(e => e.BitDepth).HasColumnName("bit_depth");
+            entity.Property(e => e.RotateDegree).HasColumnName("rotate_degree");
+            entity.Property(e => e.Brightness).HasColumnName("brightness");
+            entity.Property(e => e.Contrast).HasColumnName("contrast");
+            entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

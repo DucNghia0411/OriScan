@@ -13,6 +13,7 @@
     <None Remove="Resource\Icons\check-markwhite.png" />
     <None Remove="Resource\Icons\checkmark.png" />
     <None Remove="Resource\Icons\closewhite.png" />
+    <None Remove="Resource\Icons\cogwheel.png" />
     <None Remove="Resource\Icons\crop.png" />
     <None Remove="Resource\Icons\delete.png" />
     <None Remove="Resource\Icons\diskette.png" />
@@ -30,6 +31,8 @@
     <None Remove="Resource\Images\deleteicon.png" />
     <None Remove="Resource\Images\documenticon.png" />
     <None Remove="Resource\Images\documents.png" />
+    <None Remove="Resource\Images\file.png" />
+    <None Remove="Resource\Images\folder.png" />
     <None Remove="Resource\Images\foldericon.png" />
     <None Remove="Resource\Images\saveicon.png" />
     <None Remove="Resource\Images\scannericon.png" />
@@ -61,6 +64,7 @@
     <Resource Include="Resource\Icons\check-markwhite.png" />
     <Resource Include="Resource\Icons\checkmark.png" />
     <Resource Include="Resource\Icons\closewhite.png" />
+    <Resource Include="Resource\Icons\cogwheel.png" />
     <Resource Include="Resource\Icons\crop.png" />
     <Resource Include="Resource\Icons\delete.png" />
     <Resource Include="Resource\Icons\diskette.png" />
@@ -77,6 +81,8 @@
     <Resource Include="Resource\Images\deleteicon.png" />
     <Resource Include="Resource\Images\documenticon.png" />
     <Resource Include="Resource\Images\documents.png" />
+    <Resource Include="Resource\Images\file.png" />
+    <Resource Include="Resource\Images\folder.png" />
     <Resource Include="Resource\Images\foldericon.png" />
     <Resource Include="Resource\Images\saveicon.png" />
     <Resource Include="Resource\Images\scannericon.png" />

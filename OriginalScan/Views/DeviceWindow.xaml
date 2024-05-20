@@ -9,7 +9,8 @@
         FontFamily="{materialDesign:MaterialDesignFont}"        
         xmlns:local="clr-namespace:OriginalScan.Views"
         mc:Ignorable="d"
-        Title="DeviceWindow" Width="420" Height="300"
+        Title="Quản lý thiết bị" Width="420" Height="500"
+        Icon="/Resource/Images/addscanicon.png"
         WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -40,7 +41,7 @@
         <TextBox 
             x:Name="txtCurrenDevice"
             HorizontalAlignment="Left" 
-            Margin="75,5,0,0" 
+            Margin="75,10,0,0" 
             TextWrapping="Wrap" 
             FontSize="14"
             IsEnabled="False"
@@ -54,18 +55,24 @@
                 FontWeight="Bold"
                 BorderThickness="2"
                 Margin="10,50,10,10">
-            <ListBox 
-                Name="lbDevice"
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ListBox Grid.Row="0" Name="lbDevice"
                 MouseDoubleClick="lblDevice_MouseDoubleClick">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}"></TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                
+            </Grid>
         </GroupBox>
         <Grid Grid.Row="1">
-            <Button x:Name="btnSetting" Content="Advance setting..."
+            <Button x:Name="btnSetting" Content="Cài đặt nâng cao..."
             Click="btnSetting_Click" 
             HorizontalAlignment="Left" 
             Margin="0,0,0,10" 

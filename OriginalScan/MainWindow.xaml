@@ -10,7 +10,7 @@
         xmlns:local="clr-namespace:OriginalScan"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow"         
+        Title="OriScan"         
         Height="1000" 
         Width="1500"
         WindowState="Maximized"

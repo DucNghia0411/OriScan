@@ -7,7 +7,8 @@
         xmlns:local="clr-namespace:OriginalScan.Views"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="QUẢN LÝ GÓI TÀI LIỆU" Height="660" Width="1200"
+        Title="Quản lý gói tài liệu" Height="660" Width="1200"
+        Icon="/Resource/Icons/document.png"
         WindowStyle="SingleBorderWindow">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
