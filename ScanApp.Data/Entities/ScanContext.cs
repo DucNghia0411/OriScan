@@ -92,7 +92,7 @@ public partial class ScanContext : DbContext
             entity.ToTable("device_setting");
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.DeviceName).HasColumnName("document_id");
+            entity.Property(e => e.DeviceName).HasColumnName("device_name");
             entity.Property(e => e.IsDuplex).HasColumnName("is_duplex");
             entity.Property(e => e.Size).HasColumnName("size");
             entity.Property(e => e.Dpi).HasColumnName("dpi");

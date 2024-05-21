@@ -2,8 +2,14 @@
 using Notification.Wpf;
 using NTwain;
 using NTwain.Data;
+using ScanApp.Common.Common;
+using ScanApp.Data.Entities;
+using ScanApp.Model.Models;
+using ScanApp.Service.Constracts;
+using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -29,11 +35,13 @@ namespace OriginalScan.Views
         public MainWindow? mainWindow;
         public DataSource? dataSource;
         private readonly NotificationManager _notificationManager;
+        private readonly IDeviceSettingService _deviceSettingService;
 
         public IEnumerable<DataSource> dataSources = Enumerable.Empty<DataSource>();
 
-        public DeviceWindow()
+        public DeviceWindow(IDeviceSettingService deviceSettingService)
         {
+            _deviceSettingService = deviceSettingService;
             _notificationManager = new NotificationManager();
 
             InitializeComponent();
@@ -103,10 +111,34 @@ namespace OriginalScan.Views
             }
         }
 
-        public void GetListDevice()
+        public async void GetListDevice()
         {
             try
             {
+                var deviceList = await _deviceSettingService.GetAll();
+                List<object> return_data = new List<object>();
+
+                foreach (DeviceSetting device in deviceList)
+                {
+                    var obj = new
+                    {
+                        Id = device.Id,
+                        DeviceName = device.DeviceName,
+                        IsDuplex = device.IsDuplex,
+                        Size = device.Size,
+                        Dpi = device.Dpi,
+                        PixelType = device.PixelType,
+                        BitDepth = device.BitDepth,
+                        RotateDegree = device.RotateDegree,
+                        Brightness = device.Brightness,
+                        Contrast = device.Contrast,
+                        CreatedDate = device.CreatedDate,
+                        ImagePath = "/Resource/Images/scanner.png"
+                    };
+                    return_data.Add(obj);
+                }
+                lstvDevices.ItemsSource = return_data;
+
                 if (twainSession != null)
                 {
                     dataSources = twainSession.GetSources().ToList();
@@ -174,13 +206,40 @@ namespace OriginalScan.Views
 
         private void btnSetting_Click(object sender, RoutedEventArgs e)
         {
+            LoadProfileSettingWindow(false);
+        }
+
+        private void lstvDevices_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (lstvDevices.SelectedItem == null) return;
+
+            DeviceSettingModel selectedSetting = ValueConverter.ConvertToObject<DeviceSettingModel>(lstvDevices.SelectedItem);
+            _deviceSettingService.SetSetting(selectedSetting);
+
+            foreach (var item in lbDevice.Items)
+            {
+                DataSource source = (DataSource)item;
+
+                if (source.Name == selectedSetting.DeviceName)
+                {
+                    lbDevice.SelectedItem = item;
+                    dataSource = source;
+                    SettingDevice(source);
+                }
+            }
+
+            LoadProfileSettingWindow(true);
+        }
+
+        public void LoadProfileSettingWindow(bool isSavedSetting)
+        {
             if (lbDevice.SelectedItem == null || dataSource == null)
             {
                 NotificationShow("warning", $"Bạn chưa chọn máy scan");
                 return;
             }
 
-            ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow();
+            ProfileSettingWindow profileSettingWindow = new ProfileSettingWindow(_deviceSettingService, isSavedSetting);
             profileSettingWindow.twainSession = twainSession;
             profileSettingWindow.deviceWindow = this;
             profileSettingWindow.mainWindow = mainWindow;

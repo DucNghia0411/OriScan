@@ -7,6 +7,9 @@ using Notification.Wpf.Controls;
 using NTwain;
 using NTwain.Data;
 using OriginalScan.Models;
+using ScanApp.Data.Entities;
+using ScanApp.Model.Requests.DeviceSetting;
+using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -37,12 +40,20 @@ namespace OriginalScan.Views
         public DeviceWindow? deviceWindow;
         public MainWindow? mainWindow;
         public TwainSession? twainSession;
+        private readonly IDeviceSettingService _deviceSettingService;
 
-        public ProfileSettingWindow()
+        public bool IsSavedSetting { get; set; }
+
+        public ProfileSettingWindow(IDeviceSettingService deviceSettingService, bool isSavedSetting)
         {
+            _deviceSettingService = deviceSettingService;
             _notificationManager = new NotificationManager();
             InitializeComponent();
-
+            IsSavedSetting = isSavedSetting;
+            if (!isSavedSetting)
+            {
+                btnDelete.Visibility = Visibility.Collapsed;
+            }
             this.ResizeMode = ResizeMode.NoResize;
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
@@ -253,20 +264,23 @@ namespace OriginalScan.Views
             this.Visibility = Visibility.Hidden;
         }
 
-        private void btnOK_Click(object sender, RoutedEventArgs e)
+        private async void btnOK_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (dataSource == null || mainWindow == null) return;
                 mainWindow.ClearSetting();
 
+                bool isDuplex;
                 if (cbCapDuplex.Text == "1 mặt")
                 {
                     DeviceSettingConverter.SetDuplex(false);
+                    isDuplex = false;
                 }
                 else
                 {
                     DeviceSettingConverter.SetDuplex(true);
+                    isDuplex = true;
                 }
 
                 if (cbPageSize.SelectedItem is SupportedSize selectedSize)
@@ -309,15 +323,35 @@ namespace OriginalScan.Views
                     Fraction = 0
                 };
                 DeviceSettingConverter.SetContrast(contrast);
-
                 DeviceSettingConverter._isDefault = false;
-                NotificationShow("success", $"Cài đặt thiết bị {txtDevice.Text} thành công!");
+
+                DeviceSettingCreateRequest request = new DeviceSettingCreateRequest()
+                {
+                    DeviceName = txtDevice.Text,
+                    IsDuplex = isDuplex ? 2 : 1,
+                    Size = JsonConvert.SerializeObject(cbPageSize.SelectedItem),
+                    Dpi = Convert.ToInt32(cbResolution.SelectedItem.ToString()),
+                    PixelType = JsonConvert.SerializeObject(cbPixelType.SelectedItem),
+                    BitDepth = Convert.ToInt32(cbBitDepth.SelectedItem.ToString()),
+                    RotateDegree = Convert.ToInt32(cbRotateDegree.SelectedItem.ToString()),
+                    Brightness = Convert.ToInt32(brightness.ToString()),
+                    Contrast = Convert.ToInt32(contrast.ToString()),
+                    CreatedDate = DateTime.Now.ToString()
+                };
+
+                var settingId = await _deviceSettingService.Create(request);
+                NotificationShow("success", $"Cài đặt thiết bị {txtDevice.Text} thành công và lưu cấu hình với id: {settingId}!");
                 this.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
             {
                 NotificationShow("error", ex.Message);
             }
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

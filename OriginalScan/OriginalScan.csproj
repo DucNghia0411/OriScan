@@ -26,6 +26,7 @@
     <None Remove="Resource\Icons\play.png" />
     <None Remove="Resource\Icons\redo.png" />
     <None Remove="Resource\Icons\submit.png" />
+    <None Remove="Resource\Icons\whitedelete.png" />
     <None Remove="Resource\Images\addscanicon.png" />
     <None Remove="Resource\Images\completeicon.png" />
     <None Remove="Resource\Images\deleteicon.png" />
@@ -35,6 +36,7 @@
     <None Remove="Resource\Images\folder.png" />
     <None Remove="Resource\Images\foldericon.png" />
     <None Remove="Resource\Images\saveicon.png" />
+    <None Remove="Resource\Images\scanner.png" />
     <None Remove="Resource\Images\scannericon.png" />
   </ItemGroup>
 
@@ -76,6 +78,7 @@
     <Resource Include="Resource\Icons\play.png" />
     <Resource Include="Resource\Icons\redo.png" />
     <Resource Include="Resource\Icons\submit.png" />
+    <Resource Include="Resource\Icons\whitedelete.png" />
     <Resource Include="Resource\Images\addscanicon.png" />
     <Resource Include="Resource\Images\completeicon.png" />
     <Resource Include="Resource\Images\deleteicon.png" />
@@ -85,6 +88,7 @@
     <Resource Include="Resource\Images\folder.png" />
     <Resource Include="Resource\Images\foldericon.png" />
     <Resource Include="Resource\Images\saveicon.png" />
+    <Resource Include="Resource\Images\scanner.png" />
     <Resource Include="Resource\Images\scannericon.png" />
   </ItemGroup>
 

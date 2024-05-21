@@ -2,6 +2,7 @@
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
+using ScanApp.Model.Models;
 using ScanApp.Model.Requests.DeviceSetting;
 using ScanApp.Service.Constracts;
 using System;
@@ -17,11 +18,22 @@ namespace ScanApp.Service.Services
     {
         private readonly IDeviceSettingRepo _deviceSettingRepo;
         private readonly IUnitOfWork _unitOfWork;
+        public DeviceSettingModel? SelectedSetting { get; set; }
 
         public DeviceSettingService(ScanContext context)
         {
             _deviceSettingRepo = new DeviceSettingRepo(context);
             _unitOfWork = new UnitOfWork(context);
+        }
+
+        public void SetSetting(DeviceSettingModel setting)
+        {
+            SelectedSetting = setting;
+        }
+
+        public void ClearSelectedSetting()
+        {
+            SelectedSetting = null;
         }
 
         public async Task<IEnumerable<DeviceSetting>> Get(Expression<Func<DeviceSetting, bool>> predicate)

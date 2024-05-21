@@ -61,6 +61,7 @@ namespace OriginalScan
         private readonly IBatchService _batchService;
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
+        private readonly IDeviceSettingService _deviceSettingService;
 
         public MainWindow (ScanContext context)
         {
@@ -74,6 +75,7 @@ namespace OriginalScan
             _documentService = new DocumentService(context);
             _batchService = new BatchService(context);
             _imageService = new ImageService(context);
+            _deviceSettingService = new DeviceSettingService(context);
             _listImagesMain = new ObservableCollection<ScannedImage>();
             _listImagesSelected = new ObservableCollection<ScannedImage>();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
@@ -406,7 +408,7 @@ namespace OriginalScan
 
         private void ChooseDevice_Click(object sender, RoutedEventArgs e)
         {
-            DeviceWindow deviceWindow = new DeviceWindow();
+            DeviceWindow deviceWindow = new DeviceWindow(_deviceSettingService);
             deviceWindow.twainSession = _twainSession;
             deviceWindow.mainWindow = this;
             if (dataSource != null)

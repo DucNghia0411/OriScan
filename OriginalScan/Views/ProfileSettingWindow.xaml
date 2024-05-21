@@ -263,27 +263,46 @@
         </GroupBox>
 
         <Grid Grid.Row="1">
-            <Button x:Name="btnCancel"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="btnCancel" Grid.Column = "3"
             Style="{StaticResource ButtonStyle}" 
             HorizontalAlignment="Right" 
             Margin="0,0,10,0" 
             VerticalAlignment="Center"
             Background="#DF0029"
             Click="btnCancel_Click">
-
                 <StackPanel Orientation="Horizontal" Background="Transparent">
                     <Image Source="/Resource/Icons/closewhite.png"
-                   Width="15" Height="15" Margin="0,0,5,0" />
+                    Width="15" Height="15" Margin="0,0,5,0" />
                     <TextBlock Text="Hủy" />
                 </StackPanel>
-
             </Button>
 
-            <Button x:Name="btnOK"
+            <Button x:Name="btnDelete" Grid.Column = "2"
+            Style="{StaticResource ButtonStyle}" 
+            HorizontalAlignment="Right" 
+            Margin="0,0,10,0" 
+            VerticalAlignment="Center"
+            Background="#DF0029"
+            Click="btnDelete_Click">
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/whitedelete.png"
+                    Width="17" Height="17" Margin="0,0,5,0" />
+                    <TextBlock Text="Xóa" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="btnOK" Grid.Column = "1"
             Style="{StaticResource ButtonStyle}"
             Click="btnOK_Click" 
             HorizontalAlignment="Right" 
-            Margin="0,0,120,0" 
+            Margin="0,0,10,0" 
             VerticalAlignment="Center">
 
                 <StackPanel Orientation="Horizontal" Background="Transparent">

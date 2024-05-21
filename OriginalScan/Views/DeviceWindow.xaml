@@ -27,8 +27,8 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="9*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="9.5*"></RowDefinition>
+            <RowDefinition Height="0.8*"></RowDefinition>
         </Grid.RowDefinitions>
         <Label 
                 Content="Hiện tại:" 
@@ -47,19 +47,20 @@
             IsEnabled="False"
             VerticalAlignment="Top" Width="300"/>
 
-        <GroupBox 
-                materialDesign:ColorZoneAssist.Background="#00AE72"
-                materialDesign:ColorZoneAssist.Foreground="Black"
-                materialDesign:ColorZoneAssist.Mode="Custom"
-                Header="DANH SÁCH THIẾT BỊ" 
-                FontWeight="Bold"
-                BorderThickness="2"
-                Margin="10,50,10,10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox 
+            materialDesign:ColorZoneAssist.Background="#00AE72"
+            materialDesign:ColorZoneAssist.Foreground="Black"
+            materialDesign:ColorZoneAssist.Mode="Custom"
+            Header="DANH SÁCH THIẾT BỊ" 
+            FontWeight="Bold"
+            BorderThickness="2"
+            Margin="10,50,10,10">
                 <ListBox Grid.Row="0" Name="lbDevice"
                 MouseDoubleClick="lblDevice_MouseDoubleClick">
                     <ListBox.ItemTemplate>
@@ -68,14 +69,41 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                
-            </Grid>
-        </GroupBox>
+            </GroupBox>
+
+            <GroupBox 
+            materialDesign:ColorZoneAssist.Background="#00AE72"
+            materialDesign:ColorZoneAssist.Foreground="Black"
+            materialDesign:ColorZoneAssist.Mode="Custom"
+            Header="CẤU HÌNH ĐÃ LƯU" 
+            FontWeight="Bold"
+            BorderThickness="2"
+            Grid.Row="1"
+            Margin="10,0,10,10">
+                <ListView Name="lstvDevices" Grid.Row="0" Height="auto" 
+                    HorizontalAlignment="Stretch" VerticalAlignment="Top"
+                    SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseDoubleClick="lstvDevices_MouseDoubleClick">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0" HorizontalAlignment="Center" Height="70">
+                                <Image Source="{Binding ImagePath}" Width="40" Height="40"/>
+                                <TextBlock Text="{Binding DeviceName}" HorizontalAlignment="Center" TextWrapping="Wrap" Width="70" Height="30"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </GroupBox>
+        </Grid>
         <Grid Grid.Row="1">
             <Button x:Name="btnSetting" Content="Cài đặt nâng cao..."
             Click="btnSetting_Click" 
+            Margin="0,0,0,10"
             HorizontalAlignment="Left" 
-            Margin="0,0,0,10" 
             VerticalAlignment="Center"
             FontSize="13"
             FontWeight="Normal"
