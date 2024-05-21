@@ -228,6 +228,57 @@ namespace OriginalScan.Views
                 }
             }
 
+            if (twainSession != null && _deviceSettingService.SelectedSetting != null)
+            {
+                if (_deviceSettingService.SelectedSetting.IsDuplex == 2)
+                    DeviceSettingConverter.SetDuplex(true);
+                else
+                    DeviceSettingConverter.SetDuplex(false);
+
+                DeviceSettingConverter.SetBitDepth(_deviceSettingService.SelectedSetting.BitDepth);
+
+                TWFix32 dpi = new TWFix32
+                {
+                    Whole = (short)_deviceSettingService.SelectedSetting.Dpi,
+                    Fraction = 0
+                };
+
+                DeviceSettingConverter.SetDpi(dpi);
+
+                SupportedSize size;
+                if (_deviceSettingService.SelectedSetting.Size != null && Enum.TryParse(_deviceSettingService.SelectedSetting.Size, out size))
+                {
+                    DeviceSettingConverter.SetSize(size);
+                }
+
+                TWFix32 degree = new TWFix32
+                {
+                    Whole = (short)_deviceSettingService.SelectedSetting.RotateDegree,
+                    Fraction = 0
+                };
+                DeviceSettingConverter.SetRotateDegree(degree);
+
+                PixelType pixelType;
+                if (_deviceSettingService.SelectedSetting.PixelType != null && Enum.TryParse(_deviceSettingService.SelectedSetting.PixelType, out pixelType))
+                {
+                    DeviceSettingConverter.SetPixeType(pixelType);
+                }
+
+                TWFix32 brightness = new TWFix32
+                {
+                    Whole = (short)_deviceSettingService.SelectedSetting.Brightness,
+                    Fraction = 0
+                };
+                DeviceSettingConverter.SetBrightness(brightness);
+
+                TWFix32 contrast = new TWFix32
+                {
+                    Whole = (short)_deviceSettingService.SelectedSetting.Contrast,
+                    Fraction = 0
+                };
+                DeviceSettingConverter.SetContrast(contrast);
+            }
+
             LoadProfileSettingWindow(true);
         }
 

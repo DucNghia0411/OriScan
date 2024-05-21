@@ -10,11 +10,13 @@ using OriginalScan.Models;
 using ScanApp.Data.Entities;
 using ScanApp.Model.Requests.DeviceSetting;
 using ScanApp.Service.Constracts;
+using ScanApp.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
@@ -60,7 +62,7 @@ namespace OriginalScan.Views
 
         public void LoadData(DataSource src)
         {
-            if (dataSource == null) return;
+            if (dataSource == null || twainSession == null) return;
 
             txtDevice.Text = dataSource.Name;
 
@@ -325,22 +327,50 @@ namespace OriginalScan.Views
                 DeviceSettingConverter.SetContrast(contrast);
                 DeviceSettingConverter._isDefault = false;
 
-                DeviceSettingCreateRequest request = new DeviceSettingCreateRequest()
+                if (IsSavedSetting && _deviceSettingService.SelectedSetting != null)
                 {
-                    DeviceName = txtDevice.Text,
-                    IsDuplex = isDuplex ? 2 : 1,
-                    Size = JsonConvert.SerializeObject(cbPageSize.SelectedItem),
-                    Dpi = Convert.ToInt32(cbResolution.SelectedItem.ToString()),
-                    PixelType = JsonConvert.SerializeObject(cbPixelType.SelectedItem),
-                    BitDepth = Convert.ToInt32(cbBitDepth.SelectedItem.ToString()),
-                    RotateDegree = Convert.ToInt32(cbRotateDegree.SelectedItem.ToString()),
-                    Brightness = Convert.ToInt32(brightness.ToString()),
-                    Contrast = Convert.ToInt32(contrast.ToString()),
-                    CreatedDate = DateTime.Now.ToString()
-                };
+                    DeviceSettingUpdateRequest request = new DeviceSettingUpdateRequest()
+                    {
+                        Id = _deviceSettingService.SelectedSetting.Id,
+                        DeviceName = txtDevice.Text,
+                        IsDuplex = isDuplex ? 2 : 1,
+                        Size = cbPageSize.Text,
+                        Dpi = Convert.ToInt32(cbResolution.SelectedItem.ToString()),
+                        PixelType = cbPixelType.Text,
+                        BitDepth = Convert.ToInt32(cbBitDepth.SelectedItem.ToString()),
+                        RotateDegree = Convert.ToInt32(cbRotateDegree.SelectedItem.ToString()),
+                        Brightness = Convert.ToInt32(brightness.ToString()),
+                        Contrast = Convert.ToInt32(contrast.ToString()),
+                    };
 
-                var settingId = await _deviceSettingService.Create(request);
-                NotificationShow("success", $"Cài đặt thiết bị {txtDevice.Text} thành công và lưu cấu hình với id: {settingId}!");
+                    var settingId = await _deviceSettingService.Update(request);
+                    NotificationShow("success", $"Cập nhật cấu hình thành công với id: {settingId}!");
+                }
+                else
+                {
+                    DeviceSettingCreateRequest request = new DeviceSettingCreateRequest()
+                    {
+                        DeviceName = txtDevice.Text,
+                        IsDuplex = isDuplex ? 2 : 1,
+                        Size = cbPageSize.Text,
+                        Dpi = Convert.ToInt32(cbResolution.SelectedItem.ToString()),
+                        PixelType = cbPixelType.Text,
+                        BitDepth = Convert.ToInt32(cbBitDepth.SelectedItem.ToString()),
+                        RotateDegree = Convert.ToInt32(cbRotateDegree.SelectedItem.ToString()),
+                        Brightness = Convert.ToInt32(brightness.ToString()),
+                        Contrast = Convert.ToInt32(contrast.ToString()),
+                        CreatedDate = DateTime.Now.ToString()
+                    };
+
+                    var settingId = await _deviceSettingService.Create(request);
+                    NotificationShow("success", $"Cài đặt thiết bị {txtDevice.Text} thành công và lưu cấu hình với id: {settingId}!");
+                }
+                
+                if (deviceWindow != null)
+                {
+                    deviceWindow.GetListDevice();
+                }
+                
                 this.Visibility = Visibility.Hidden;
             }
             catch (Exception ex)
@@ -351,7 +381,33 @@ namespace OriginalScan.Views
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (_deviceSettingService.SelectedSetting == null) return; 
 
+            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa cấu hình của thiết bị: {txtDevice.Text} được tạo vào {_deviceSettingService.SelectedSetting.CreatedDate}", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (Result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    _deviceSettingService.Delete(_deviceSettingService.SelectedSetting.Id);
+                    NotificationShow("success", $"Xóa cấu hình thiết bị {txtDevice.Text} được tạo vào {_deviceSettingService.SelectedSetting.CreatedDate} thành công!");
+                    if (deviceWindow != null)
+                    {
+                        deviceWindow.GetListDevice();
+                    }
+
+                    this.Visibility = Visibility.Hidden;
+                }
+                catch (Exception ex)
+                {
+                    NotificationShow("error", $"{ex.Message}");
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

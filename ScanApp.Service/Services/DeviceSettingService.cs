@@ -3,6 +3,7 @@ using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
 using ScanApp.Model.Models;
+using ScanApp.Model.Requests.Batch;
 using ScanApp.Model.Requests.DeviceSetting;
 using ScanApp.Service.Constracts;
 using System;
@@ -80,6 +81,56 @@ namespace ScanApp.Service.Services
         public async Task<IEnumerable<DeviceSetting>> GetAll()
         {
             return await _deviceSettingRepo.GetAllAsync();
+        }
+
+        public async Task<int> Update(DeviceSettingUpdateRequest request)
+        {
+            try
+            {
+                var editSetting = await _deviceSettingRepo.GetByIdAsync(request.Id);
+
+                if (editSetting == null)
+                {
+                    return 0;
+                }
+
+                editSetting.DeviceName = request.DeviceName;
+                editSetting.IsDuplex = request.IsDuplex;
+                editSetting.Size = request.Size;
+                editSetting.Dpi = request.Dpi;
+                editSetting.PixelType = request.PixelType;
+                editSetting.BitDepth = request.BitDepth;
+                editSetting.RotateDegree = request.RotateDegree;
+                editSetting.Brightness = request.Brightness;
+                editSetting.Contrast = request.Contrast;
+
+                _deviceSettingRepo.Update(editSetting);
+                await _unitOfWork.Save();
+
+                _unitOfWork.ClearChangeTracker();
+
+                return editSetting.Id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            try
+            {
+                await _deviceSettingRepo.DeleteAsync(id);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
         }
     }
 }

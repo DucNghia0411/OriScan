@@ -25,5 +25,9 @@ namespace ScanApp.Service.Constracts
         Task<int> Create(DeviceSettingCreateRequest request);
 
         Task<IEnumerable<DeviceSetting>> GetAll();
+
+        Task<int> Update(DeviceSettingUpdateRequest request);
+
+        Task<bool> Delete(int id);
     }
 }
