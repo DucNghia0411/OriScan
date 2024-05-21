@@ -152,23 +152,13 @@ namespace OriginalScan.Views
 
             foreach (Batch batch in batches)
             {
-                string formattedCreatedDate = "";
-
-                DateTime createdDate;
-
-                if (DateTime.TryParseExact(batch.CreatedDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate)
-                    || DateTime.TryParseExact(batch.CreatedDate, "dd-MMM-yy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
-                {
-                    formattedCreatedDate = createdDate.ToString("M/d/yyyy h:mm:ss tt");
-                }
-
                 var obj = new
                 {
                     Id = batch.Id,
                     BatchName = batch.BatchName,
                     BatchPath = batch.BatchPath,
                     Note = batch.Note,
-                    CreatedDate = formattedCreatedDate
+                    CreatedDate = batch.CreatedDate
                 };
                 return_data.Add(obj);
 
@@ -193,6 +183,28 @@ namespace OriginalScan.Views
             if (txtBatchName.Text.Trim() == "")
                 notification += "Tên gói không được để trống! \n";
             return notification;
+        }
+
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
         }
 
         private void NotificationShow(string type, string message)
@@ -478,23 +490,13 @@ namespace OriginalScan.Views
 
             foreach (ScanApp.Data.Entities.Document document in documents)
             {
-                string formattedCreatedDate = "";
-
-                DateTime createdDate;
-
-                if (DateTime.TryParseExact(document.CreatedDate, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate)
-                    || DateTime.TryParseExact(document.CreatedDate, "dd-MMM-yy h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
-                {
-                    formattedCreatedDate = createdDate.ToString("M/d/yyyy h:mm:ss tt");
-                }
-
                 var obj = new
                 {
                     Id = document.Id,
                     DocumentName = document.DocumentName,
                     DocumentPath = document.DocumentPath,
                     Note = document.Note,
-                    CreatedDate = formattedCreatedDate
+                    CreatedDate = document.CreatedDate
                 };
                 return_data.Add(obj);
 

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,6 +112,28 @@ namespace OriginalScan.Views
             }
         }
 
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
+        }
+
         public async void GetListDevice()
         {
             try
@@ -132,7 +155,7 @@ namespace OriginalScan.Views
                         RotateDegree = device.RotateDegree,
                         Brightness = device.Brightness,
                         Contrast = device.Contrast,
-                        CreatedDate = device.CreatedDate,
+                        CreatedDate = FormatDateTime(device.CreatedDate),
                         ImagePath = "/Resource/Images/scanner.png"
                     };
                     return_data.Add(obj);

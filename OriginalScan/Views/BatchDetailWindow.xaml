@@ -127,8 +127,7 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="0"
-                     FontSize="14"
-                     IsReadOnly="True"/>
+                     FontSize="14"/>
 
                     <TextBox x:Name="txtCreatedDate" 
                      HorizontalAlignment="Stretch"
@@ -138,7 +137,7 @@
                      Grid.Column="1"
                      Grid.Row="1"
                      FontSize="14"
-                     IsReadOnly="True"/>
+                     IsEnabled="False"/>
 
                     <TextBox x:Name="txtPath" 
                      HorizontalAlignment="Stretch"
@@ -148,7 +147,7 @@
                      Grid.Column="1"
                      Grid.Row="2"
                      FontSize="14"
-                     IsReadOnly="True"/>
+                     IsEnabled="False"/>
 
                     <Button x:Name="btnPath"
                      Style="{StaticResource ButtonStyle}"
@@ -173,8 +172,7 @@
                      FontSize="14"
                      VerticalAlignment="Center" 
                      Grid.Column="1"
-                     Grid.Row="3"
-                     IsReadOnly="True"/>
+                     Grid.Row="3"/>
 
                     <TextBox x:Name="txtNumberingFont" 
                      HorizontalAlignment="Stretch"
@@ -183,8 +181,7 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="4"
-                     FontSize="14"
-                     IsReadOnly="True"/>
+                     FontSize="14"/>
 
                     <TextBox x:Name="txtDocRack" 
                      HorizontalAlignment="Stretch"
@@ -193,8 +190,7 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="5"
-                     FontSize="14"
-                     IsReadOnly="True"/>
+                     FontSize="14"/>
 
                     <TextBox x:Name="txtDocShelf" 
                      HorizontalAlignment="Stretch"
@@ -203,8 +199,7 @@
                      FontSize="14"
                      VerticalAlignment="Center" 
                      Grid.Column="1"
-                     Grid.Row="6"
-                     IsReadOnly="True"/>
+                     Grid.Row="6"/>
 
                     <TextBox x:Name="txtNumTableOfContents" 
                      HorizontalAlignment="Stretch"
@@ -213,8 +208,7 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="7"
-                     FontSize="14"
-                     IsReadOnly="True"/>
+                     FontSize="14"/>
 
                     <TextBox x:Name="txtFileCabinet" 
                      HorizontalAlignment="Stretch"
@@ -223,8 +217,7 @@
                      VerticalAlignment="Center" 
                      Grid.Column="1"
                      Grid.Row="8"
-                     FontSize="14"
-                     IsReadOnly="True"/>
+                     FontSize="14"/>
                 </Grid>
             </GroupBox>
 

@@ -8,6 +8,7 @@ using ScanApp.Model.Requests.Batch;
 using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -57,7 +58,7 @@ namespace ScanApp.Service.Services
                     BatchName = request.BatchName,
                     BatchPath = request.BatchPath,
                     Note = request.Note,
-                    CreatedDate = request.CreatedDate,
+                    CreatedDate = FormatDateTime(request.CreatedDate),
                     NumberingFont = request.NumberingFont,
                     DocumentRack = request.DocumentRack,
                     DocumentShelf = request.DocumentShelf,
@@ -141,6 +142,28 @@ namespace ScanApp.Service.Services
             }
 
             return true;
+        }
+
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
         }
     }
 }

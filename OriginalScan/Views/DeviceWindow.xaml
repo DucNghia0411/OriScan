@@ -50,7 +50,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="0.7*"/>
+                <RowDefinition Height="0.75*"/>
             </Grid.RowDefinitions>
 
             <GroupBox 
@@ -90,9 +90,10 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="0" HorizontalAlignment="Center" Height="70">
+                            <StackPanel HorizontalAlignment="Center" Height="100">
                                 <Image Source="{Binding ImagePath}" Width="40" Height="40"/>
-                                <TextBlock Text="{Binding DeviceName}" HorizontalAlignment="Center" TextWrapping="Wrap" Width="70" Height="30"/>
+                                <TextBlock Text="{Binding DeviceName}" HorizontalAlignment="Center" TextAlignment="center" TextWrapping="Wrap" Width="70" Height="30"/>
+                                <TextBlock Text="{Binding CreatedDate}" HorizontalAlignment="Center" TextAlignment="center" TextWrapping="Wrap" Width="70" Height="30" FontSize="12" FontWeight="Normal"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

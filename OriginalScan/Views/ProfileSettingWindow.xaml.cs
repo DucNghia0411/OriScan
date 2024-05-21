@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Intrinsics.Arm;
@@ -58,6 +59,28 @@ namespace OriginalScan.Views
             }
             this.ResizeMode = ResizeMode.NoResize;
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+        }
+
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
         }
 
         public void LoadData(DataSource src)
@@ -359,7 +382,7 @@ namespace OriginalScan.Views
                         RotateDegree = Convert.ToInt32(cbRotateDegree.SelectedItem.ToString()),
                         Brightness = Convert.ToInt32(brightness.ToString()),
                         Contrast = Convert.ToInt32(contrast.ToString()),
-                        CreatedDate = DateTime.Now.ToString()
+                        CreatedDate = FormatDateTime(DateTime.Now.ToString())
                     };
 
                     var settingId = await _deviceSettingService.Create(request);
@@ -383,14 +406,14 @@ namespace OriginalScan.Views
         {
             if (_deviceSettingService.SelectedSetting == null) return; 
 
-            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa cấu hình của thiết bị: {txtDevice.Text} được tạo vào {_deviceSettingService.SelectedSetting.CreatedDate}", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn muốn xóa cấu hình của thiết bị: {txtDevice.Text} được tạo vào {FormatDateTime(_deviceSettingService.SelectedSetting.CreatedDate)}", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (Result == MessageBoxResult.Yes)
             {
                 try
                 {
                     _deviceSettingService.Delete(_deviceSettingService.SelectedSetting.Id);
-                    NotificationShow("success", $"Xóa cấu hình thiết bị {txtDevice.Text} được tạo vào {_deviceSettingService.SelectedSetting.CreatedDate} thành công!");
+                    NotificationShow("success", $"Xóa cấu hình thiết bị {txtDevice.Text} được tạo vào {FormatDateTime(_deviceSettingService.SelectedSetting.CreatedDate)} thành công!");
                     if (deviceWindow != null)
                     {
                         deviceWindow.GetListDevice();

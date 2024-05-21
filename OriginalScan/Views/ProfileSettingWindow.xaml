@@ -275,12 +275,12 @@
             HorizontalAlignment="Right" 
             Margin="0,0,10,0" 
             VerticalAlignment="Center"
-            Background="#DF0029"
+            Background="Gray"
             Click="btnCancel_Click">
                 <StackPanel Orientation="Horizontal" Background="Transparent">
-                    <Image Source="/Resource/Icons/closewhite.png"
+                    <Image Source="/Resource/Icons/exit.png"
                     Width="15" Height="15" Margin="0,0,5,0" />
-                    <TextBlock Text="Hủy" />
+                    <TextBlock Text="Trở về" />
                 </StackPanel>
             </Button>
 

@@ -93,23 +93,24 @@ namespace OriginalScan.Views
         {
             if (IsEdit)
             {
-                txtBatchName.IsReadOnly = false;
-                txtNote.IsReadOnly = false;
-                txtNumberingFont.IsReadOnly = false;
-                txtDocRack.IsReadOnly = false;
-                txtDocShelf.IsReadOnly = false;
-                txtNumTableOfContents.IsReadOnly = false;
-                txtFileCabinet.IsReadOnly = false;
+                txtBatchName.IsEnabled = true;
+                txtNote.IsEnabled = true;
+                txtNumberingFont.IsEnabled = true;
+                txtDocRack.IsEnabled = true;
+                txtDocShelf.IsEnabled = true;
+                txtNumTableOfContents.IsEnabled = true;
+                txtFileCabinet.IsEnabled = true;
             }
             else
             {
-                txtBatchName.IsReadOnly = true;
-                txtNote.IsReadOnly = true;
-                txtNumberingFont.IsReadOnly = true;
-                txtDocRack.IsReadOnly = true;
-                txtDocShelf.IsReadOnly = true;
-                txtNumTableOfContents.IsReadOnly = true;
-                txtFileCabinet.IsReadOnly = true;
+                txtBatchName.IsEnabled = false;
+                txtNote.IsEnabled = false;
+                txtNumberingFont.IsEnabled = false;
+                txtDocRack.IsEnabled = false;
+                txtDocShelf.IsEnabled = false;
+                txtNumTableOfContents.IsEnabled = false;
+                txtFileCabinet.IsEnabled = false;
+
                 btnEdit.Visibility = Visibility.Collapsed;
             }
         }

@@ -19,6 +19,7 @@
     <None Remove="Resource\Icons\diskette.png" />
     <None Remove="Resource\Icons\document.png" />
     <None Remove="Resource\Icons\edit.png" />
+    <None Remove="Resource\Icons\exit.png" />
     <None Remove="Resource\Icons\eye.png" />
     <None Remove="Resource\Icons\filelocation.png" />
     <None Remove="Resource\Icons\logout.png" />
@@ -72,6 +73,7 @@
     <Resource Include="Resource\Icons\diskette.png" />
     <Resource Include="Resource\Icons\document.png" />
     <Resource Include="Resource\Icons\edit.png" />
+    <Resource Include="Resource\Icons\exit.png" />
     <Resource Include="Resource\Icons\eye.png" />
     <Resource Include="Resource\Icons\logout.png" />
     <Resource Include="Resource\Icons\pdf.png" />

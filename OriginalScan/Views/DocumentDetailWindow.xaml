@@ -143,8 +143,7 @@
                 VerticalAlignment="Center" 
                 Grid.Column="1"
                 Grid.Row="0"
-                FontSize="14"
-                IsReadOnly="True"/>
+                FontSize="14"/>
                     
                     <TextBox x:Name="txtBatchName" 
                  HorizontalAlignment="Stretch"
@@ -154,7 +153,7 @@
                  Grid.Column="1"
                  Grid.Row="1"
                  FontSize="14"
-                 IsReadOnly="True"/>
+                 IsEnabled="False"/>
 
                     <TextBox x:Name="txtCreatedDate" 
                  HorizontalAlignment="Stretch"
@@ -164,7 +163,7 @@
                  Grid.Column="1"
                  Grid.Row="2"
                  FontSize="14"
-                 IsReadOnly="True"/>
+                 IsEnabled="False"/>
 
                     <TextBox x:Name="txtPath" 
                  HorizontalAlignment="Stretch"
@@ -174,9 +173,9 @@
                  Grid.Column="1"
                  Grid.Row="3"
                  FontSize="14"
-                 IsReadOnly="True"/>
+                 IsEnabled="False"/>
 
-                <Button x:Name="btnPath"
+                    <Button x:Name="btnPath"
                  Style="{StaticResource ButtonStyle}"
                  HorizontalAlignment="Right"
                  Click="CbtnPath_Click" 
@@ -199,8 +198,7 @@
                  FontSize="14"
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="4"
-                 IsReadOnly="True"/>
+                 Grid.Row="4"/>
 
                     <TextBox x:Name="txtAgencyIdentifier" 
                  HorizontalAlignment="Stretch"
@@ -209,8 +207,7 @@
                  VerticalAlignment="Center" 
                  Grid.Column="1"
                  Grid.Row="5"
-                 FontSize="14"
-                 IsReadOnly="True"/>
+                 FontSize="14"/>
 
                     <TextBox x:Name="txtDocIdentifier" 
                  HorizontalAlignment="Stretch"
@@ -219,8 +216,7 @@
                  VerticalAlignment="Center" 
                  Grid.Column="1"
                  Grid.Row="6"
-                 FontSize="14"
-                 IsReadOnly="True"/>
+                 FontSize="14"/>
 
                     <TextBox x:Name="txtNumOfSheets" 
                  HorizontalAlignment="Stretch"
@@ -230,7 +226,7 @@
                  VerticalAlignment="Center" 
                  Grid.Column="1"
                  Grid.Row="7"
-                 IsReadOnly="True" KeyDown="txtNumOfSheets_KeyDown"/>
+                 IsEnabled="False" KeyDown="txtNumOfSheets_KeyDown"/>
 
                     <DatePicker x:Name="dpkStartDate" 
                  HorizontalAlignment="Stretch"
@@ -259,8 +255,7 @@
                  FontSize="14"
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="10"
-                 IsReadOnly="True"/>
+                 Grid.Row="10"/>
                 </Grid>
             </GroupBox>
 

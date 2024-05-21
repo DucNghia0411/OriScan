@@ -54,6 +54,28 @@ namespace OriginalScan.Views
             GetTask();
         }
 
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
+        }
+
         public async void GetDocument()
         {
             try
@@ -82,21 +104,8 @@ namespace OriginalScan.Views
                     txtNumOfSheets.Text = document.NumberOfSheets.ToString();
                     
                     txtStoragePeriod.Text = document.StoragePeriod;
-
-                    DateTime startDate;
-                    DateTime endDate;
-
-                    if (DateTime.TryParseExact(document.StartDate, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate)
-                        || DateTime.TryParseExact(document.StartDate, "dd-MMM-yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
-                    {
-                        dpkStartDate.SelectedDate = startDate;
-                    }
-
-                    if (DateTime.TryParseExact(document.EndDate, "M/d/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate)
-                        || DateTime.TryParseExact(document.EndDate, "dd-MMM-yy", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
-                    {
-                        dpkEndDate.SelectedDate = endDate;
-                    }
+                    dpkStartDate.SelectedDate = DateTime.Parse(document.StartDate);
+                    dpkEndDate.SelectedDate = DateTime.Parse(document.EndDate);
                 }
             }
             catch (Exception ex)
@@ -110,25 +119,23 @@ namespace OriginalScan.Views
         {
             if (IsEdit)
             {
-                txtDocumentName.IsReadOnly = false;
-                txtNote.IsReadOnly = false;
-                txtAgencyIdentifier.IsReadOnly = false;
-                txtDocIdentifier.IsReadOnly = false;
-                txtNumOfSheets.IsReadOnly = false;
+                txtDocumentName.IsEnabled = true;
+                txtNote.IsEnabled = true;
+                txtAgencyIdentifier.IsEnabled = true;
+                txtDocIdentifier.IsEnabled = true;
                 dpkStartDate.IsEnabled = true;
                 dpkEndDate.IsEnabled = true;
-                txtStoragePeriod.IsReadOnly = false;
+                txtStoragePeriod.IsEnabled = true;
             }
             else
             {
-                txtDocumentName.IsReadOnly = true;
-                txtNote.IsReadOnly = true;
-                txtAgencyIdentifier.IsReadOnly = true;
-                txtDocIdentifier.IsReadOnly = true;
-                txtNumOfSheets.IsReadOnly = true;
+                txtDocumentName.IsEnabled = false;
+                txtNote.IsEnabled = false;
+                txtAgencyIdentifier.IsEnabled = false;
+                txtDocIdentifier.IsEnabled = false;
                 dpkStartDate.IsEnabled = false;
                 dpkEndDate.IsEnabled = false;
-                txtStoragePeriod.IsReadOnly = true;
+                txtStoragePeriod.IsEnabled = false;
                 btnEdit.Visibility = Visibility.Collapsed;
             }
         }

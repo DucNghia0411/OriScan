@@ -9,6 +9,7 @@ using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -59,12 +60,12 @@ namespace ScanApp.Service.Services
                     DocumentName = request.DocumentName,
                     DocumentPath = request.DocumentPath,
                     Note = request.Note,
-                    CreatedDate = request.CreatedDate,
+                    CreatedDate = FormatDateTime(request.CreatedDate),
                     AgencyIdentifier = request.AgencyIdentifier,
                     DocumentIdentifier = request.DocumentIdentifier,
                     NumberOfSheets = request.NumberOfSheets,
-                    StartDate = request.StartDate,
-                    EndDate = request.EndDate,
+                    StartDate = FormatDateTime(request.StartDate),
+                    EndDate = FormatDateTime(request.EndDate),
                     StoragePeriod = request.StoragePeriod
                 };
 
@@ -126,8 +127,8 @@ namespace ScanApp.Service.Services
                 editDocument.AgencyIdentifier = request.AgencyIdentifier;
                 editDocument.DocumentIdentifier = request.DocumentIdentifier;
                 editDocument.NumberOfSheets = request.NumberOfSheets;
-                editDocument.StartDate = request.StartDate;
-                editDocument.EndDate = request.EndDate;
+                editDocument.StartDate = FormatDateTime(request.StartDate);
+                editDocument.EndDate = FormatDateTime(request.EndDate);
                 editDocument.StoragePeriod = request.StoragePeriod;
 
                 _documentRepo.Update(editDocument);
@@ -168,6 +169,28 @@ namespace ScanApp.Service.Services
             }
 
             return true;
+        }
+
+        public string FormatDateTime(string? inputDate)
+        {
+            if (inputDate == null) return "";
+            string formattedDate = "";
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+
+            DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
+            string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
+
+            foreach (string format in allDatePatterns)
+            {
+                DateTime createdDate;
+
+                if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
+                {
+                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                }
+            }
+
+            return formattedDate;
         }
     }
 }
