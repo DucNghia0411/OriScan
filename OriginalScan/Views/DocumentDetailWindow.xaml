@@ -236,7 +236,7 @@
                  Grid.Row="8"
                  FontSize="14"
                  IsEnabled="False"  
-                 SelectedDateChanged="dpkStartDate_SelectedDateChanged"/>
+                 SelectedDateChanged="dpkStartDate_SelectedDateChanged" PreviewKeyDown="dpkStartDate_PreviewKeyDown"/>
                  
                      <DatePicker x:Name="dpkEndDate" 
                  HorizontalAlignment="Stretch"
@@ -246,7 +246,7 @@
                  Grid.Row="9"
                  FontSize="14"
                  IsEnabled="False" 
-                 SelectedDateChanged="dpkEndDate_SelectedDateChanged"/>
+                 SelectedDateChanged="dpkEndDate_SelectedDateChanged" PreviewKeyDown="dpkEndDate_PreviewKeyDown"/>
 
                     <TextBox x:Name="txtStoragePeriod" 
                  HorizontalAlignment="Stretch"

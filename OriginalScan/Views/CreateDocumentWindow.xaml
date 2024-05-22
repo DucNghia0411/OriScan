@@ -153,7 +153,8 @@
                                 Grid.Row="5"
                                 Grid.Column="1"
                                 VerticalAlignment="Center" 
-                                Width="260" SelectedDateChanged="dpkStartDate_SelectedDateChanged"/>
+                                Width="260"
+                                SelectedDateChanged="dpkStartDate_SelectedDateChanged" PreviewKeyDown="dpkStartDate_PreviewKeyDown"/>
 
                     <DatePicker x:Name="dpkEndDate" 
                                 HorizontalAlignment="Center" 
@@ -161,7 +162,7 @@
                                 Grid.Row="6"
                                 Grid.Column="1"
                                 VerticalAlignment="Center" 
-                                Width="260" SelectedDateChanged="dpkEndDate_SelectedDateChanged"/>
+                                Width="260" SelectedDateChanged="dpkEndDate_SelectedDateChanged" PreviewKeyDown="dpkEndDate_PreviewKeyDown"/>
 
                     <TextBox x:Name="txtStoragePeriod" 
                          HorizontalAlignment="Center" 

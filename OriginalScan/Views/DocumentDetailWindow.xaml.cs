@@ -382,5 +382,31 @@ namespace OriginalScan.Views
                 return;
             }
         }
+
+        private void dpkStartDate_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (dpkStartDate.SelectedDate != null)
+            {
+                dpkStartDate.Text = dpkStartDate.SelectedDate.ToString();
+            }
+            else
+            {
+                dpkStartDate.Text = string.Empty;
+            }
+        }
+
+        private void dpkEndDate_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (dpkEndDate.SelectedDate != null)
+            {
+                dpkEndDate.Text = dpkEndDate.SelectedDate.ToString();
+            }
+            else
+            {
+                dpkEndDate.Text = string.Empty;
+            }
+        }
     }
 }
