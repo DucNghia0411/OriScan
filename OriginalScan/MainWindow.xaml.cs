@@ -158,6 +158,14 @@ namespace OriginalScan
                 var session = new TwainSession(appId);
                 _twainSession = session;
                 _twainSession.Open();
+
+                var dataSources = _twainSession.GetSources().ToList();
+                dataSource = dataSources.FirstOrDefault();
+
+                if (dataSource == null) return;
+
+                if (_twainSession != null && !_twainSession.IsSourceOpen)
+                    dataSource.Open();
             }
             catch (Exception ex)
             {
@@ -179,6 +187,18 @@ namespace OriginalScan
                 if (dataSource == null)
                 {
                     NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
+                    return;
+                }
+
+                if (_batchService.SelectedBatch == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn gói tài liệu trước khi thực hiện quét!");
+                    return;
+                }
+
+                if (_documentService.SelectedDocument == null)
+                {
+                    NotificationShow("warning", "Vui lòng chọn tài liệu trước khi thực hiện quét!");
                     return;
                 }
 
