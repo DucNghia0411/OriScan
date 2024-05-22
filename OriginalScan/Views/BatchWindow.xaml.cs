@@ -165,6 +165,7 @@ namespace OriginalScan.Views
                 if (_batchService.SelectedBatch != null && _batchService.SelectedBatch.Id == batch.Id)
                 {
                     selectedItem = obj;
+                    txtCurrentBatch.Text = _batchService.SelectedBatch.BatchName;
                 }
             }
 
@@ -194,6 +195,8 @@ namespace OriginalScan.Views
             DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
             string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
 
+            bool isConverted = false;
+
             foreach (string format in allDatePatterns)
             {
                 DateTime createdDate;
@@ -201,7 +204,13 @@ namespace OriginalScan.Views
                 if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
                 {
                     formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                    isConverted = true;
                 }
+            }
+
+            if (!isConverted)
+            {
+                formattedDate = inputDate;
             }
 
             return formattedDate;
@@ -339,6 +348,13 @@ namespace OriginalScan.Views
             CreateDocumentWindow createDocumentWindow = new CreateDocumentWindow(_context, _batchService, _documentService);
             createDocumentWindow.ShowDialog();
             lstvDocuments.SelectedItems.Clear();
+            txtCurrentDocument.Text = string.Empty;
+            MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (mainWindow != null)
+            {
+                mainWindow.lblDocumentName.Content = string.Empty;
+                mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
+            }
             LoadTreeView();
         }
 
@@ -503,6 +519,7 @@ namespace OriginalScan.Views
                 if (_documentService.SelectedDocument != null && _documentService.SelectedDocument.Id == document.Id)
                 {
                     selectedItem = obj;
+                    txtCurrentDocument.Text = _documentService.SelectedDocument.DocumentName;
                 }
             }
 
@@ -652,41 +669,40 @@ namespace OriginalScan.Views
 
                 if (Result == MessageBoxResult.Yes)
                 {
+                    var imageDelete = await _imageService.DeleteByDocument(selectedDocument.Id);
+
+                    string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string folderPath = selectedDocument.DocumentPath;
+                    string path = System.IO.Path.Combine(userFolderPath, folderPath);
+
                     try
                     {
-                        var imageDelete = await _imageService.DeleteByDocument(selectedDocument.Id);
-
-                        string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                        string folderPath = selectedDocument.DocumentPath;
-                        string path = System.IO.Path.Combine(userFolderPath, folderPath);
-
-                        try
-                        {
-                            Directory.Delete(path, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            NotificationShow("error", $"{ex.Message}");
-                        }
-
-                        var documentDelete = await _documentService.Delete(selectedDocument.Id);
-
-                        if (documentDelete)
-                        {
-                            NotificationShow("success", $"Xóa thành công tài liệu {selectedDocument.DocumentName}");
-                            if (_batchService.SelectedBatch != null)
-                            {
-                                GetDocumentsByBatch(_batchService.SelectedBatch.Id);
-                                _documentService.ClearSelectedDocument();
-                            }
-
-                            LoadTreeView();
-                        }
+                        Directory.Delete(path, true);
                     }
                     catch (Exception ex)
                     {
                         NotificationShow("error", $"{ex.Message}");
-                        return;
+                    }
+
+                    var documentDelete = await _documentService.Delete(selectedDocument.Id);
+
+                    if (documentDelete)
+                    {
+                        NotificationShow("success", $"Xóa thành công tài liệu {selectedDocument.DocumentName}");
+                        if (_batchService.SelectedBatch != null)
+                        {
+                            GetDocumentsByBatch(_batchService.SelectedBatch.Id);
+                            _documentService.ClearSelectedDocument();
+                        }
+
+                        txtCurrentDocument.Text = string.Empty;
+                        MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                        if (mainWindow != null)
+                        {
+                            mainWindow.lblDocumentName.Content = string.Empty;
+                            mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
+                        }
+                        LoadTreeView();
                     }
                 }
                 else
