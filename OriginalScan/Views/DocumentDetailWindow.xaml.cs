@@ -120,6 +120,20 @@ namespace OriginalScan.Views
                     {
                         dpkEndDate.SelectedDate = DateTime.Parse(document.EndDate);
                     }
+
+                    if (document.PdfPath != null)
+                    {
+                        txtPdfPath.Visibility = Visibility.Visible;
+                        lblPdfPath.Visibility = Visibility.Visible;
+                        btnPdfPath.Visibility = Visibility.Visible;
+                        txtPdfPath.Text = document.PdfPath;
+                    }
+                    else
+                    {
+                        txtPdfPath.Visibility = Visibility.Collapsed;
+                        lblPdfPath.Visibility = Visibility.Collapsed;
+                        btnPdfPath.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
             catch (Exception ex)
@@ -383,6 +397,29 @@ namespace OriginalScan.Views
             }
         }
 
+        private void CbtnPdfPath_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                userFolderPath = userFolderPath.Replace("/", "\\");
+                string folderPath = System.IO.Path.Combine(userFolderPath, txtPdfPath.Text);
+
+                if (!File.Exists(folderPath))
+                {
+                    NotificationShow("error", $"Không tìm thấy đường dẫn: {folderPath}");
+                    return;
+                }
+
+                Process.Start("explorer.exe", $"/select,\"{folderPath}\"");
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", $"Có lỗi: {ex.Message}");
+                return;
+            }
+        }
+
         private void dpkStartDate_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -407,6 +444,6 @@ namespace OriginalScan.Views
             {
                 dpkEndDate.Text = string.Empty;
             }
-        }
+        } 
     }
 }

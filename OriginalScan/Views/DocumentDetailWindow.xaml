@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Chi tiết tài liệu" 
-        Height="660" 
+        Height="700" 
         Width="1200"
         MinHeight="615"
         Icon="/Resource/Images/file.png"
@@ -50,6 +50,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
@@ -87,53 +88,60 @@
                        Grid.Row="3"
                        FontSize="14"/>
 
-                    <Label Content="Ghi chú:" 
+                    <Label x:Name="lblPdfPath" Content="Đường dẫn Pdf:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="4"
                        FontSize="14"/>
 
-                    <Label Content="Mã cơ quan:" 
+                    <Label Content="Ghi chú:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="5"
                        FontSize="14"/>
 
-                    <Label Content="Số/ký hiệu hồ sơ:" 
+                    <Label Content="Mã cơ quan:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="6"
                        FontSize="14"/>
-                
-                    <Label Content="Số tờ:" 
+
+                    <Label Content="Số/ký hiệu hồ sơ:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="7"
                        FontSize="14"/>
                 
-                    <Label Content="Thời gian bắt đầu:" 
+                    <Label Content="Số tờ:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="8"
                        FontSize="14"/>
                 
-                    <Label Content="Thời gian kết thúc:" 
+                    <Label Content="Thời gian bắt đầu:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="9"
                        FontSize="14"/>
                 
-                    <Label Content="Thời gian bảo quản:" 
+                    <Label Content="Thời gian kết thúc:" 
                        HorizontalAlignment="Right" 
                        VerticalAlignment="Center"
                        Grid.Column="0"
                        Grid.Row="10"
+                       FontSize="14"/>
+                
+                    <Label Content="Thời gian bảo quản:" 
+                       HorizontalAlignment="Right" 
+                       VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Grid.Row="11"
                        FontSize="14"/>
 
                     <TextBox x:Name="txtDocumentName" 
@@ -191,6 +199,32 @@
                     </StackPanel>
                 </Button>
 
+                    <TextBox x:Name="txtPdfPath" 
+                 HorizontalAlignment="Stretch"
+                 Margin="20,0,70,0" 
+                 TextWrapping="Wrap" 
+                 VerticalAlignment="Center" 
+                 Grid.Column="1"
+                 Grid.Row="4"
+                 FontSize="14"
+                 IsEnabled="False"/>
+                 
+                <Button x:Name="btnPdfPath"
+                 Style="{StaticResource ButtonStyle}"
+                 HorizontalAlignment="Right"
+                 Click="CbtnPdfPath_Click" 
+                 Margin="0,7,20,0" 
+                 Grid.Column="1"
+                 Grid.Row="4"
+                 Width="40"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Background="Transparent">
+                        <Image Source="/Resource/Images/foldericon.png" Width="30" Height="30"/>
+                    </StackPanel>
+                </Button>
+
                     <TextBox x:Name="txtNote" 
                  HorizontalAlignment="Stretch"
                  Margin="20,0,20,0" 
@@ -198,7 +232,7 @@
                  FontSize="14"
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="4"/>
+                 Grid.Row="5"/>
 
                     <TextBox x:Name="txtAgencyIdentifier" 
                  HorizontalAlignment="Stretch"
@@ -206,7 +240,7 @@
                  TextWrapping="NoWrap" 
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="5"
+                 Grid.Row="6"
                  FontSize="14"/>
 
                     <TextBox x:Name="txtDocIdentifier" 
@@ -215,7 +249,7 @@
                  TextWrapping="Wrap" 
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="6"
+                 Grid.Row="7"
                  FontSize="14"/>
 
                     <TextBox x:Name="txtNumOfSheets" 
@@ -225,7 +259,7 @@
                  FontSize="14"
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="7"
+                 Grid.Row="8"
                  IsEnabled="False" KeyDown="txtNumOfSheets_KeyDown"/>
 
                     <DatePicker x:Name="dpkStartDate" 
@@ -233,7 +267,7 @@
                  Margin="20,0,20,0" 
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="8"
+                 Grid.Row="9"
                  FontSize="14"
                  IsEnabled="False"  
                  SelectedDateChanged="dpkStartDate_SelectedDateChanged" PreviewKeyDown="dpkStartDate_PreviewKeyDown"/>
@@ -243,7 +277,7 @@
                  Margin="20,0,20,0" 
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="9"
+                 Grid.Row="10"
                  FontSize="14"
                  IsEnabled="False" 
                  SelectedDateChanged="dpkEndDate_SelectedDateChanged" PreviewKeyDown="dpkEndDate_PreviewKeyDown"/>
@@ -255,7 +289,7 @@
                  FontSize="14"
                  VerticalAlignment="Center" 
                  Grid.Column="1"
-                 Grid.Row="10"/>
+                 Grid.Row="11"/>
                 </Grid>
             </GroupBox>
 

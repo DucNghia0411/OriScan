@@ -200,5 +200,30 @@ namespace ScanApp.Service.Services
 
             return formattedDate;
         }
+
+        public async Task<int> UpdatePdfPath(DocumentToPdfRequest request)
+        {
+            try
+            {
+                var editDocument = await _documentRepo.GetByIdAsync(request.Id);
+
+                if (editDocument == null)
+                {
+                    return 0;
+                }
+
+                editDocument.PdfPath = request.PdfPath;
+
+                _documentRepo.Update(editDocument);
+                await _unitOfWork.Save();
+                _unitOfWork.ClearChangeTracker();
+
+                return editDocument.Id;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

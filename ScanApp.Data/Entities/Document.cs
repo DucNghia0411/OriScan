@@ -29,6 +29,8 @@ public partial class Document
 
     public string? StoragePeriod { get; set; }
 
+    public string? PdfPath { get; set; }
+
     public virtual Batch Batch { get; set; } = null!;
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

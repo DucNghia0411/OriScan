@@ -66,6 +66,7 @@ public partial class ScanContext : DbContext
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.EndDate).HasColumnName("end_date");
             entity.Property(e => e.StoragePeriod).HasColumnName("storage_period");
+            entity.Property(e => e.PdfPath).HasColumnName("pdf_path");
 
             entity.HasOne(d => d.Batch).WithMany(p => p.Documents)
                 .HasForeignKey(d => d.BatchId)

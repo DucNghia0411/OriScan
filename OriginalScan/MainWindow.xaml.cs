@@ -290,7 +290,7 @@ namespace OriginalScan
             }
         }
 
-        public void ConvertToPdfButton_Click(object sender, EventArgs e)
+        public async void ConvertToPdfButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -304,7 +304,7 @@ namespace OriginalScan
 
                 if (trvBatchExplorer.SelectedItem is TreeViewItem selectedItem)
                 {
-                    if (BatchPath != null && selectedItem.Tag != null)
+                    if (BatchPath != null && selectedItem.Tag != null && _documentService.SelectedDocument != null)
                     {
                         string filePath = System.IO.Path.Combine(BatchPath, selectedItem.Tag.ToString()!);
                         string path = System.IO.Path.Combine(userFolderPath, filePath);
@@ -324,6 +324,21 @@ namespace OriginalScan
                             string folderPath = System.IO.Path.Combine(userFolderPath, pdfPath);
                             Directory.CreateDirectory(folderPath);
                             string pdfFilePath = System.IO.Path.Combine(userFolderPath, pdfPath, pdfFileName);
+
+                            string shortPdfPath = System.IO.Path.Combine(pdfPath, pdfFileName);
+                            DocumentToPdfRequest request = new DocumentToPdfRequest()
+                            {
+                                Id = _documentService.SelectedDocument.Id,
+                                PdfPath = shortPdfPath,
+                            };
+
+                            var updateResult = await _documentService.UpdatePdfPath(request);
+
+                            if (updateResult == 0)
+                            {
+                                NotificationShow("error", "Cập nhật không thành công!");
+                                return;
+                            }
 
                             if (File.Exists(pdfFilePath))
                             {

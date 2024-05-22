@@ -10,6 +10,7 @@ using Notification.Wpf.Controls;
 using NTwain.Data;
 using OriginalScan.Models;
 using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
@@ -715,6 +716,107 @@ namespace OriginalScan.Views
             catch (Exception ex)
             {
                 NotificationShow("error", $"Xóa thất bại! {ex.Message}");
+                return;
+            }
+        }
+
+        private async void btnConvertToPdf_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
+
+                var dataContext = clickedButton.DataContext;
+                lstvDocuments.SelectedItem = dataContext;
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+                var currentDocument = await _documentService.FirstOrDefault(e => e.Id == selectedDocument.Id);
+
+                if (currentDocument == null) return;
+
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
+                string pdfPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.PDFs);
+                string defaultPath = System.IO.Path.Combine(userFolderPath, systemPath);
+
+                if (!Directory.Exists(defaultPath))
+                    defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                string path = System.IO.Path.Combine(userFolderPath, currentDocument.DocumentPath);
+
+                if (Directory.Exists(path))
+                {
+                    string[] images = Directory.GetFiles(path);
+                    string folderName = System.IO.Path.GetFileName(path);
+
+                    if (images.Count() == 0)
+                    {
+                        NotificationShow("error", $"Không có hình ảnh trong thư mục!");
+                        return;
+                    }
+
+                    string pdfFileName = folderName + ".pdf";
+                    string folderPath = System.IO.Path.Combine(userFolderPath, pdfPath);
+                    Directory.CreateDirectory(folderPath);
+                    string pdfFilePath = System.IO.Path.Combine(userFolderPath, pdfPath, pdfFileName);
+
+                    string shortPdfPath = System.IO.Path.Combine(pdfPath, pdfFileName);
+                    DocumentToPdfRequest request = new DocumentToPdfRequest()
+                    {
+                        Id = selectedDocument.Id,
+                        PdfPath = shortPdfPath,
+                    };
+
+                    var updateResult = await _documentService.UpdatePdfPath(request);
+
+                    if (updateResult == 0)
+                    {
+                        NotificationShow("error", "Cập nhật không thành công!");
+                        return;
+                    }
+
+                    if (File.Exists(pdfFilePath))
+                    {
+                        MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        if (pdfConfirm == MessageBoxResult.Yes)
+                        {
+                            try
+                            {
+                                File.Delete(pdfFileName);
+                            }
+                            catch (Exception ex)
+                            {
+                                NotificationShow("error", $"{ex.Message}");
+                                return;
+                            }
+                        }
+                        else
+                            return;
+                    }
+
+                    PdfDocument pdfDocument = new PdfDocument();
+
+                    foreach (string imagePath in images)
+                    {
+                        PdfPage page = pdfDocument.AddPage();
+
+                        using (var image = XImage.FromFile(imagePath))
+                        {
+                            XGraphics gfx = XGraphics.FromPdfPage(page);
+                            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
+                        }
+                    }
+
+                    pdfDocument.Save(pdfFilePath);
+                    NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
                 return;
             }
         }

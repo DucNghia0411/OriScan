@@ -484,7 +484,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
 
-                                <GridViewColumn Width="150">
+                                <GridViewColumn Width="175">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -496,6 +496,9 @@
                                                 </Button>
                                                 <Button x:Name="btnDeleteDocument" Click="btnDeleteDocument_Click" Background="Transparent" BorderThickness="0">
                                                     <Image Width="15" Height="15" Source="/Resource/Icons/delete.png" />
+                                                </Button>
+                                                <Button x:Name="btnConvertToPdf" Click="btnConvertToPdf_Click" Background="Transparent" BorderThickness="0.5,0,0,0" BorderBrush="Black">
+                                                    <Image Width="15" Height="15" Source="/Resource/Icons/pdf.png" />
                                                 </Button>
                                             </StackPanel>
                                         </DataTemplate>

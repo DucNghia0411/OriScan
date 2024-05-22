@@ -34,5 +34,7 @@ namespace ScanApp.Service.Constracts
         Task<bool> Delete(int id);
 
         Task<bool> CheckExisted(int batchId, string documentName);
+
+        Task<int> UpdatePdfPath(DocumentToPdfRequest request);
     }
 }
