@@ -10,19 +10,28 @@ using System.Windows.Data;
 
 namespace OriginalScan
 {
-    class TreeViewLineConverter : IMultiValueConverter
+    public class TreeViewLineConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            TreeViewItem? item = values[2] as TreeViewItem;
-            ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
-            bool isLastOne = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
-
-            System.Windows.Shapes.Rectangle? rectangle = values[3] as System.Windows.Shapes.Rectangle;
-            if (rectangle == null)
+            if (values[2] is not TreeViewItem item)
             {
                 return double.NaN;
             }
+
+            ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+            if (ic == null)
+            {
+                return double.NaN;
+            }
+
+            bool isLastOne = ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
+
+            if (values[3] is not System.Windows.Shapes.Rectangle rectangle)
+            {
+                return double.NaN;
+            }
+
             if (isLastOne)
             {
                 rectangle.VerticalAlignment = VerticalAlignment.Top;

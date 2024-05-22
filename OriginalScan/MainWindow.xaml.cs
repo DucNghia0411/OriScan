@@ -572,8 +572,22 @@ namespace OriginalScan
             }
         }
 
+        private void ClearBindings(TreeViewItem item)
+        {
+            BindingOperations.ClearAllBindings(item);
+
+            foreach (TreeViewItem childItem in item.Items)
+            {
+                ClearBindings(childItem);
+            }
+        }
+
         public void ReloadTreeViewItem()
         {
+            foreach (TreeViewItem item in trvBatchExplorer.Items)
+            {
+                ClearBindings(item);
+            }
             trvBatchExplorer.Items.Clear();
             
             if (RootPath == null)

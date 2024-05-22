@@ -72,11 +72,11 @@
                                 <Rectangle.Height>
                                     <MultiBinding Converter="{StaticResource LineConverter}">
                                         <MultiBinding.Bindings>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualHeight"></Binding>
-                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualWidth"></Binding>
-                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"></Binding>
-                                            <Binding RelativeSource="{RelativeSource Self}"></Binding>
-                                            <Binding ElementName="Expander" Path="IsChecked"></Binding>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualHeight"/>
+                                            <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}" Path="ActualWidth"/>
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"/>
+                                            <Binding RelativeSource="{RelativeSource Self}"/>
+                                            <Binding ElementName="Expander" Path="IsChecked"/>
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </Rectangle.Height>
