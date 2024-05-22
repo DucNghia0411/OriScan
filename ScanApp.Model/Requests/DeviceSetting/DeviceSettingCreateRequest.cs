@@ -10,6 +10,8 @@ namespace ScanApp.Model.Requests.DeviceSetting
     {
         public string DeviceName { get; set; } = null!;
 
+        public string SettingName { get; set; } = null!;
+
         public int IsDuplex { get; set; }
 
         public string? Size { get; set; } = null!;

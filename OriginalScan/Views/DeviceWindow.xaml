@@ -90,10 +90,9 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel HorizontalAlignment="Center" Height="100">
+                            <StackPanel HorizontalAlignment="Center" Height="110">
                                 <Image Source="{Binding ImagePath}" Width="40" Height="40"/>
-                                <TextBlock Text="{Binding DeviceName}" HorizontalAlignment="Center" TextAlignment="center" TextWrapping="Wrap" Width="70" Height="30"/>
-                                <TextBlock Text="{Binding CreatedDate}" HorizontalAlignment="Center" TextAlignment="center" TextWrapping="Wrap" Width="70" Height="30" FontSize="12" FontWeight="Normal"/>
+                                <TextBlock Text="{Binding SettingName}" HorizontalAlignment="Center" TextAlignment="center" TextWrapping="Wrap" Width="70" Height="60"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

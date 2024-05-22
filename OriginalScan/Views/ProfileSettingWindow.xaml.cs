@@ -363,6 +363,7 @@ namespace OriginalScan.Views
                     DeviceSettingUpdateRequest request = new DeviceSettingUpdateRequest()
                     {
                         Id = _deviceSettingService.SelectedSetting.Id,
+                        SettingName = txtSetting.Text,
                         DeviceName = txtDevice.Text,
                         IsDuplex = isDuplex ? 2 : 1,
                         Size = cbPageSize.Text,
@@ -381,6 +382,7 @@ namespace OriginalScan.Views
                 {
                     DeviceSettingCreateRequest request = new DeviceSettingCreateRequest()
                     {
+                        SettingName = txtSetting.Text,
                         DeviceName = txtDevice.Text,
                         IsDuplex = isDuplex ? 2 : 1,
                         Size = cbPageSize.Text,
@@ -422,6 +424,7 @@ namespace OriginalScan.Views
                 {
                     _deviceSettingService.Delete(_deviceSettingService.SelectedSetting.Id);
                     NotificationShow("success", $"Xóa cấu hình thiết bị {txtDevice.Text} được tạo vào {FormatDateTime(_deviceSettingService.SelectedSetting.CreatedDate)} thành công!");
+                    _deviceSettingService.ClearSelectedSetting();
                     if (deviceWindow != null)
                     {
                         deviceWindow.GetListDevice();

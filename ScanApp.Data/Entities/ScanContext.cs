@@ -93,6 +93,7 @@ public partial class ScanContext : DbContext
             entity.ToTable("device_setting");
 
             entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.SettingName).HasColumnName("setting_name");
             entity.Property(e => e.DeviceName).HasColumnName("device_name");
             entity.Property(e => e.IsDuplex).HasColumnName("is_duplex");
             entity.Property(e => e.Size).HasColumnName("size");
@@ -104,7 +105,7 @@ public partial class ScanContext : DbContext
             entity.Property(e => e.Contrast).HasColumnName("contrast");
             entity.Property(e => e.CreatedDate).HasColumnName("created_date");
         });
-
+        
         OnModelCreatingPartial(modelBuilder);
     }
 

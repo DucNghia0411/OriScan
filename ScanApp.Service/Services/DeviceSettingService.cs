@@ -54,6 +54,7 @@ namespace ScanApp.Service.Services
             {
                 DeviceSetting deviceSetting = new DeviceSetting()
                 {
+                    SettingName = request.SettingName,
                     DeviceName = request.DeviceName,
                     IsDuplex = request.IsDuplex,
                     Size = request.Size,
@@ -95,6 +96,7 @@ namespace ScanApp.Service.Services
                     return 0;
                 }
 
+                editSetting.SettingName = request.SettingName;
                 editSetting.DeviceName = request.DeviceName;
                 editSetting.IsDuplex = request.IsDuplex;
                 editSetting.Size = request.Size;

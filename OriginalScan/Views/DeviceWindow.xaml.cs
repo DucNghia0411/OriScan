@@ -154,6 +154,7 @@ namespace OriginalScan.Views
                     var obj = new
                     {
                         Id = device.Id,
+                        SettingName = device.SettingName,
                         DeviceName = device.DeviceName,
                         IsDuplex = device.IsDuplex,
                         Size = device.Size,
@@ -326,6 +327,15 @@ namespace OriginalScan.Views
             profileSettingWindow.deviceWindow = this;
             profileSettingWindow.mainWindow = mainWindow;
             profileSettingWindow.dataSource = dataSource;
+            if (_deviceSettingService.SelectedSetting != null)
+            {
+                profileSettingWindow.txtSetting.Text = _deviceSettingService.SelectedSetting.SettingName;
+            }
+            else
+            {
+                profileSettingWindow.txtSetting.Text = dataSource.Name;
+            }
+            
             if (twainSession != null && !twainSession.IsSourceOpen)
                 dataSource.Open();
             profileSettingWindow.LoadData(dataSource);

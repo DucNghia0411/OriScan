@@ -43,12 +43,38 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1.5*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1.5*"/>
+                    <RowDefinition Height="0.5*"/>
                     <RowDefinition Height="5.5*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Tên cài đặt:" FontSize="11"
+                    HorizontalAlignment="Left" 
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Bottom"
+                    Margin="5,0,0,0"/>
+
+                    <TextBox x:Name="txtSetting" 
+                    HorizontalAlignment="Left" 
+                    Margin="5,0,10,0"
+                    TextWrapping="Wrap" 
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    FontSize="12"
+                    VerticalAlignment="Top" 
+                    BorderThickness="1,1,1,1"
+                    Padding="5,0,0,0"
+                    Width="250" Height="22"/>
+                </Grid>
+
+                <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
@@ -70,7 +96,7 @@
                     FontSize="12"
                     IsReadOnly="True"
                     VerticalAlignment="Top" 
-                    BorderThickness="1,1,1,1"
+                    BorderThickness="0"
                     Padding="5,0,0,0"
                     Width="250" Height="22"/>
                 </Grid>
