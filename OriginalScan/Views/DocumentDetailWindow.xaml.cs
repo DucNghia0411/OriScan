@@ -63,6 +63,8 @@ namespace OriginalScan.Views
             DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
             string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
 
+            bool isConverted = false;
+
             foreach (string format in allDatePatterns)
             {
                 DateTime createdDate;
@@ -70,7 +72,13 @@ namespace OriginalScan.Views
                 if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
                 {
                     formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                    isConverted = true;
                 }
+            }
+
+            if (!isConverted)
+            {
+                formattedDate = inputDate;
             }
 
             return formattedDate;
@@ -104,8 +112,14 @@ namespace OriginalScan.Views
                     txtNumOfSheets.Text = document.NumberOfSheets.ToString();
                     
                     txtStoragePeriod.Text = document.StoragePeriod;
-                    dpkStartDate.SelectedDate = DateTime.Parse(document.StartDate);
-                    dpkEndDate.SelectedDate = DateTime.Parse(document.EndDate);
+                    if (document.StartDate != null && document.StartDate != string.Empty)
+                    {
+                        dpkStartDate.SelectedDate = DateTime.Parse(document.StartDate);
+                    }
+                    if (document.EndDate != null && document.EndDate != string.Empty)
+                    {
+                        dpkEndDate.SelectedDate = DateTime.Parse(document.EndDate);
+                    }
                 }
             }
             catch (Exception ex)

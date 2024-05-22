@@ -153,6 +153,8 @@ namespace ScanApp.Service.Services
             DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
             string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
 
+            bool isConverted = false;
+
             foreach (string format in allDatePatterns)
             {
                 DateTime createdDate;
@@ -160,7 +162,13 @@ namespace ScanApp.Service.Services
                 if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
                 {
                     formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
+                    isConverted = true;
                 }
+            }
+
+            if (!isConverted)
+            {
+                formattedDate = inputDate;
             }
 
             return formattedDate;
