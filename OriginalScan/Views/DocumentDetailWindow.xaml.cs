@@ -267,7 +267,7 @@ namespace OriginalScan.Views
                         StoragePeriod = txtStoragePeriod.Text
                     };                    
 
-                    if (txtDocumentName.Text != _currentDocument.DocumentName)
+                    if (txtDocumentName.Text.Trim() != _currentDocument.DocumentName.Trim())
                     {
                         var checkExistedResult = await _documentService.CheckExisted(_currentBatch.Id, txtDocumentName.Text);
                         if (checkExistedResult)

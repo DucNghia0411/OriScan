@@ -231,7 +231,7 @@ namespace OriginalScan.Views
                         FileCabinet = txtFileCabinet.Text
                     };
 
-                    if (txtBatchName.Text != _currentBatch.BatchName)
+                    if (txtBatchName.Text.Trim() != _currentBatch.BatchName.Trim())
                     {
                         var checkExistedResult = await _batchService.CheckExisted(txtBatchName.Text);
 

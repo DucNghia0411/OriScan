@@ -299,6 +299,7 @@ namespace OriginalScan.Views
             {
                 mainWindow.RootPath = null;
                 mainWindow.ReloadTreeViewItem();
+                mainWindow.ListImagesMain.Clear();
                 mainWindow.lblBatchName.Content = string.Empty;
                 mainWindow.lblDocumentName.Content = string.Empty;
                 mainWindow.lblCurrentBatch.Visibility = mainWindow.lblBatchName.Visibility = mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
@@ -700,6 +701,7 @@ namespace OriginalScan.Views
                         if (mainWindow != null)
                         {
                             mainWindow.lblDocumentName.Content = string.Empty;
+                            mainWindow.ListImagesMain.Clear();
                             mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
                         }
                         LoadTreeView();
