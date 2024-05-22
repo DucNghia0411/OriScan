@@ -41,6 +41,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace OriginalScan
 {
@@ -301,63 +302,65 @@ namespace OriginalScan
                 if (!Directory.Exists(defaultPath))
                     defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                using (var dialog = new FolderBrowserDialog())
+                if (trvBatchExplorer.SelectedItem is TreeViewItem selectedItem)
                 {
-                    dialog.SelectedPath = defaultPath;
-
-                    DialogResult result = dialog.ShowDialog();
-                    if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                    if (BatchPath != null && selectedItem.Tag != null)
                     {
-                        string selectedFolder = dialog.SelectedPath;
-                        string[] images = Directory.GetFiles(selectedFolder);
-                        string folderName = System.IO.Path.GetFileName(selectedFolder);
+                        string filePath = System.IO.Path.Combine(BatchPath, selectedItem.Tag.ToString()!);
+                        string path = System.IO.Path.Combine(userFolderPath, filePath);
 
-                        if (images.Count() == 0)
+                        if (Directory.Exists(path))
                         {
-                            NotificationShow("error", $"Không có hình ảnh trong thư mục!");
-                            return;
-                        }
+                            string[] images = Directory.GetFiles(path);
+                            string folderName = System.IO.Path.GetFileName(path);
 
-                        string pdfFileName = folderName + ".pdf";
-                        string folderPath = System.IO.Path.Combine(userFolderPath, pdfPath);
-                        Directory.CreateDirectory(folderPath);
-                        string pdfFilePath = System.IO.Path.Combine(userFolderPath, pdfPath, pdfFileName);
-
-                        if (File.Exists(pdfFilePath))
-                        {
-                            MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                            if (pdfConfirm == MessageBoxResult.Yes)
+                            if (images.Count() == 0)
                             {
-                                try
-                                {
-                                    File.Delete(pdfFileName);
-                                }
-                                catch (Exception ex)
-                                {
-                                    NotificationShow("error", $"{ex.Message}");
-                                    return;
-                                }
-                            }
-                            else
+                                NotificationShow("error", $"Không có hình ảnh trong thư mục!");
                                 return;
-                        }
-
-                        PdfDocument pdfDocument = new PdfDocument();
-
-                        foreach (string imagePath in images)
-                        {
-                            PdfPage page = pdfDocument.AddPage();
-
-                            using (var image = XImage.FromFile(imagePath))
-                            {
-                                XGraphics gfx = XGraphics.FromPdfPage(page);
-                                gfx.DrawImage(image, 0, 0, page.Width, page.Height);
                             }
-                        }
 
-                        pdfDocument.Save(pdfFilePath);
-                        NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
+                            string pdfFileName = folderName + ".pdf";
+                            string folderPath = System.IO.Path.Combine(userFolderPath, pdfPath);
+                            Directory.CreateDirectory(folderPath);
+                            string pdfFilePath = System.IO.Path.Combine(userFolderPath, pdfPath, pdfFileName);
+
+                            if (File.Exists(pdfFilePath))
+                            {
+                                MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                                if (pdfConfirm == MessageBoxResult.Yes)
+                                {
+                                    try
+                                    {
+                                        File.Delete(pdfFileName);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        NotificationShow("error", $"{ex.Message}");
+                                        return;
+                                    }
+                                }
+                                else
+                                    return;
+                            }
+
+                            PdfDocument pdfDocument = new PdfDocument();
+
+                            foreach (string imagePath in images)
+                            {
+                                PdfPage page = pdfDocument.AddPage();
+
+                                using (var image = XImage.FromFile(imagePath))
+                                {
+                                    XGraphics gfx = XGraphics.FromPdfPage(page);
+                                    gfx.DrawImage(image, 0, 0, page.Width, page.Height);
+                                }
+                            }
+
+                            pdfDocument.Save(pdfFilePath);
+                            NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
+                        }
                     }
                 }
             }
