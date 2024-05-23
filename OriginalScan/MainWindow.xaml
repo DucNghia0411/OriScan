@@ -248,8 +248,7 @@
                     </Button>
                     <Button x:Name="btnCrop" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            IsEnabled="false"
-                            Click="btnSaveImages_Click">
+                            IsEnabled="false" Click="btnCrop_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Icons/crop.png" Width="25" Height="25" />
                         </StackPanel>

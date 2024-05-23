@@ -63,7 +63,7 @@
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                                Hủy
+                                Quay về
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
@@ -74,7 +74,7 @@
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                                Hủy
+                                Cắt lại
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
@@ -84,7 +84,7 @@
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                                Hủy
+                                Hoàn tác
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
@@ -95,7 +95,7 @@
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                                Hủy
+                                Cắt
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>

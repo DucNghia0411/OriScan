@@ -1,4 +1,7 @@
-﻿using Notification.Wpf;
+﻿using FontAwesome5;
+using Notification.Wpf;
+using Notification.Wpf.Constants;
+using Notification.Wpf.Controls;
 using OriginalScan.Models;
 using System;
 using System.Collections.Generic;
@@ -48,6 +51,72 @@ namespace OriginalScan.Views
             _displayedImage = _image.bitmapImage;
             DisplayImage();
             DataContext = this;
+            NotificationConstants.MessagePosition = NotificationPosition.TopRight;
+        }
+
+        private void NotificationShow(string type, string message)
+        {
+            switch (type)
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
+
         }
 
         private void DisplayImage()
@@ -60,24 +129,31 @@ namespace OriginalScan.Views
 
         private void CropButton_Click(object sender, RoutedEventArgs e)
         {
-            double left = Convert.ToDouble(txtLeft.Text);
-            double right = Convert.ToDouble(txtRight.Text);
-            double top = Convert.ToDouble(txtTop.Text);
-            double bottom = Convert.ToDouble(txtBottom.Text);
-
-            if (image.Source is BitmapSource bitmapSource)
+            try
             {
-                int x = (int)left;
-                int y = (int)top;
-                int width = (int)(bitmapSource.PixelWidth - left - right);
-                int height = (int)(bitmapSource.PixelHeight - top - bottom);
+                double left = Convert.ToDouble(txtLeft.Text);
+                double right = Convert.ToDouble(txtRight.Text);
+                double top = Convert.ToDouble(txtTop.Text);
+                double bottom = Convert.ToDouble(txtBottom.Text);
 
-                CroppedBitmap croppedBitmap = new CroppedBitmap(bitmapSource, new Int32Rect(x, y, width, height));
+                if (image.Source is BitmapSource bitmapSource)
+                {
+                    int x = (int)left;
+                    int y = (int)top;
+                    int width = (int)(bitmapSource.PixelWidth - left - right);
+                    int height = (int)(bitmapSource.PixelHeight - top - bottom);
 
-                _undoStack.Push(_displayedImage);
-                _displayedImage = croppedBitmap;
-                image.Source = _displayedImage;
-                _redoStack.Clear();
+                    CroppedBitmap croppedBitmap = new CroppedBitmap(bitmapSource, new Int32Rect(x, y, width, height));
+
+                    _undoStack.Push(_displayedImage);
+                    _displayedImage = croppedBitmap;
+                    image.Source = _displayedImage;
+                    _redoStack.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
             }
         }
 
@@ -103,7 +179,7 @@ namespace OriginalScan.Views
 
         private void SaveImageToOriginalPath(BitmapSource image)
         {
-            BitmapEncoder encoder = new PngBitmapEncoder();
+            BitmapEncoder encoder = new JpegBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(image));
 
             using (var fileStream = new FileStream(_image.ImagePath, FileMode.Create))
@@ -127,14 +203,7 @@ namespace OriginalScan.Views
                 }
                 catch (Exception)
                 {
-                    var error = new NotificationContent
-                    {
-                        Title = "Thông báo!!",
-                        Message = "Lưu hình ảnh thất bại!!",
-                        Background = new SolidColorBrush(Colors.Red),
-                        Foreground = new SolidColorBrush(Colors.White),
-                    };
-                    _notificationManager.Show(error);
+                    NotificationShow("error", "Lưu hình ảnh thất bại!");
                     return;
                 }
 
@@ -144,25 +213,11 @@ namespace OriginalScan.Views
                     mainWindow.SelectedImage.bitmapImage = ConvertBitmapSourceToBitmapImage(_displayedImage);
                 }
 
-                var success = new NotificationContent
-                {
-                    Title = "Thông báo!!",
-                    Message = "Lưu hình ảnh thành công!!",
-                    Background = new SolidColorBrush(Colors.Green),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(success);
+                NotificationShow("success", "Lưu hình ảnh thành công!");
             }
             else
             {
-                var content = new NotificationContent
-                {
-                    Title = "Thông báo!!",
-                    Message = "Lưu hình ảnh thất bại!!",
-                    Background = new SolidColorBrush(Colors.Red),
-                    Foreground = new SolidColorBrush(Colors.White),
-                };
-                _notificationManager.Show(content);
+                NotificationShow("error", "Lưu hình ảnh thất bại!");
             }
             _undoStack.Clear();
             _redoStack.Clear();
@@ -172,15 +227,19 @@ namespace OriginalScan.Views
         private BitmapImage ConvertBitmapSourceToBitmapImage(BitmapSource bitmapSource)
         {
             var memoryStream = new System.IO.MemoryStream();
-            BitmapEncoder encoder = new PngBitmapEncoder(); 
+            BitmapEncoder encoder = new JpegBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
             encoder.Save(memoryStream);
+
+            memoryStream.Position = 0;
+
             var bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
             bitmapImage.StreamSource = memoryStream;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad; 
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.EndInit();
             bitmapImage.Freeze();
+
             return bitmapImage;
         }
 
@@ -363,13 +422,14 @@ namespace OriginalScan.Views
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn lưu những thay đổi?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn thoát mà không lưu những thay đổi?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (Result == MessageBoxResult.Yes)
             {
-                UpdateImage();
+                this.Close();
             }
-            this.Close();
+                
+            else return;
         }
     }
 }
