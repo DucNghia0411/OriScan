@@ -86,6 +86,37 @@ namespace OriginalScan
 
         public string? BatchPath { get; set; }
 
+        public void EnableButtons()
+        {
+            if (ListImagesMain.Count() > 0)
+            {
+                btnDeleteImages.IsEnabled = true;
+                btnSaveImages.IsEnabled = true;
+                btnRotate.IsEnabled = true;
+                btnCut.IsEnabled = true;
+                btnCrop.IsEnabled = true;
+                btnPDF.IsEnabled = true;
+                btnUpload.IsEnabled = true;
+
+                if (ListImagesMain.Count() >= 2)
+                {
+                    btnMerge.IsEnabled = true;
+                }
+                else btnMerge.IsEnabled = false;
+            }
+            else
+            {
+                btnDeleteImages.IsEnabled = false;
+                btnSaveImages.IsEnabled = false;
+                btnRotate.IsEnabled = false;
+                btnMerge.IsEnabled = false;
+                btnCut.IsEnabled = false;
+                btnCrop.IsEnabled = false;
+                btnPDF.IsEnabled = false;
+                btnUpload.IsEnabled = false;
+            }
+        }
+
         private void NotificationShow(string type, string message)
         {
             switch (type)
@@ -303,6 +334,7 @@ namespace OriginalScan
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
                         ReloadTreeViewItem();
+                        EnableButtons();
                     });
                 }
             }
@@ -316,6 +348,11 @@ namespace OriginalScan
         {
             try
             {
+                if (trvBatchExplorer.SelectedItem == null)
+                {
+                    NotificationShow("warning", $"Vui lòng chọn tài liệu muốn chuyển thành PDF!");
+                    return;
+                }
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
                 string pdfPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.PDFs);
@@ -894,6 +931,7 @@ namespace OriginalScan
                     await _imageService.Save();
 
                     ListImagesMain.Clear();
+                    ListImagesSelected.Clear();
                     ReloadTreeViewItem();
 
                     var count = await _imageService.CountByDocument(currentDocument.Id);
@@ -907,6 +945,50 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
                 return;
+            }
+        }
+
+        private void btnRotate_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+
+            if (listSelectedImage == null || listSelectedImage.Count == 0)
+            {
+                NotificationShow("warning", "Vui lòng chọn những ảnh muốn xoay!");
+                return;
+            }
+
+            foreach (var image in listSelectedImage)
+            {
+                BitmapImage originalBitmap = image.bitmapImage;
+                RotateTransform rotateTransform = new RotateTransform(90);
+                TransformedBitmap rotatedBitmap = new TransformedBitmap(originalBitmap, rotateTransform);
+
+                BitmapEncoder fileEncoder = new JpegBitmapEncoder();
+                fileEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                using (var fileStream = new FileStream(image.ImagePath, FileMode.Create))
+                {
+                    fileEncoder.Save(fileStream);
+                }
+
+                BitmapEncoder memoryEncoder = new JpegBitmapEncoder();
+                memoryEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                BitmapImage rotatedBitmapImage = new BitmapImage();
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    memoryEncoder.Save(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    rotatedBitmapImage.BeginInit();
+                    rotatedBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    rotatedBitmapImage.StreamSource = memoryStream;
+                    rotatedBitmapImage.EndInit();
+                }
+
+                rotatedBitmapImage.Freeze();
+                image.bitmapImage = rotatedBitmapImage;
             }
         }
 
@@ -1009,9 +1091,11 @@ namespace OriginalScan
                         if (Directory.Exists(path))
                         {
                             var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
-                            
+                                                        
                             if (selectedDocument != null)
                             {
+                                if (_documentService.SelectedDocument != null && selectedDocument.Id == _documentService.SelectedDocument.Id) return;
+
                                 DocumentModel docModel = new DocumentModel()
                                 {
                                     Id = selectedDocument.Id,
@@ -1150,6 +1234,7 @@ namespace OriginalScan
 
             ListImagesMain.Clear();
             ListImagesMain = scannedImages;
+            EnableButtons();
         }
 
         private BitmapImage ImagePathToBitmap(string imagePath)

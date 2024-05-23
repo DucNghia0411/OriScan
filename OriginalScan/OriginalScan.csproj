@@ -15,6 +15,7 @@
     <None Remove="Resource\Icons\closewhite.png" />
     <None Remove="Resource\Icons\cogwheel.png" />
     <None Remove="Resource\Icons\crop.png" />
+    <None Remove="Resource\Icons\cut.png" />
     <None Remove="Resource\Icons\delete.png" />
     <None Remove="Resource\Icons\diskette.png" />
     <None Remove="Resource\Icons\document.png" />
@@ -37,6 +38,8 @@
     <None Remove="Resource\Images\file.png" />
     <None Remove="Resource\Images\folder.png" />
     <None Remove="Resource\Images\foldericon.png" />
+    <None Remove="Resource\Images\mergepageicon.png" />
+    <None Remove="Resource\Images\rotaterighticon.png" />
     <None Remove="Resource\Images\saveicon.png" />
     <None Remove="Resource\Images\scanner.png" />
     <None Remove="Resource\Images\scannericon.png" />
@@ -70,6 +73,7 @@
     <Resource Include="Resource\Icons\closewhite.png" />
     <Resource Include="Resource\Icons\cogwheel.png" />
     <Resource Include="Resource\Icons\crop.png" />
+    <Resource Include="Resource\Icons\cut.png" />
     <Resource Include="Resource\Icons\delete.png" />
     <Resource Include="Resource\Icons\diskette.png" />
     <Resource Include="Resource\Icons\document.png" />
@@ -91,6 +95,8 @@
     <Resource Include="Resource\Images\file.png" />
     <Resource Include="Resource\Images\folder.png" />
     <Resource Include="Resource\Images\foldericon.png" />
+    <Resource Include="Resource\Images\mergepageicon.png" />
+    <Resource Include="Resource\Images\rotaterighticon.png" />
     <Resource Include="Resource\Images\saveicon.png" />
     <Resource Include="Resource\Images\scanner.png" />
     <Resource Include="Resource\Images\scannericon.png" />

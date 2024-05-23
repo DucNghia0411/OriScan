@@ -180,23 +180,12 @@
                         </Button.ToolTip>
                     </Button>
                     <Separator/>
-                    <Button HorizontalAlignment="Center" 
+                    <Button x:Name="btnDeleteImages" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            Click="ConvertToPdfButton_Click">
-                        <StackPanel Margin="-10">
-                            <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
-                        </StackPanel>
-                        <Button.ToolTip>
-                            <ToolTip HorizontalOffset="35" VerticalOffset="-10">
-                                Convert thành PDF
-                            </ToolTip>
-                        </Button.ToolTip>
-                    </Button>
-                    <Button HorizontalAlignment="Center" 
-                            VerticalAlignment="Center"
+                            IsEnabled="false"
                             Click="btnDeleteImages_Click">
                         <StackPanel Margin="-10">
-                            <Image Source="\Resource\Images\deleteicon.png" Width="35" Height="25" />
+                            <Image Source="\Resource\Images\deleteicon.png" Width="25" Height="25" />
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
@@ -204,8 +193,9 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Button HorizontalAlignment="Center" 
+                    <Button x:Name="btnSaveImages" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
+                            IsEnabled="false"
                             Click="btnSaveImages_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Images\saveicon.png" Width="25" Height="25" />
@@ -216,8 +206,73 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Button HorizontalAlignment="Center" 
+                    <Separator/>
+                    <Button x:Name="btnRotate" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
+                            IsEnabled="false"
+                            Click="btnRotate_Click">
+                        <StackPanel Margin="-10">
+                            <Image Source="/Resource/Images/rotaterighticon.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Xoay
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="btnMerge" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false">
+                        <StackPanel Margin="-10">
+                            <Image Source="/Resource/Images/mergepageicon.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Ghép ảnh
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="btnCut" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false">
+                        <StackPanel Margin="-10">
+                            <Image Source="/Resource/Icons/cut.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Cắt ảnh
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="btnCrop" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false">
+                        <StackPanel Margin="-10">
+                            <Image Source="/Resource/Icons/crop.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Cắt viền
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator/>
+                    <Button x:Name="btnPDF" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false"
+                            Click="ConvertToPdfButton_Click">
+                        <StackPanel Margin="-10">
+                            <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="35" VerticalOffset="-10">
+                                Convert thành PDF
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="btnUpload" HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false"
                             Click="TransferToPortal_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\submit.png" Width="25" Height="25" />
