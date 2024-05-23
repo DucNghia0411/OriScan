@@ -166,6 +166,8 @@ namespace OriginalScan
 
                 if (_twainSession != null && !_twainSession.IsSourceOpen)
                     dataSource.Open();
+
+                lblCurrentSetting.Content = "Thiết bị hiện tại: " + dataSource.Name;
             }
             catch (Exception ex)
             {
