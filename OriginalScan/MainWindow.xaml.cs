@@ -86,6 +86,8 @@ namespace OriginalScan
 
         public string? BatchPath { get; set; }
 
+        public ScannedImage? SelectedImage { get; set; }
+
         private void NotificationShow(string type, string message)
         {
             switch (type)
@@ -313,7 +315,7 @@ namespace OriginalScan
             }
         }
 
-        public async void ConvertToPdfButton_Click(object sender, EventArgs e)
+        public async void ConvertToPdfButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -1120,7 +1122,28 @@ namespace OriginalScan
 
         private void btnCrop_Click(object sender, RoutedEventArgs e)
         {
+            var listSelectedImage = ListImagesSelected;
 
+            if (listSelectedImage == null)
+            {
+                NotificationShow("warning", "Vui lòng chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
+                return;
+            }
+
+            if (listSelectedImage.Count != 1)
+            {
+                NotificationShow("warning", "Vui lòng chỉ chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
+                return;
+            }
+
+            SelectedImage = listSelectedImage.First();
+            if (SelectedImage == null)
+            {
+                NotificationShow("error", "Hình bạn chọn không tồn tại!");
+                return;
+            }
+            CropImageWindow cropImageWindow = new CropImageWindow(SelectedImage);
+            cropImageWindow.ShowDialog();
         }
 
         public async void GetImagesByDocument(int documentId)
@@ -1318,6 +1341,6 @@ namespace OriginalScan
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }        
+        }
     }
 }

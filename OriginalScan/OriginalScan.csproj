@@ -25,6 +25,7 @@
     <None Remove="Resource\Icons\filelocation.png" />
     <None Remove="Resource\Icons\imageicon.png" />
     <None Remove="Resource\Icons\logout.png" />
+    <None Remove="Resource\Icons\multiply.png" />
     <None Remove="Resource\Icons\pdf.png" />
     <None Remove="Resource\Icons\play.png" />
     <None Remove="Resource\Icons\redo.png" />
@@ -82,6 +83,7 @@
     <Resource Include="Resource\Icons\eye.png" />
     <Resource Include="Resource\Icons\imageicon.png" />
     <Resource Include="Resource\Icons\logout.png" />
+    <Resource Include="Resource\Icons\multiply.png" />
     <Resource Include="Resource\Icons\pdf.png" />
     <Resource Include="Resource\Icons\play.png" />
     <Resource Include="Resource\Icons\redo.png" />

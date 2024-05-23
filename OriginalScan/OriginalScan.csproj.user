@@ -42,6 +42,9 @@
     <Page Update="Views\CreateDocumentWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\CropImageWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\DeviceWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
