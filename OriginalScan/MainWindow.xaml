@@ -261,7 +261,6 @@
                     <Separator/>
                     <Button x:Name="btnPDF" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            IsEnabled="false"
                             Click="ConvertToPdfButton_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\pdf.png" Width="25" Height="25" />
@@ -274,7 +273,6 @@
                     </Button>
                     <Button x:Name="btnUpload" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            IsEnabled="false"
                             Click="TransferToPortal_Click">
                         <StackPanel Margin="-10">
                             <Image Source="\Resource\Icons\submit.png" Width="25" Height="25" />

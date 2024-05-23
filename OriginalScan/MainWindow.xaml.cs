@@ -97,7 +97,6 @@ namespace OriginalScan
                 btnRotate.IsEnabled = true;
                 btnCut.IsEnabled = true;
                 btnCrop.IsEnabled = true;
-                btnPDF.IsEnabled = true;
                 btnUpload.IsEnabled = true;
 
                 if (ListImagesMain.Count() >= 2)
@@ -114,7 +113,6 @@ namespace OriginalScan
                 btnMerge.IsEnabled = false;
                 btnCut.IsEnabled = false;
                 btnCrop.IsEnabled = false;
-                btnPDF.IsEnabled = false;
                 btnUpload.IsEnabled = false;
             }
         }
@@ -346,107 +344,14 @@ namespace OriginalScan
             }
         }
 
-        public async void ConvertToPdfButton_Click(object sender, EventArgs e)
+        public void ConvertToPdfButton_Click(object sender, EventArgs e)
         {
-            try
+            if (_batchService.SelectedBatch == null)
             {
-                if (trvBatchExplorer.SelectedItem == null)
-                {
-                    NotificationShow("warning", $"Vui lòng chọn tài liệu muốn chuyển thành PDF!");
-                    return;
-                }
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
-                string pdfPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.PDFs);
-                string defaultPath = System.IO.Path.Combine(userFolderPath, systemPath);
-
-                if (!Directory.Exists(defaultPath))
-                    defaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-                if (trvBatchExplorer.SelectedItem is TreeViewItem selectedItem)
-                {
-                    if (BatchPath != null && selectedItem.Tag != null && _documentService.SelectedDocument != null)
-                    {
-                        string filePath = System.IO.Path.Combine(BatchPath, selectedItem.Tag.ToString()!);
-                        string path = System.IO.Path.Combine(userFolderPath, filePath);
-
-                        if (Directory.Exists(path))
-                        {
-                            string[] images = Directory.GetFiles(path);
-                            string folderName = System.IO.Path.GetFileName(path);
-
-                            if (images.Count() == 0)
-                            {
-                                NotificationShow("error", $"Không có hình ảnh trong thư mục!");
-                                return;
-                            }
-
-                            string pdfFileName = folderName + ".pdf";
-                            string folderPath = System.IO.Path.Combine(userFolderPath, pdfPath);
-                            Directory.CreateDirectory(folderPath);
-                            string pdfFilePath = System.IO.Path.Combine(userFolderPath, pdfPath, pdfFileName);
-
-                            string shortPdfPath = System.IO.Path.Combine(pdfPath, pdfFileName);
-                            DocumentToPdfRequest request = new DocumentToPdfRequest()
-                            {
-                                Id = _documentService.SelectedDocument.Id,
-                                PdfPath = shortPdfPath,
-                            };
-
-                            var updateResult = await _documentService.UpdatePdfPath(request);
-
-                            if (updateResult == 0)
-                            {
-                                NotificationShow("error", "Cập nhật không thành công!");
-                                return;
-                            }
-
-                            if (File.Exists(pdfFilePath))
-                            {
-                                MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Đã tồn tại một tệp PDF có cùng tên. Bạn có muốn thay thế nó?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
-
-                                if (pdfConfirm == MessageBoxResult.Yes)
-                                {
-                                    try
-                                    {
-                                        File.Delete(pdfFileName);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        NotificationShow("error", $"{ex.Message}");
-                                        return;
-                                    }
-                                }
-                                else
-                                    return;
-                            }
-
-                            PdfDocument pdfDocument = new PdfDocument();
-
-                            foreach (string imagePath in images)
-                            {
-                                using (var image = XImage.FromFile(imagePath))
-                                {
-                                    PdfPage page = pdfDocument.AddPage();
-                                    page.Width = image.PixelWidth;
-                                    page.Height = image.PixelHeight;
-
-                                    XGraphics gfx = XGraphics.FromPdfPage(page);
-                                    gfx.DrawImage(image, 0, 0, page.Width, page.Height);
-                                }
-                            }
-
-                            pdfDocument.Save(pdfFilePath);
-                            NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
-                        }
-                    }
-                }
+                NotificationShow("error", "Vui lòng chọn gói trước khi thực hiện chức năng chuyển đổi thành PDF.");
             }
-            catch (Exception ex)
-            {
-                NotificationShow("error", ex.Message);
-                return;
-            }
+            ConvertPdfWindow convertPdfWindow = new ConvertPdfWindow(_context, _batchService, _documentService);
+            convertPdfWindow.Show();
         }
 
         public async void TransferToPortal_Click(object sender, EventArgs e)
