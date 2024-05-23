@@ -36,7 +36,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
             <RowDefinition Height="10*"></RowDefinition>
-            <RowDefinition Height="1.5*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
@@ -58,9 +57,9 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Button HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button x:Name="ExitButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ExitButton_Click">
                         <StackPanel>
-                            <Image Source="\Resource\Icons\multiply.png" Width="25" Height="25" />
+                            <Image Source="/Resource/Icons/logout.png" Width="25" Height="25" />
                         </StackPanel>
                         <Button.ToolTip>
                             <ToolTip HorizontalOffset="15" VerticalOffset="-10">
@@ -68,112 +67,144 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Separator />
+                    <Separator/>
+                    <Button x:Name="RedoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RedoButton_Click">
+                        <StackPanel>
+                            <Image Source="/Resource/Icons/redo.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Hủy
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Button x:Name="UndoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="UndoButton_Click">
+                        <StackPanel>
+                            <Image Source="/Resource/Icons/undo.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Hủy
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator/>
+                    <Button x:Name="CropButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CropButton_Click">
+                        <StackPanel>
+                            <Image Source="/Resource/Images/cuticon.png" Width="25" Height="25" />
+                        </StackPanel>
+                        <Button.ToolTip>
+                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                                Hủy
+                            </ToolTip>
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator/>
                 </ToolBar>
             </ToolBarTray>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="0" Grid.Column="1" Background="#f1f1f1">
                 <Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">
                     <WrapPanel Grid.Row="0" 
-           Orientation="Horizontal" 
-           Margin="10" 
-           HorizontalAlignment="Left">
+                    Orientation="Horizontal" 
+                    Margin="10" 
+                    HorizontalAlignment="Left">
                         <TextBlock Text="Trái:" 
-               FontWeight="Bold"
-               VerticalAlignment="Center" 
-               Margin="0,0,5,0"
-               FontSize="15"/>
+                        FontWeight="Bold"
+                        VerticalAlignment="Center" 
+                        Margin="0,0,5,0"
+                        FontSize="15"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox x:Name="txtLeft" 
-                 Width="50"
-                 Height="35"
-                 HorizontalContentAlignment="Center" 
-                 Text="0"
-                 Margin="5"
-                 FontSize="15"/>
+                            Width="50"
+                            Height="35"
+                            HorizontalContentAlignment="Center" 
+                            Text="0"
+                            Margin="5"
+                            FontSize="15"/>
                             <StackPanel>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▲" 
-                    Margin="0,0,0,2"
-                    Click="IncreaseLeftButton_Click"/>
+                                Content="▲" 
+                                Margin="0,0,0,2"
+                                Click="IncreaseLeftButton_Click"/>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▼" 
-                    Margin="0,0,0,0"
-                    Click="DecreaseLeftButton_Click"/>
+                                Content="▼" 
+                                Margin="0,0,0,0"
+                                Click="DecreaseLeftButton_Click"/>
                             </StackPanel>
                         </StackPanel>
                         <TextBlock Text="Phải:" 
-               FontWeight="Bold"
-               VerticalAlignment="Center" 
-               Margin="25,0,5,0"
-               FontSize="15"/>
+                        FontWeight="Bold"
+                        VerticalAlignment="Center" 
+                        Margin="25,0,5,0"
+                        FontSize="15"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox x:Name="txtRight" 
-                 Width="50"
-                 Height="35"
-                 HorizontalContentAlignment="Center" 
-                 Text="0"
-                 Margin="0,0,5,0"
-                 FontSize="15"/>
+                            Width="50"
+                            Height="35"
+                            HorizontalContentAlignment="Center" 
+                            Text="0"
+                            Margin="0,0,5,0"
+                            FontSize="15"/>
                             <StackPanel>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▲" 
-                    Margin="0,0,0,2"
-                    Click="IncreaseRightButton_Click"/>
+                                Content="▲" 
+                                Margin="0,0,0,2"
+                                Click="IncreaseRightButton_Click"/>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▼" 
-                    Margin="0,0,0,0"
-                    Click="DecreaseRightButton_Click"/>
+                                Content="▼" 
+                                Margin="0,0,0,0"
+                                Click="DecreaseRightButton_Click"/>
                             </StackPanel>
                         </StackPanel>
 
                         <TextBlock Text="Trên:" 
-               FontWeight="Bold"
-               VerticalAlignment="Center" 
-               Margin="25,0,5,0"
-               FontSize="15"/>
+                        FontWeight="Bold"
+                        VerticalAlignment="Center" 
+                        Margin="25,0,5,0"
+                        FontSize="15"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox x:Name="txtTop" 
-                 Width="50"
-                 Height="35"
-                 Margin="0,0,5,0"
-                 HorizontalContentAlignment="Center" 
-                 Text="0"
-                 FontSize="15"/>
+                            Width="50"
+                            Height="35"
+                            Margin="0,0,5,0"
+                            HorizontalContentAlignment="Center" 
+                            Text="0"
+                            FontSize="15"/>
                             <StackPanel>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▲" 
-                    Margin="0,0,0,2"
-                    Click="IncreaseTopButton_Click"/>
+                                Content="▲" 
+                                Margin="0,0,0,2"
+                                Click="IncreaseTopButton_Click"/>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▼" 
-                    Margin="0,0,0,0"
-                    Click="DecreaseTopButton_Click"/>
+                                Content="▼" 
+                                Margin="0,0,0,0"
+                                Click="DecreaseTopButton_Click"/>
                             </StackPanel>
                         </StackPanel>
 
                         <TextBlock Text="Dưới:" 
-               FontWeight="Bold"
-               VerticalAlignment="Center" 
-               Margin="25,0,5,0"
-               FontSize="15"/>
+                        FontWeight="Bold"
+                        VerticalAlignment="Center" 
+                        Margin="25,0,5,0"
+                        FontSize="15"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBox x:Name="txtBottom" 
-                 Width="50"
-                 Height="35"
-                 Margin="0,0,5,0"
-                 HorizontalContentAlignment="Center" 
-                 Text="0"
-                 FontSize="15"/>
+                            Width="50"
+                            Height="35"
+                            Margin="0,0,5,0"
+                            HorizontalContentAlignment="Center" 
+                            Text="0"
+                            FontSize="15"/>
                             <StackPanel>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▲" 
-                    Margin="0,0,0,2"
-                    Click="IncreaseBottomButton_Click"/>
+                                Content="▲" 
+                                Margin="0,0,0,2"
+                                Click="IncreaseBottomButton_Click"/>
                                 <Button Style="{StaticResource NumericButton}" 
-                    Content="▼" 
-                    Margin="0,0,0,0"
-                    Click="DecreaseBottomButton_Click"/>
+                                Content="▼" 
+                                Margin="0,0,0,0"
+                                Click="DecreaseBottomButton_Click"/>
                             </StackPanel>
                         </StackPanel>
                     </WrapPanel>

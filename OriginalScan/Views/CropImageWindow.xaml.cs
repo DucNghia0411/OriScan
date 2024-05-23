@@ -114,6 +114,11 @@ namespace OriginalScan.Views
 
         private void UpdateImageButton_Click(object sender, RoutedEventArgs e)
         {
+            UpdateImage();
+        }
+
+        private void UpdateImage()
+        {
             if (_displayedImage != null)
             {
                 try
@@ -138,7 +143,7 @@ namespace OriginalScan.Views
                 {
                     mainWindow.SelectedImage.bitmapImage = ConvertBitmapSourceToBitmapImage(_displayedImage);
                 }
-                
+
                 var success = new NotificationContent
                 {
                     Title = "Thông báo!!",
@@ -354,6 +359,17 @@ namespace OriginalScan.Views
                 _bottomNumericValue = 0;
 
             UpdateBottomNumericValue();
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn lưu những thay đổi?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (Result == MessageBoxResult.Yes)
+            {
+                UpdateImage();
+            }
+            this.Close();
         }
     }
 }
