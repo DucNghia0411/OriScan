@@ -301,6 +301,7 @@ namespace OriginalScan.Views
                 mainWindow.RootPath = null;
                 mainWindow.ReloadTreeViewItem();
                 mainWindow.ListImagesMain.Clear();
+                mainWindow.EnableButtons();
                 mainWindow.lblBatchName.Content = string.Empty;
                 mainWindow.lblDocumentName.Content = string.Empty;
                 mainWindow.lblCurrentBatch.Visibility = mainWindow.lblBatchName.Visibility = mainWindow.lblCurrentDocument.Visibility = mainWindow.lblDocumentName.Visibility = Visibility.Hidden;
@@ -342,6 +343,7 @@ namespace OriginalScan.Views
                 mainWindow.RootPath = path;
                 mainWindow.BatchPath = folderPath;
                 mainWindow.LoadDirectory(directoryItem, path);
+                mainWindow.EnableButtons();
             }
         }
 

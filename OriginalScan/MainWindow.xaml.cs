@@ -297,7 +297,8 @@ namespace OriginalScan
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
                            ListImagesMain.Add(imageViewModel);
-                        });                        
+                           EnableButtons();
+                        });                       
                     }
 
                     App.Current.Dispatcher.Invoke((Action)delegate
@@ -666,7 +667,7 @@ namespace OriginalScan
                     }
                 case "image":
                     {
-                        iconSource = "/Resource/Icons/crop.png";
+                        iconSource = "/Resource/Icons/imageicon.png";
                         break;
                     }
             }
@@ -1063,6 +1064,65 @@ namespace OriginalScan
             }
         }
 
+        private void btnRotate_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+
+            if (listSelectedImage == null || listSelectedImage.Count == 0)
+            {
+                NotificationShow("warning", "Vui lòng chọn những ảnh muốn xoay!");
+                return;
+            }
+
+            foreach (var image in listSelectedImage)
+            {
+                BitmapImage originalBitmap = image.bitmapImage;
+                RotateTransform rotateTransform = new RotateTransform(90);
+                TransformedBitmap rotatedBitmap = new TransformedBitmap(originalBitmap, rotateTransform);
+
+                BitmapEncoder fileEncoder = new PngBitmapEncoder();
+                fileEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                using (var fileStream = new FileStream(image.ImagePath, FileMode.Create))
+                {
+                    fileEncoder.Save(fileStream);
+                }
+
+                BitmapEncoder memoryEncoder = new PngBitmapEncoder();
+                memoryEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                BitmapImage rotatedBitmapImage = new BitmapImage();
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    memoryEncoder.Save(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    rotatedBitmapImage.BeginInit();
+                    rotatedBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    rotatedBitmapImage.StreamSource = memoryStream;
+                    rotatedBitmapImage.EndInit();
+                }
+
+                rotatedBitmapImage.Freeze();
+                image.bitmapImage = rotatedBitmapImage;
+            }
+        }
+
+        private void btnMerge_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnCut_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnCrop_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         public async void GetImagesByDocument(int documentId)
         {
             ScanApp.Data.Entities.Document? document = await _documentService.FirstOrDefault(e => e.Id == documentId);
@@ -1150,6 +1210,38 @@ namespace OriginalScan
 
             ListImagesMain.Clear();
             ListImagesMain = scannedImages;
+            EnableButtons();
+        }
+
+        public void EnableButtons()
+        {
+            if (ListImagesMain.Count() > 0)
+            {
+                btnDeleteImages.IsEnabled = true;
+                btnSaveImages.IsEnabled = true;
+                btnRotate.IsEnabled = true;
+                btnCut.IsEnabled = true;
+                btnCrop.IsEnabled = true;
+                btnPDF.IsEnabled = true;
+                btnUpload.IsEnabled = true;
+
+                if (ListImagesMain.Count() >= 2)
+                {
+                    btnMerge.IsEnabled = true;
+                }
+                else btnMerge.IsEnabled = false;
+            }
+            else
+            {
+                btnDeleteImages.IsEnabled = false;
+                btnSaveImages.IsEnabled = false;
+                btnRotate.IsEnabled = false;
+                btnMerge.IsEnabled = false;
+                btnCut.IsEnabled = false;
+                btnCrop.IsEnabled = false;
+                btnPDF.IsEnabled = false;
+                btnUpload.IsEnabled = false;
+            }
         }
 
         private BitmapImage ImagePathToBitmap(string imagePath)
@@ -1226,6 +1318,6 @@ namespace OriginalScan
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        }        
     }
 }
