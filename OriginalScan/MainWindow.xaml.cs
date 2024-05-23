@@ -268,7 +268,7 @@ namespace OriginalScan
 
                         using (MemoryStream memory = new MemoryStream())
                         {
-                            img.Save(memory, ImageFormat.Png);
+                            img.Save(memory, ImageFormat.Jpeg);
                             memory.Position = 0;
                             bitmapImage.BeginInit();
                             bitmapImage.StreamSource = memory;
@@ -278,7 +278,7 @@ namespace OriginalScan
                         }
 
                         Guid guid = Guid.NewGuid();
-                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
+                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".jpg";
                         string imagePath = Path.Combine(path, imagesName);
                         img.Save(imagePath);
 
