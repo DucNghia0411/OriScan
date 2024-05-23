@@ -1,4 +1,5 @@
 ﻿using FontAwesome5;
+using ImageMagick;
 using Microsoft.AspNetCore.Http;
 using Notification.Wpf;
 using Notification.Wpf.Constants;
@@ -7,6 +8,7 @@ using NTwain;
 using NTwain.Data;
 using OriginalScan.Models;
 using OriginalScan.Views;
+using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanApp.Common.Common;
@@ -40,6 +42,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace OriginalScan
 {
@@ -162,44 +165,94 @@ namespace OriginalScan
             }
         }
 
+        public void SaveBitmapImageAsPng(BitmapImage bitmapImage, string outputPath)
+        {
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+
+            using (FileStream fileStream = new FileStream(outputPath, FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
+        }
+
         public void ScanButton_Click(object sender, EventArgs e)
         {
             try
             {
-                if (_twainSession == null)
+                string inputImagePath = "C:\\Users\\ADMIN\\Downloads\\test_20240523 - Copy - Copy (2)\\temp202405231142304bcc30bee9394514b69b261b3cec5473.jpg";
+                string outputImagePath = "C:\\Users\\ADMIN\\Downloads\\test_20240523 - Copy - Copy (2)\\temp202405231142304bcc30bee9394514b69b261b3cec5473.jpg";
+
+                string outputPdfPath = "C:\\Users\\ADMIN\\Downloads\\test_20240523 - Copy - Copy (2)\\202405231142304bcc30bee9394514b69b261b3cec5473.pdf";
+
+                using (MagickImage image = new MagickImage(inputImagePath))
                 {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
-                    return;
+                    image.Rotate(90);
+                    image.Settings.Compression = CompressionMethod.JPEG;
+                    image.Write(outputImagePath);
+
+                    using (PdfDocument document = new PdfDocument())
+                    {
+                        // Thêm trang mới vào tài liệu
+                        PdfPage page = document.AddPage();
+                        page.Width = image.Width;
+                        page.Height = image.Height;
+
+                        using (var imageConvert = XImage.FromFile(outputImagePath))
+                        {
+                            XGraphics gfx = XGraphics.FromPdfPage(page);
+                            gfx.DrawImage(imageConvert, 0, 0, page.Width, page.Height);
+                        }
+
+                        // Lưu tài liệu PDF
+                        document.Save(outputPdfPath);
+                    }
                 }
 
-                if (dataSource == null)
-                {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
-                    return;
-                }
-
-                _scanTime = DateTime.Now;
-
-                _twainSession.DataTransferred -= DataTransferred;
-                _twainSession.DataTransferred += DataTransferred;
-
-                if (!_twainSession.IsSourceOpen)
-                    dataSource.Open();
-
-                if (!_twainSession.IsSourceOpen)
-                {
-                    NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
-                    return;
-                }
-                
-                SetupDevice();
-                dataSource.Enable(SourceEnableMode.NoUI, false, IntPtr.Zero);
+                NotificationShow("success", $"Lưu thành công tại đường dẫn: {outputPdfPath}");
             }
             catch (Exception ex)
             {
                 NotificationShow("error", ex.Message);
                 return;
             }
+
+            //try
+            //{
+            //    if (_twainSession == null)
+            //    {
+            //        NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
+            //        return;
+            //    }
+
+            //    if (dataSource == null)
+            //    {
+            //        NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
+            //        return;
+            //    }
+
+            //    _scanTime = DateTime.Now;
+
+            //    _twainSession.DataTransferred -= DataTransferred;
+            //    _twainSession.DataTransferred += DataTransferred;
+
+            //    if (!_twainSession.IsSourceOpen)
+            //        dataSource.Open();
+
+            //    if (!_twainSession.IsSourceOpen)
+            //    {
+            //        NotificationShow("warning", "Vui lòng kiểm tra lại thiết bị trước khi thực hiện quét!");
+            //        return;
+            //    }
+
+            //    SetupDevice();
+            //    dataSource.Enable(SourceEnableMode.NoUI, false, IntPtr.Zero);
+            //}
+            //catch (Exception ex)
+            //{
+            //    NotificationShow("error", ex.Message);
+            //    return;
+            //}
         }
 
         private void DataTransferred(object s, DataTransferredEventArgs e)
