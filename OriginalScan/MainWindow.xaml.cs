@@ -86,6 +86,8 @@ namespace OriginalScan
 
         public string? BatchPath { get; set; }
 
+        public ScannedImage? SelectedImage { get; set; }
+
         public void EnableButtons()
         {
             if (ListImagesMain.Count() > 0)
@@ -990,6 +992,32 @@ namespace OriginalScan
                 rotatedBitmapImage.Freeze();
                 image.bitmapImage = rotatedBitmapImage;
             }
+        }
+
+        private void btnCrop_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+
+            if (listSelectedImage == null)
+            {
+                NotificationShow("warning", "Vui lòng chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
+                return;
+            }
+
+            if (listSelectedImage.Count != 1)
+            {
+                NotificationShow("warning", "Vui lòng chỉ chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
+                return;
+            }
+
+            SelectedImage = listSelectedImage.First();
+            if (SelectedImage == null)
+            {
+                NotificationShow("error", "Hình bạn chọn không tồn tại!");
+                return;
+            }
+            CropImageWindow cropImageWindow = new CropImageWindow(SelectedImage);
+            cropImageWindow.ShowDialog();
         }
 
         private void ListImagesMain_Click(object sender, RoutedEventArgs e)
