@@ -666,7 +666,7 @@ namespace OriginalScan
                     }
                 case "image":
                     {
-                        iconSource = "/Resource/Icons/crop.png";
+                        iconSource = "/Resource/Icons/imageicon.png";
                         break;
                     }
             }
