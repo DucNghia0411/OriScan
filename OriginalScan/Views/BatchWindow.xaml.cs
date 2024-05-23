@@ -801,10 +801,12 @@ namespace OriginalScan.Views
 
                     foreach (string imagePath in images)
                     {
-                        PdfPage page = pdfDocument.AddPage();
-
                         using (var image = XImage.FromFile(imagePath))
                         {
+                            PdfPage page = pdfDocument.AddPage();
+                            page.Width = image.PixelWidth;
+                            page.Height = image.PixelHeight;
+
                             XGraphics gfx = XGraphics.FromPdfPage(page);
                             gfx.DrawImage(image, 0, 0, page.Width, page.Height);
                         }
