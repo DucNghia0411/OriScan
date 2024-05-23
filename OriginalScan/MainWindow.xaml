@@ -223,7 +223,7 @@
                     <Button x:Name="btnMerge" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             IsEnabled="false"
-                            Click="btnMerge_Click">
+                            Click="ConvertToPdfButton_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Images/mergepageicon.png" Width="25" Height="25" />
                         </StackPanel>
@@ -236,7 +236,7 @@
                     <Button x:Name="btnCut" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             IsEnabled="false"
-                            Click="btnCut_Click">
+                            Click="btnDeleteImages_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Icons/cut.png" Width="25" Height="25" />
                         </StackPanel>
@@ -249,7 +249,7 @@
                     <Button x:Name="btnCrop" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             IsEnabled="false"
-                            Click="btnCrop_Click">
+                            Click="btnSaveImages_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Icons/crop.png" Width="25" Height="25" />
                         </StackPanel>

@@ -88,6 +88,37 @@ namespace OriginalScan
 
         public ScannedImage? SelectedImage { get; set; }
 
+        public void EnableButtons()
+        {
+            if (ListImagesMain.Count() > 0)
+            {
+                btnDeleteImages.IsEnabled = true;
+                btnSaveImages.IsEnabled = true;
+                btnRotate.IsEnabled = true;
+                btnCut.IsEnabled = true;
+                btnCrop.IsEnabled = true;
+                btnPDF.IsEnabled = true;
+                btnUpload.IsEnabled = true;
+
+                if (ListImagesMain.Count() >= 2)
+                {
+                    btnMerge.IsEnabled = true;
+                }
+                else btnMerge.IsEnabled = false;
+            }
+            else
+            {
+                btnDeleteImages.IsEnabled = false;
+                btnSaveImages.IsEnabled = false;
+                btnRotate.IsEnabled = false;
+                btnMerge.IsEnabled = false;
+                btnCut.IsEnabled = false;
+                btnCrop.IsEnabled = false;
+                btnPDF.IsEnabled = false;
+                btnUpload.IsEnabled = false;
+            }
+        }
+
         private void NotificationShow(string type, string message)
         {
             switch (type)
@@ -270,7 +301,7 @@ namespace OriginalScan
 
                         using (MemoryStream memory = new MemoryStream())
                         {
-                            img.Save(memory, ImageFormat.Png);
+                            img.Save(memory, ImageFormat.Jpeg);
                             memory.Position = 0;
                             bitmapImage.BeginInit();
                             bitmapImage.StreamSource = memory;
@@ -280,7 +311,7 @@ namespace OriginalScan
                         }
 
                         Guid guid = Guid.NewGuid();
-                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".png";
+                        string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".jpg";
                         string imagePath = Path.Combine(path, imagesName);
                         img.Save(imagePath);
 
@@ -299,13 +330,13 @@ namespace OriginalScan
                         App.Current.Dispatcher.Invoke((Action)delegate
                         {
                            ListImagesMain.Add(imageViewModel);
-                           EnableButtons();
-                        });                       
+                        });                        
                     }
 
                     App.Current.Dispatcher.Invoke((Action)delegate
                     {
                         ReloadTreeViewItem();
+                        EnableButtons();
                     });
                 }
             }
@@ -315,10 +346,15 @@ namespace OriginalScan
             }
         }
 
-        public async void ConvertToPdfButton_Click(object sender, RoutedEventArgs e)
+        public async void ConvertToPdfButton_Click(object sender, EventArgs e)
         {
             try
             {
+                if (trvBatchExplorer.SelectedItem == null)
+                {
+                    NotificationShow("warning", $"Vui lòng chọn tài liệu muốn chuyển thành PDF!");
+                    return;
+                }
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 string systemPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.Images);
                 string pdfPath = System.IO.Path.Combine(FolderSetting.AppFolder, FolderSetting.PDFs);
@@ -389,10 +425,12 @@ namespace OriginalScan
 
                             foreach (string imagePath in images)
                             {
-                                PdfPage page = pdfDocument.AddPage();
-
                                 using (var image = XImage.FromFile(imagePath))
                                 {
+                                    PdfPage page = pdfDocument.AddPage();
+                                    page.Width = image.PixelWidth;
+                                    page.Height = image.PixelHeight;
+
                                     XGraphics gfx = XGraphics.FromPdfPage(page);
                                     gfx.DrawImage(image, 0, 0, page.Width, page.Height);
                                 }
@@ -897,6 +935,7 @@ namespace OriginalScan
                     await _imageService.Save();
 
                     ListImagesMain.Clear();
+                    ListImagesSelected.Clear();
                     ReloadTreeViewItem();
 
                     var count = await _imageService.CountByDocument(currentDocument.Id);
@@ -910,6 +949,50 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
                 return;
+            }
+        }
+
+        private void btnRotate_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+
+            if (listSelectedImage == null || listSelectedImage.Count == 0)
+            {
+                NotificationShow("warning", "Vui lòng chọn những ảnh muốn xoay!");
+                return;
+            }
+
+            foreach (var image in listSelectedImage)
+            {
+                BitmapImage originalBitmap = image.bitmapImage;
+                RotateTransform rotateTransform = new RotateTransform(90);
+                TransformedBitmap rotatedBitmap = new TransformedBitmap(originalBitmap, rotateTransform);
+
+                BitmapEncoder fileEncoder = new JpegBitmapEncoder();
+                fileEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                using (var fileStream = new FileStream(image.ImagePath, FileMode.Create))
+                {
+                    fileEncoder.Save(fileStream);
+                }
+
+                BitmapEncoder memoryEncoder = new JpegBitmapEncoder();
+                memoryEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
+
+                BitmapImage rotatedBitmapImage = new BitmapImage();
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    memoryEncoder.Save(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    rotatedBitmapImage.BeginInit();
+                    rotatedBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    rotatedBitmapImage.StreamSource = memoryStream;
+                    rotatedBitmapImage.EndInit();
+                }
+
+                rotatedBitmapImage.Freeze();
+                image.bitmapImage = rotatedBitmapImage;
             }
         }
 
@@ -1012,9 +1095,11 @@ namespace OriginalScan
                         if (Directory.Exists(path))
                         {
                             var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
-                            
+                                                        
                             if (selectedDocument != null)
                             {
+                                if (_documentService.SelectedDocument != null && selectedDocument.Id == _documentService.SelectedDocument.Id) return;
+
                                 DocumentModel docModel = new DocumentModel()
                                 {
                                     Id = selectedDocument.Id,
@@ -1064,86 +1149,6 @@ namespace OriginalScan
             {
                 NotificationShow("error", ex.Message);
             }
-        }
-
-        private void btnRotate_Click(object sender, RoutedEventArgs e)
-        {
-            var listSelectedImage = ListImagesSelected;
-
-            if (listSelectedImage == null || listSelectedImage.Count == 0)
-            {
-                NotificationShow("warning", "Vui lòng chọn những ảnh muốn xoay!");
-                return;
-            }
-
-            foreach (var image in listSelectedImage)
-            {
-                BitmapImage originalBitmap = image.bitmapImage;
-                RotateTransform rotateTransform = new RotateTransform(90);
-                TransformedBitmap rotatedBitmap = new TransformedBitmap(originalBitmap, rotateTransform);
-
-                BitmapEncoder fileEncoder = new PngBitmapEncoder();
-                fileEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
-
-                using (var fileStream = new FileStream(image.ImagePath, FileMode.Create))
-                {
-                    fileEncoder.Save(fileStream);
-                }
-
-                BitmapEncoder memoryEncoder = new PngBitmapEncoder();
-                memoryEncoder.Frames.Add(BitmapFrame.Create(rotatedBitmap));
-
-                BitmapImage rotatedBitmapImage = new BitmapImage();
-
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    memoryEncoder.Save(memoryStream);
-                    memoryStream.Seek(0, SeekOrigin.Begin);
-                    rotatedBitmapImage.BeginInit();
-                    rotatedBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    rotatedBitmapImage.StreamSource = memoryStream;
-                    rotatedBitmapImage.EndInit();
-                }
-
-                rotatedBitmapImage.Freeze();
-                image.bitmapImage = rotatedBitmapImage;
-            }
-        }
-
-        private void btnMerge_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnCut_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnCrop_Click(object sender, RoutedEventArgs e)
-        {
-            var listSelectedImage = ListImagesSelected;
-
-            if (listSelectedImage == null)
-            {
-                NotificationShow("warning", "Vui lòng chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
-                return;
-            }
-
-            if (listSelectedImage.Count != 1)
-            {
-                NotificationShow("warning", "Vui lòng chỉ chọn 1 hình ảnh để thực hiện chức năng cắt viền!");
-                return;
-            }
-
-            SelectedImage = listSelectedImage.First();
-            if (SelectedImage == null)
-            {
-                NotificationShow("error", "Hình bạn chọn không tồn tại!");
-                return;
-            }
-            CropImageWindow cropImageWindow = new CropImageWindow(SelectedImage);
-            cropImageWindow.ShowDialog();
         }
 
         public async void GetImagesByDocument(int documentId)
@@ -1234,37 +1239,6 @@ namespace OriginalScan
             ListImagesMain.Clear();
             ListImagesMain = scannedImages;
             EnableButtons();
-        }
-
-        public void EnableButtons()
-        {
-            if (ListImagesMain.Count() > 0)
-            {
-                btnDeleteImages.IsEnabled = true;
-                btnSaveImages.IsEnabled = true;
-                btnRotate.IsEnabled = true;
-                btnCut.IsEnabled = true;
-                btnCrop.IsEnabled = true;
-                btnPDF.IsEnabled = true;
-                btnUpload.IsEnabled = true;
-
-                if (ListImagesMain.Count() >= 2)
-                {
-                    btnMerge.IsEnabled = true;
-                }
-                else btnMerge.IsEnabled = false;
-            }
-            else
-            {
-                btnDeleteImages.IsEnabled = false;
-                btnSaveImages.IsEnabled = false;
-                btnRotate.IsEnabled = false;
-                btnMerge.IsEnabled = false;
-                btnCut.IsEnabled = false;
-                btnCrop.IsEnabled = false;
-                btnPDF.IsEnabled = false;
-                btnUpload.IsEnabled = false;
-            }
         }
 
         private BitmapImage ImagePathToBitmap(string imagePath)

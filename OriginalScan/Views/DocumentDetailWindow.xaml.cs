@@ -346,32 +346,29 @@ namespace OriginalScan.Views
 
         private void dpkEndDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dpkStartDate.SelectedDate == null)
-            {
-                return;
-            }
-
-            if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
-            {
-                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
-                dpkEndDate.SelectedDate = null;
-                return;
-            }
+            checkSelectedDate(dpkEndDate);
         }
 
         private void dpkStartDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (dpkEndDate.SelectedDate == null)
+            checkSelectedDate(dpkStartDate);
+        }
+
+        private void checkSelectedDate(DatePicker datePicker)
+        {
+            if (dpkEndDate.SelectedDate == null || dpkStartDate.SelectedDate == null)
             {
                 return;
             }
 
             if (dpkEndDate.SelectedDate < dpkStartDate.SelectedDate)
             {
-                NotificationShow("error", $"Ngày kết thúc không thể trước ngày bắt đầu");
-                dpkStartDate.SelectedDate = null;
+                NotificationShow("warning", $"Ngày kết thúc không thể trước ngày bắt đầu");
+                datePicker.SelectedDate = null;
                 return;
             }
+
+            txtStoragePeriod.Text = (dpkEndDate.SelectedDate.Value - dpkStartDate.SelectedDate.Value).Days + " ngày";
         }
 
         private void CbtnPath_Click(object sender, RoutedEventArgs e)
