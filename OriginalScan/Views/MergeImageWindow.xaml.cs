@@ -52,7 +52,7 @@ namespace OriginalScan.Views
         private Image? draggedImageFinal;
         private Point offsetFinal;
 
-        private ScannedImage _firstImage { get; }
+        private ScannedImage firstImage { get; set; }
 
         private ScannedImage _secondImage { get; }
 
@@ -62,7 +62,7 @@ namespace OriginalScan.Views
         private readonly IDocumentService _documentService;
         private readonly NotificationManager _notificationManager;
 
-        public MergeImageWindow(ScannedImage firstImage, ScannedImage secondImage, IImageService imageService, IDocumentService documentService)
+        public MergeImageWindow(ScannedImage inputFirstImage, ScannedImage secondImage, IImageService imageService, IDocumentService documentService)
         {
             this._imageService = imageService;
             this._documentService = documentService;
@@ -70,11 +70,11 @@ namespace OriginalScan.Views
 
             InitializeComponent();
 
-            _firstImage = firstImage;
+            firstImage = inputFirstImage;
             _secondImage = secondImage;
 
             scale = 0.4;
-            Source1 = firstImage.bitmapImage;
+            Source1 = inputFirstImage.bitmapImage;
             Image1Height = Source1.Height * scale;
             Image1Width = Source1.Width * scale;
 
@@ -462,8 +462,8 @@ namespace OriginalScan.Views
                 return;
             }
 
-            ScannedImage replaceImage = _firstImage.Order < _secondImage.Order ? _firstImage : _secondImage;
-            ScannedImage deleteImage = _firstImage.Order > _secondImage.Order ? _firstImage : _secondImage;
+            ScannedImage replaceImage = firstImage.Order < _secondImage.Order ? firstImage : _secondImage;
+            ScannedImage deleteImage = firstImage.Order > _secondImage.Order ? firstImage : _secondImage;
 
             if (deleteImage.Id != 0)
             {
@@ -502,9 +502,12 @@ namespace OriginalScan.Views
 
             var listImage = mainWindow.ListImagesMain;
 
+            firstImage.Order = replaceImage.Order;
+            firstImage.bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+
             if (deleteImage.Id != 0)
                 ReSort(deleteImage.Order);
-
+            
             listImage.Remove(_secondImage);
 
             string filePath = replaceImage.ImagePath;
