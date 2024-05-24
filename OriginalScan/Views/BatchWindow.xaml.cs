@@ -587,7 +587,7 @@ namespace OriginalScan.Views
                 MainWindow? mainWindow = System.Windows.Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
                 if (mainWindow != null)
                 {
-                    mainWindow.GetImagesByDocument(selectedDocument.Id);
+                    mainWindow.GetImagesByDocument(selectedDocument.Id, true);
                     mainWindow.lblDocumentName.Content = selectedDocument.DocumentName;
                     mainWindow.lblCurrentDocument.Visibility = Visibility.Visible;
                     mainWindow.lblDocumentName.Visibility = Visibility.Visible;

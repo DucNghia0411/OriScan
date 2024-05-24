@@ -462,8 +462,24 @@ namespace OriginalScan.Views
                 return;
             }
 
-            ScannedImage replaceImage = firstImage.Order < _secondImage.Order ? firstImage : _secondImage;
-            ScannedImage deleteImage = firstImage.Order > _secondImage.Order ? firstImage : _secondImage;
+            ScannedImage replaceImage;
+            ScannedImage deleteImage;
+
+            if (firstImage.Id == 0 && _secondImage.Id != 0)
+            {
+                replaceImage = _secondImage;
+                deleteImage = firstImage;
+            }
+            else if (firstImage.Id != 0 && _secondImage.Id == 0)
+            {
+                replaceImage = firstImage;
+                deleteImage = _secondImage;
+            }
+            else
+            {
+                replaceImage = firstImage.Order < _secondImage.Order ? firstImage : _secondImage;
+                deleteImage = firstImage.Order > _secondImage.Order ? firstImage : _secondImage;
+            }
 
             if (deleteImage.Id != 0)
             {
@@ -492,6 +508,8 @@ namespace OriginalScan.Views
             }
 
             RenderTargetBitmap rtb = _mergeImageBitmap;
+            replaceImage.bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+
             MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
 
             if (_documentService.SelectedDocument == null)
@@ -502,12 +520,10 @@ namespace OriginalScan.Views
 
             var listImage = mainWindow.ListImagesMain;
 
-            firstImage.Order = replaceImage.Order;
-            firstImage.bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
-
             if (deleteImage.Id != 0)
                 ReSort(deleteImage.Order);
-            
+
+            firstImage = replaceImage;
             listImage.Remove(_secondImage);
 
             string filePath = replaceImage.ImagePath;
@@ -527,7 +543,8 @@ namespace OriginalScan.Views
                 NotificationShow("warning", $"Có lỗi xảy ra nhưng quá trình vẫn tiếp tục!");
             }
 
-            mainWindow.ListImagesSelected[0].bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+            mainWindow.GetImagesByDocument(_documentService.SelectedDocument.Id, false);
+            mainWindow.ListImagesSelected.Clear();
             NotificationShow("success", $"Ghép ảnh thành công!");
             this.Close();
         }

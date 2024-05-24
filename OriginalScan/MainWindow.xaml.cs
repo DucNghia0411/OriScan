@@ -1065,7 +1065,7 @@ namespace OriginalScan
                                 lblCurrentDocument.Visibility = Visibility.Visible;
                                 lblDocumentName.Visibility = Visibility.Visible;
                                 lblDocumentName.Content = docModel.DocumentName;
-                                GetImagesByDocument(selectedDocument.Id);
+                                GetImagesByDocument(selectedDocument.Id, true);
                             }
                         }
 
@@ -1103,7 +1103,7 @@ namespace OriginalScan
             }
         }
 
-        public async void GetImagesByDocument(int documentId)
+        public async void GetImagesByDocument(int documentId, bool checkExist)
         {
             ScanApp.Data.Entities.Document? document = await _documentService.FirstOrDefault(e => e.Id == documentId);
 
@@ -1157,10 +1157,13 @@ namespace OriginalScan
             {
                 int totalImageUnsaved = totalImagesInPath - totalImagesInDatabase;
 
-                MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (checkImageResult == MessageBoxResult.No)
+                if (checkExist)
                 {
-                    return;
+                    MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (checkImageResult == MessageBoxResult.No)
+                    {
+                        return;
+                    }
                 }
 
                 List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
