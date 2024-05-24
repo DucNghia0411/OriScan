@@ -23,6 +23,8 @@ using Notification.Wpf;
 using ScanApp.Service.Constracts;
 using OriginalScan.Models;
 using ScanApp.Service.Services;
+using FontAwesome5;
+using PdfSharp.Drawing;
 
 namespace OriginalScan.Views
 {
@@ -57,11 +59,13 @@ namespace OriginalScan.Views
         private RenderTargetBitmap? _mergeImageBitmap;
 
         private readonly IImageService _imageService;
+        private readonly IDocumentService _documentService;
         private readonly NotificationManager _notificationManager;
 
-        public MergeImageWindow(ScannedImage firstImage, ScannedImage secondImage, IImageService imageService)
+        public MergeImageWindow(ScannedImage firstImage, ScannedImage secondImage, IImageService imageService, IDocumentService documentService)
         {
             this._imageService = imageService;
+            this._documentService = documentService;
             _notificationManager = new NotificationManager();
 
             InitializeComponent();
@@ -80,6 +84,70 @@ namespace OriginalScan.Views
 
             Loaded += MainWindow_Loaded;
             DataContext = this;
+        }
+
+        private void NotificationShow(string type, string message)
+        {
+            switch (type)
+            {
+                case "error":
+                    {
+                        var errorNoti = new NotificationContent
+                        {
+                            Title = "Lỗi!",
+                            Message = $"Có lỗi: {message}",
+                            Type = NotificationType.Error,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Times,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Red),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(errorNoti);
+                        break;
+                    }
+                case "success":
+                    {
+                        var successNoti = new NotificationContent
+                        {
+                            Title = "Thành công!",
+                            Message = $"{message}",
+                            Type = NotificationType.Success,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_Check,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Green),
+                            Foreground = new SolidColorBrush(Colors.White),
+                        };
+                        _notificationManager.Show(successNoti);
+                        break;
+                    }
+                case "warning":
+                    {
+                        var warningNoti = new NotificationContent
+                        {
+                            Title = "Thông báo!",
+                            Message = $"{message}",
+                            Type = NotificationType.Warning,
+                            Icon = new SvgAwesome()
+                            {
+                                Icon = EFontAwesomeIcon.Solid_ExclamationTriangle,
+                                Height = 25,
+                                Foreground = new SolidColorBrush(Colors.Black)
+                            },
+                            Background = new SolidColorBrush(Colors.Yellow),
+                            Foreground = new SolidColorBrush(Colors.Black),
+                        };
+                        _notificationManager.Show(warningNoti);
+                        break;
+                    }
+            }
         }
 
         private void Image_MouseMove(object sender, MouseEventArgs e)
@@ -215,22 +283,21 @@ namespace OriginalScan.Views
 
             if (renderTargetBitmap != null)
             {
-                PngBitmapEncoder pngEncoder = new PngBitmapEncoder();
+                JpegBitmapEncoder pngEncoder = new JpegBitmapEncoder();
                 pngEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
 
-                // Create a MemoryStream to hold the encoded image
                 using (MemoryStream stream = new MemoryStream())
                 {
-                    // Save the PngBitmapEncoder to the MemoryStream
                     pngEncoder.Save(stream);
 
-                    // Create the BitmapImage and set it to the MemoryStream
+                    stream.Seek(0, SeekOrigin.Begin);
+
                     bitmapImage = new BitmapImage();
                     bitmapImage.BeginInit();
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                     bitmapImage.StreamSource = stream;
                     bitmapImage.EndInit();
-                    bitmapImage.Freeze(); // Important to freeze the image for performance reasons
+                    bitmapImage.Freeze();
                 }
             }
 
@@ -389,106 +456,77 @@ namespace OriginalScan.Views
 
         private async void SaveMergeImage()
         {
-            //if(_mergeImageBitmap == null)
-            //{
-            //    MessageBox.Show("Vui lòng ghép hình ảnh trước khi lưu!", "Thông báo!!", MessageBoxButtons.OK);
-            //    return;
-            //}
+            if (_mergeImageBitmap == null)
+            {
+                NotificationShow("warning", $"Vui lòng ghép hình ảnh trước khi lưu!");
+                return;
+            }
 
-            //ScannedImage replaceImage = _firstImage.Order < _secondImage.Order ? _firstImage : _secondImage;
-            //ScannedImage deleteImage = _firstImage.Order > _secondImage.Order ? _firstImage : _secondImage;
+            ScannedImage replaceImage = _firstImage.Order < _secondImage.Order ? _firstImage : _secondImage;
+            ScannedImage deleteImage = _firstImage.Order > _secondImage.Order ? _firstImage : _secondImage;
 
-            //if(deleteImage.Id != 0)
-            //{
-            //    var resortResult = await _imageService.ReSort(deleteImage.Id);
-            //    if (!resortResult)
-            //    {
-            //        MessageBox.Show("Có lỗi xảy ra trong quá trình xử lý", "Thông báo!!", MessageBoxButtons.OK);
-            //        return;
-            //    }
+            if (deleteImage.Id != 0)
+            {
+                var resortResult = await _imageService.ReSort(deleteImage.Id);
+                if (!resortResult)
+                {
+                    NotificationShow("error", $"Có lỗi xảy ra trong quá trình xử lý!");
+                    return;
+                }
 
-            //    if (!_imageService.(deleteImage.Id))
-            //    {
-            //        MessageBox.Show("Có lỗi xảy ra trong quá trình xử lý", "Thông báo!!", MessageBoxButtons.OK);
-            //        return;
-            //    }
-            //}
+                var deleteResult = await _imageService.Delete(deleteImage.Id);
+                if (!deleteResult)
+                {
+                    NotificationShow("error", $"Có lỗi xảy ra trong quá trình xử lý!");
+                    return;
+                }
+            }
+            else
+            {
+                MessageBoxResult pdfConfirm = System.Windows.MessageBox.Show("Tồn tại ảnh chưa được lưu, vẫn tiến hành ghép?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
-            //RenderTargetBitmap rtb = _mergeImageBitmap;
-            //MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
-            //var documentCategories = mainWindow._mainViewModel.DocumentCategories.FirstOrDefault(a => a.Id == DocumentManager._documentId);
+                if (pdfConfirm == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
 
-            //if(documentCategories == null) 
-            //{
-            //    MessageBox.Show("Vui lòng truy cập lại tài liệu bạn muốn thực hiện!", "Thông báo!!", MessageBoxButtons.OK);
-            //    return;
-            //}
+            RenderTargetBitmap rtb = _mergeImageBitmap;
+            MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
 
-            //var documentPages = documentCategories.Pages.FirstOrDefault(x => x.PageID == replaceImage.PageID) ?? documentCategories.Pages.FirstOrDefault();
-            //if (documentPages == null)
-            //{
-            //    MessageBox.Show("Vui lòng truy cập lại trang tài liệu bạn muốn thực hiện!", "Thông báo!!", MessageBoxButtons.OK);
-            //    return;
-            //}
+            if (_documentService.SelectedDocument == null)
+            {
+                NotificationShow("warning", $"Vui lòng truy cập lại tài liệu bạn muốn thực hiện!");
+                return;
+            }
 
-            //var listImage = mainWindow._mainViewModel.ListImageMain;
+            var listImage = mainWindow.ListImagesMain;
 
+            if (deleteImage.Id != 0)
+                ReSort(deleteImage.Order);
 
-            //if (deleteImage.Id == 0)
-            //    ReSort(deleteImage.Order);
+            listImage.Remove(_secondImage);
 
-            //documentPages.Images.Remove(_firstImage);
-            //documentPages.Images.Remove(_secondImage);
-            //listImage.Remove(_firstImage);
-            //listImage.Remove(_secondImage);
+            string filePath = replaceImage.ImagePath;
+            using (FileStream stream = new FileStream(filePath, FileMode.Create))
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(rtb));
+                encoder.Save(stream);
+            }
 
-            //ScannedImage mergeImage = new ScannedImage()
-            //{
-            //    PageID = replaceImage.PageID,
-            //    Name = replaceImage.Name,
-            //    ImagePath = replaceImage.ImagePath,
-            //    Order = replaceImage.Order,
-            //    PageIcode = replaceImage.PageIcode,
-            //    bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb)
-            //};
+            try
+            {
+                File.Delete(deleteImage.ImagePath);
+            }
+            catch (Exception)
+            {
+                NotificationShow("warning", $"Có lỗi xảy ra nhưng quá trình vẫn tiếp tục!");
+            }
 
-            //string filePath = replaceImage.ImagePath;
-            //using (FileStream stream = new FileStream(filePath, FileMode.Create))
-            //{
-            //    PngBitmapEncoder encoder = new PngBitmapEncoder();
-            //    encoder.Frames.Add(BitmapFrame.Create(rtb));
-            //    encoder.Save(stream);
-            //}
-
-            //documentPages.Images.Add(mergeImage);
-            //List<ScannedImage> newImageList = documentPages.Images.OrderBy(x => x.Order).ToList();
-            //documentPages.Images.Clear();
-            //listImage.Clear();
-            //foreach (ScannedImage image in newImageList)
-            //{
-            //    documentPages.Images.Add(image);
-            //    listImage.Add(image);
-            //}
-
-            //try
-            //{
-            //    File.Delete(deleteImage.ImagePath);
-            //}
-            //catch (Exception)
-            //{
-            //    MessageBox.Show("Có lỗi xảy ra nhưng quá trình vẫn tiếp tục!", "Thông báo!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-
-            //mainWindow.ListIMGSelected.Clear();
-            //var content = new NotificationContent
-            //{
-            //    Title = "Thông báo!!",
-            //    Message = "Ghép ảnh thành công!!",
-            //    Background = new SolidColorBrush(Colors.Green),
-            //    Foreground = new SolidColorBrush(Colors.White),
-            //};
-            //_notificationManager.Show(content);
-            //this.Close();
+            mainWindow.ListImagesSelected[0].bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+            NotificationShow("success", $"Ghép ảnh thành công!");
+            this.Close();
         }
 
         private void ReSort(int order)
@@ -503,6 +541,19 @@ namespace OriginalScan.Views
             {
                 listImage[i].Order = listImage[i].Order - 1;
             }
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_mergeImageBitmap == null) return;
+            MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn thoát mà không lưu những thay đổi?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (Result == MessageBoxResult.Yes)
+            {
+                this.Close();
+            }
+
+            else return;
         }
     }
 }

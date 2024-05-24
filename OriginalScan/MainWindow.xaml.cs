@@ -902,6 +902,23 @@ namespace OriginalScan
             }
         }
 
+        private void btnMerge_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+            if (listSelectedImage.Count != 2)
+            {
+                NotificationShow("warning", "Vui lòng chọn đúng 2 hình ảnh để thực hiện chức năng ghép ảnh!");
+                return;
+            }
+
+            var firstImage = listSelectedImage[0];
+            var secondImage = listSelectedImage[1];
+
+            MergeImageWindow mergeWindow = new MergeImageWindow(firstImage, secondImage, _imageService, _documentService);
+            mergeWindow.ShowDialog();
+            ReloadTreeViewItem();
+        }
+
         private void btnCrop_Click(object sender, RoutedEventArgs e)
         {
             var listSelectedImage = ListImagesSelected;
@@ -1136,35 +1153,38 @@ namespace OriginalScan
             if (totalImagesInPath > totalImagesInDatabase)
             {
                 int totalImageUnsaved = totalImagesInPath - totalImagesInDatabase;
+
                 MessageBoxResult checkImageResult = System.Windows.MessageBox.Show($"Bạn có {totalImageUnsaved} ảnh chưa được lưu. Bạn có muốn hiển thị?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (checkImageResult == MessageBoxResult.Yes)
+                if (checkImageResult == MessageBoxResult.No)
                 {
-                    List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
+                    return;
+                }
+
+                List<string> savedImagesName = images.Select(x => x.ImageName).ToList();
                     List<string> imagesInPathFileName = filesInDocumentPath
                         .Select(x => System.IO.Path.GetFileName(x))
                         .ToList();
 
                     List<string> unsavedImagesName = imagesInPathFileName.Except(savedImagesName, StringComparer.OrdinalIgnoreCase).ToList();
 
-                    foreach (var item in unsavedImagesName)
+                foreach (var item in unsavedImagesName)
+                {
+                    string path = System.IO.Path.Combine(documentPath, item);
+                    BitmapImage bitmapImage = ImagePathToBitmap(path);
+
+                    ScannedImage scannedImage = new ScannedImage()
                     {
-                        string path = System.IO.Path.Combine(documentPath, item);
-                        BitmapImage bitmapImage = ImagePathToBitmap(path);
+                        Id = 0,
+                        DocumentId = documentId,
+                        ImageName = item,
+                        ImagePath = path,
+                        IsSelected = false,
+                        Order = latestOrder,
+                        bitmapImage = bitmapImage
+                    };
 
-                        ScannedImage scannedImage = new ScannedImage()
-                        {
-                            Id = 0,
-                            DocumentId = documentId,
-                            ImageName = item,
-                            ImagePath = path,
-                            IsSelected = false,
-                            Order = latestOrder,
-                            bitmapImage = bitmapImage
-                        };
-
-                        scannedImages.Add(scannedImage);
-                        latestOrder++;
-                    }
+                    scannedImages.Add(scannedImage);
+                    latestOrder++;
                 }
             }
 

@@ -25,6 +25,7 @@
     <None Remove="Resource\Icons\filelocation.png" />
     <None Remove="Resource\Icons\imageicon.png" />
     <None Remove="Resource\Icons\logout.png" />
+    <None Remove="Resource\Icons\merge.png" />
     <None Remove="Resource\Icons\multiply.png" />
     <None Remove="Resource\Icons\pdf.png" />
     <None Remove="Resource\Icons\play.png" />
@@ -32,6 +33,8 @@
     <None Remove="Resource\Icons\submit.png" />
     <None Remove="Resource\Icons\undo.png" />
     <None Remove="Resource\Icons\whitedelete.png" />
+    <None Remove="Resource\Icons\zoom-out.png" />
+    <None Remove="Resource\Icons\zoom.png" />
     <None Remove="Resource\Images\addscanicon.png" />
     <None Remove="Resource\Images\completeicon.png" />
     <None Remove="Resource\Images\cuticon.png" />
@@ -89,6 +92,7 @@
     <Resource Include="Resource\Icons\eye.png" />
     <Resource Include="Resource\Icons\imageicon.png" />
     <Resource Include="Resource\Icons\logout.png" />
+    <Resource Include="Resource\Icons\merge.png" />
     <Resource Include="Resource\Icons\multiply.png" />
     <Resource Include="Resource\Icons\pdf.png" />
     <Resource Include="Resource\Icons\play.png" />
@@ -96,6 +100,8 @@
     <Resource Include="Resource\Icons\submit.png" />
     <Resource Include="Resource\Icons\undo.png" />
     <Resource Include="Resource\Icons\whitedelete.png" />
+    <Resource Include="Resource\Icons\zoom-out.png" />
+    <Resource Include="Resource\Icons\zoom.png" />
     <Resource Include="Resource\Images\addscanicon.png" />
     <Resource Include="Resource\Images\completeicon.png" />
     <Resource Include="Resource\Images\cuticon.png" />

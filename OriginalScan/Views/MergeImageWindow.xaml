@@ -27,29 +27,41 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <ToolBarTray Grid.Row="0">
+        <ToolBarTray Grid.Column="0">
             <ToolBar
                 ClipToBounds="False"
                 Style="{StaticResource MaterialDesignToolBar}">
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Click="MergeButton_Click">
-                    <StackPanel>
-                        <Image Source="\Resource\Icons\merge.png" Width="35" Height="35" />
-                        <Label Content="Ghép" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
                 <Button x:Name="btnConfirmMerge" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnConfirmMerge_Click">
                     <StackPanel>
-                        <Image Source="\Resource\Icons\diskette.png" Width="35" Height="35" />
-                        <Label Content="Lưu" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <Image Source="\Resource\Icons\diskette.png" Width="25" Height="25" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Lưu
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
-                <Button HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="ExitButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ExitButton_Click">
                     <StackPanel>
-                        <Image Source="\Resource\Icons\multiply.png" Width="35" Height="35" />
-                        <Label Content="Hủy" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <Image Source="/Resource/Icons/logout.png" Width="25" Height="25" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Quay về
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
-                <Separator />
+                <Separator/>
+                <Button x:Name="btnMerge" HorizontalAlignment="Center" VerticalAlignment="Center" Click="MergeButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/merge.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Lưu
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
             </ToolBar>
         </ToolBarTray>
 
@@ -92,6 +104,7 @@
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Center"
                         Margin="10,10,10,10"
+                        BorderThickness="0"
                         Click="ZoomInButton_Click">
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom.png" Width="35" Height="35" />
@@ -101,6 +114,7 @@
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Center"
                         Margin="10,10,10,10"
+                        BorderThickness="0"
                         Click="ZoomOutButton_Click">
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom-out.png" Width="35" Height="35" />
@@ -143,6 +157,7 @@
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Center"
                         Margin="10,10,10,10"
+                        BorderThickness="0"
                         Click="ZoomInFinalButton_Click">
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom.png" Width="35" Height="35" />
@@ -152,6 +167,7 @@
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Center"
                         Margin="10,10,10,10"
+                        BorderThickness="0"
                         Click="ZoomOutFinalButton_Click">
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom-out.png" Width="35" Height="35" />

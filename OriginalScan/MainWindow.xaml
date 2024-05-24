@@ -223,7 +223,7 @@
                     <Button x:Name="btnMerge" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
                             IsEnabled="false"
-                            Click="ConvertToPdfButton_Click">
+                            Click="btnMerge_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Images/mergepageicon.png" Width="25" Height="25" />
                         </StackPanel>
