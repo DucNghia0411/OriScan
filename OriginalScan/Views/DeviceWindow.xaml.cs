@@ -121,8 +121,6 @@ namespace OriginalScan.Views
             DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
             string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
 
-            bool isConverted = false;
-
             foreach (string format in allDatePatterns)
             {
                 DateTime createdDate;
