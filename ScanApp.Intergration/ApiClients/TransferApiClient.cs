@@ -14,7 +14,8 @@ namespace ScanApp.Intergration.ApiClients
 {
     public class TransferApiClient : BaseApiClient, ITransferApiClient
     {
-        private readonly string _apiAddress = "http://192.168.1.11:4003/";
+        private readonly string _apiAddress = "http://192.168.1.15:4003/";
+        //private readonly string _apiAddress = "http://idcag.librasoft.vn/";
 
         public TransferApiClient() : base() { }
 

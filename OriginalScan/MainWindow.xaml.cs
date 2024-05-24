@@ -351,7 +351,7 @@ namespace OriginalScan
                 NotificationShow("warning", "Vui lòng chọn gói trước khi thực hiện chức năng chuyển đổi thành PDF.");
                 return;
             }
-            ConvertPdfWindow convertPdfWindow = new ConvertPdfWindow(_context, _batchService, _documentService);
+            ConvertPdfWindow convertPdfWindow = new ConvertPdfWindow(_context, _batchService, _documentService, _transferApiClient);
             convertPdfWindow.Show();
         }
 

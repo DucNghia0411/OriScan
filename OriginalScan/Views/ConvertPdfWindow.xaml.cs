@@ -7,6 +7,7 @@ using PdfSharp.Pdf;
 using ScanApp.Common.Common;
 using ScanApp.Common.Settings;
 using ScanApp.Data.Entities;
+using ScanApp.Intergration.Constracts;
 using ScanApp.Model.Models;
 using ScanApp.Model.Requests.Document;
 using ScanApp.Service.Constracts;
@@ -36,17 +37,20 @@ namespace OriginalScan.Views
         private readonly IDocumentService _documentService;
         private readonly ScanContext _context;
         private readonly NotificationManager _notificationManager;
+        private readonly ITransferApiClient _transferApiClient;
 
         public ConvertPdfWindow
         (
             ScanContext context,
             IBatchService batchService,
-            IDocumentService documentService
+            IDocumentService documentService,
+            ITransferApiClient transferApiClient
         )
         {
             _context = context;
             _batchService = batchService;
             _documentService = documentService;
+            _transferApiClient = transferApiClient;
             _notificationManager = new NotificationManager();
 
             InitializeComponent();
@@ -302,21 +306,45 @@ namespace OriginalScan.Views
 
         private async void btnSubmit_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
-            if (clickedButton == null)
-                return;
-
-            var dataContext = clickedButton.DataContext;
-            lstvDocuments.SelectedItem = dataContext;
-            DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
-
-            var currentDocument = await _documentService.FirstOrDefault(e => e.Id == selectedDocument.Id);
-
-            if (currentDocument == null) return;
-
-            if (currentDocument.PdfPath == null)
+            try
             {
-                NotificationShow("warning", "Tài liệu này chưa được chuyển thành PDF!");
+                System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+                if (clickedButton == null)
+                    return;
+
+                var dataContext = clickedButton.DataContext;
+                lstvDocuments.SelectedItem = dataContext;
+                DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+                var currentDocument = await _documentService.FirstOrDefault(e => e.Id == selectedDocument.Id);
+
+                if (currentDocument == null) 
+                {
+                    NotificationShow("warning", "Không tìm thấy thông tin tài liệu được chọn!");
+                    return;
+                }
+
+                if (currentDocument.PdfPath == null)
+                {
+                    NotificationShow("warning", "Tài liệu này chưa được chuyển thành PDF!");
+                    return;
+                }
+
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var pdfFilePath = System.IO.Path.Combine(userFolderPath, currentDocument.PdfPath);
+                bool transferResult = await _transferApiClient.TransferToPortal(pdfFilePath);
+
+                if (transferResult)
+                    NotificationShow("success", $"Upload công văn thành công!");
+                else
+                {
+                    NotificationShow("error", "Upload công văn thất bại!");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationShow("error", ex.Message);
                 return;
             }
         }
