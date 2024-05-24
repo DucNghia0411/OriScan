@@ -1044,10 +1044,12 @@ namespace OriginalScan
                         if (Directory.Exists(path))
                         {
                             var selectedDocument = await _documentService.FirstOrDefault(e => e.DocumentPath == filePath);
-                                                        
+                            string[] filesInDocumentPath = Directory.GetFiles(path);
+                            int totalImagesInPath = filesInDocumentPath.Count();
+
                             if (selectedDocument != null)
                             {
-                                if (_documentService.SelectedDocument != null && selectedDocument.Id == _documentService.SelectedDocument.Id) return;
+                                if (_documentService.SelectedDocument != null && selectedDocument.Id == _documentService.SelectedDocument.Id && ListImagesMain.Count() == totalImagesInPath) return;
 
                                 DocumentModel docModel = new DocumentModel()
                                 {
