@@ -571,6 +571,13 @@ namespace OriginalScan.Views
 
                 DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(lstvDocuments.SelectedItem);
 
+                MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn mở tài liệu: {selectedDocument.DocumentName}?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (Result == MessageBoxResult.No)
+                {
+                    return;
+                }
+
                 selectedDocument.BatchId = _batchService.SelectedBatch.Id;
                 _documentService.SetDocument(selectedDocument);
 

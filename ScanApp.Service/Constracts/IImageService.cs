@@ -24,10 +24,14 @@ namespace ScanApp.Service.Constracts
 
         Task Save();
 
+        Task<bool> Delete(int id);
+
         Task DeleteMultiById(List<int> listIds);
 
         Task<bool> DeleteByDocument(int documentId);
 
         Task<int> CountByDocument(int documentId);
+
+        Task<bool> ReSort(long? idImage);
     }
 }
