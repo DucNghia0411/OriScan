@@ -58,7 +58,7 @@
                     </StackPanel>
                     <Button.ToolTip>
                         <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                            Lưu
+                            Ghép
                         </ToolTip>
                     </Button.ToolTip>
                 </Button>
@@ -109,6 +109,11 @@
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom.png" Width="35" Height="35" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Phóng to
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
                 <Button Style="{StaticResource ZoomButtonStyle}" 
                         HorizontalAlignment="Center" 
@@ -119,6 +124,11 @@
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom-out.png" Width="35" Height="35" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Thu nhỏ
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
             </StackPanel>
         </Grid>
@@ -162,6 +172,11 @@
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom.png" Width="35" Height="35" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Phóng to
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
                 <Button Style="{StaticResource ZoomButtonStyle}" 
                         HorizontalAlignment="Center" 
@@ -172,6 +187,11 @@
                     <StackPanel>
                         <Image Source="\Resource\Icons\zoom-out.png" Width="35" Height="35" />
                     </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Thu nhỏ
+                        </ToolTip>
+                    </Button.ToolTip>
                 </Button>
             </StackPanel>
         </Grid>

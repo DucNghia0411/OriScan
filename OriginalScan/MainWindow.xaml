@@ -271,18 +271,6 @@
                             </ToolTip>
                         </Button.ToolTip>
                     </Button>
-                    <Button x:Name="btnUpload" HorizontalAlignment="Center" 
-                            VerticalAlignment="Center"
-                            Click="TransferToPortal_Click">
-                        <StackPanel Margin="-10">
-                            <Image Source="\Resource\Icons\submit.png" Width="25" Height="25" />
-                        </StackPanel>
-                        <Button.ToolTip>
-                            <ToolTip HorizontalOffset="15" VerticalOffset="-10">
-                                Gửi
-                            </ToolTip>
-                        </Button.ToolTip>
-                    </Button>
                 </ToolBar>
             </ToolBarTray>
         </Border>

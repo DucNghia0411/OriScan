@@ -97,7 +97,6 @@ namespace OriginalScan
                 btnRotate.IsEnabled = true;
                 btnCut.IsEnabled = true;
                 btnCrop.IsEnabled = true;
-                btnUpload.IsEnabled = true;
 
                 if (ListImagesMain.Count() >= 2)
                 {
@@ -113,7 +112,6 @@ namespace OriginalScan
                 btnMerge.IsEnabled = false;
                 btnCut.IsEnabled = false;
                 btnCrop.IsEnabled = false;
-                btnUpload.IsEnabled = false;
             }
         }
 
@@ -847,6 +845,7 @@ namespace OriginalScan
                     var count = await _imageService.CountByDocument(currentDocument.Id);
                     UpdateDocNumOfSheets(count);
                     NotificationShow("success", $"Lưu thành công {listSavedImage.Count} ảnh vào tài liệu {currentDocument.DocumentName}. Vui lòng mở lại để thực hiện các thao tác khác.");
+                    EnableButtons();
                 }
                 else
                     return;
@@ -917,6 +916,7 @@ namespace OriginalScan
             MergeImageWindow mergeWindow = new MergeImageWindow(firstImage, secondImage, _imageService, _documentService);
             mergeWindow.ShowDialog();
             ReloadTreeViewItem();
+            EnableButtons();
         }
 
         private void btnCrop_Click(object sender, RoutedEventArgs e)
@@ -1013,6 +1013,7 @@ namespace OriginalScan
                 {
                     var count = await _imageService.CountByDocument(_documentService.SelectedDocument.Id);
                     UpdateDocNumOfSheets(count);
+                    EnableButtons();
                 }
                 
                 NotificationShow("success", $"Xóa thành công {totalDeleted} ảnh.");            
