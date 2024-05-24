@@ -1,4 +1,5 @@
-﻿using ScanApp.Data.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ScanApp.Data.Entities;
 using ScanApp.Data.Infrastructure;
 using ScanApp.Data.Infrastructure.Interface;
 using ScanApp.Data.Repositories;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ScanApp.Service.Services
 {
@@ -73,6 +75,22 @@ namespace ScanApp.Service.Services
             _unitOfWork.ClearChangeTracker();
         }
 
+        public async Task<bool> Delete(int id)
+        {
+            try
+            {
+                await _imageRepo.DeleteAsync(id);
+                await _unitOfWork.Save();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
+        }
+
         public async Task DeleteMultiById(List<int> listIds)
         {
             try
@@ -119,6 +137,36 @@ namespace ScanApp.Service.Services
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public async Task<bool> ReSort(long? idImage)
+        {
+            var image = await _imageRepo.FirstOrDefaultAsync(e => e.Id == idImage);
+            if (image == null)
+                return false;
+
+            IEnumerable<Image> images = await Get(e => e.DocumentId == image.DocumentId);
+            List<Image> listImage = images.OrderBy(x => x.Order).ToList();
+
+            int orderToRemove = (int)image.Order;
+
+            for (int i = orderToRemove; i < listImage.Count(); i++)
+            {
+                listImage[i].Order = listImage[i].Order - 1;
+                _imageRepo.Update(listImage[i]);
+            }
+
+            try
+            {
+                await _unitOfWork.Save();
+                _unitOfWork.ClearChangeTracker();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 
