@@ -50,6 +50,7 @@ namespace OriginalScan.Views
             _notificationManager = new NotificationManager();
 
             InitializeComponent();
+            this.ResizeMode = ResizeMode.NoResize;
             GetDocumentsByBatch();
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
@@ -122,7 +123,6 @@ namespace OriginalScan.Views
         {
             if (_batchService.SelectedBatch == null)
             {
-                NotificationShow("error", $"Không thể lấy được gói tài liệu!");
                 return;
             }
 
@@ -289,12 +289,34 @@ namespace OriginalScan.Views
                     }
 
                     pdfDocument.Save(pdfFilePath);
+                    GetDocumentsByBatch();
                     NotificationShow("success", $"Lưu thành công tại đường dẫn: {pdfFilePath}");
                 }
             }
             catch (Exception ex)
             {
                 NotificationShow("error", ex.Message);
+                return;
+            }
+        }
+
+        private async void btnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.Button? clickedButton = sender as System.Windows.Controls.Button;
+            if (clickedButton == null)
+                return;
+
+            var dataContext = clickedButton.DataContext;
+            lstvDocuments.SelectedItem = dataContext;
+            DocumentModel selectedDocument = ValueConverter.ConvertToObject<DocumentModel>(dataContext);
+
+            var currentDocument = await _documentService.FirstOrDefault(e => e.Id == selectedDocument.Id);
+
+            if (currentDocument == null) return;
+
+            if (currentDocument.PdfPath == null)
+            {
+                NotificationShow("warning", "Tài liệu này chưa được chuyển thành PDF!");
                 return;
             }
         }

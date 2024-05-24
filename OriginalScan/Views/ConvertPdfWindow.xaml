@@ -6,6 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:OriginalScan.Views"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="Chuyển đổi tài liệu thành PDF" Height="660" Width="1200">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
@@ -64,7 +65,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="200">
+                        <GridViewColumn Width="250">
                             <GridViewColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="Tên tài liệu"
@@ -84,7 +85,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="400">
+                        <GridViewColumn Width="300">
                             <GridViewColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="Đường dẫn đến file PDF"
@@ -122,7 +123,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="180">
+                        <GridViewColumn Width="200">
                             <GridViewColumn.HeaderTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="Trạng thái"
@@ -141,7 +142,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="100">
+                        <GridViewColumn Width="140">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -150,6 +151,9 @@
                                         </Button>
                                         <Button x:Name="btnConvertToPdf" Click="btnConvertToPdf_Click" Background="Transparent" BorderThickness="0.5,0,0,0" BorderBrush="Black">
                                             <Image Width="15" Height="15" Source="/Resource/Images/pdficon.png" />
+                                        </Button>
+                                        <Button x:Name="btnSubmit" Click="btnSubmit_Click" Background="Transparent" BorderThickness="0.5,0,0,0" BorderBrush="Black">
+                                            <Image Width="15" Height="15" Source="/Resource/Images/uploadicon.png" />
                                         </Button>
                                     </StackPanel>
                                 </DataTemplate>

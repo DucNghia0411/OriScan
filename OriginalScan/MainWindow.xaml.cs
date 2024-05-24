@@ -348,7 +348,8 @@ namespace OriginalScan
         {
             if (_batchService.SelectedBatch == null)
             {
-                NotificationShow("error", "Vui lòng chọn gói trước khi thực hiện chức năng chuyển đổi thành PDF.");
+                NotificationShow("warning", "Vui lòng chọn gói trước khi thực hiện chức năng chuyển đổi thành PDF.");
+                return;
             }
             ConvertPdfWindow convertPdfWindow = new ConvertPdfWindow(_context, _batchService, _documentService);
             convertPdfWindow.Show();

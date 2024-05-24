@@ -49,6 +49,7 @@
     <None Remove="Resource\Images\scanner.png" />
     <None Remove="Resource\Images\scannericon.png" />
     <None Remove="Resource\Images\undoicon.png" />
+    <None Remove="Resource\Images\uploadicon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -112,6 +113,7 @@
     <Resource Include="Resource\Images\scanner.png" />
     <Resource Include="Resource\Images\scannericon.png" />
     <Resource Include="Resource\Images\undoicon.png" />
+    <Resource Include="Resource\Images\uploadicon.png" />
   </ItemGroup>
 
 </Project>
