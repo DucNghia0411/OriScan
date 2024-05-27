@@ -49,14 +49,17 @@ namespace OriginalScan.Views
         {
             _notificationManager = new NotificationManager();
             InitializeComponent();
+
             _image = image;
             _bitmapImage = image.bitmapImage;
             _displayedImage = image.bitmapImage;
             mainImage.Source = image.bitmapImage;
             imageWidth = _bitmapImage.Width * _scale;
+
             mainImage.MouseLeftButtonDown += MainImage_MouseLeftButtonDown;
             mainImage.MouseMove += MainImage_MouseMove;
             overlayCanvas.MouseLeftButtonUp += MainImage_MouseLeftButtonUp;
+
             DataContext = this;
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
@@ -185,7 +188,6 @@ namespace OriginalScan.Views
             {
                 try
                 {
-                    //CheckImageFormat();
                     int bitmapWidth = (int)_displayedImage.Width;
                     int bitmapHeight = (int)_displayedImage.Height;
                     int pixelWidth = (int)_displayedImage.PixelWidth;
@@ -223,6 +225,7 @@ namespace OriginalScan.Views
         public void CheckImageFormat(ScannedImage image)
         {
             System.Windows.Media.PixelFormat pixelFormat = image.bitmapImage.Format;
+
             if (pixelFormat == PixelFormats.BlackWhite)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show($"Định dạng của hình ảnh không phù hợp với chức năng, bạn có muốn cập nhật?", "Xác nhận", MessageBoxButton.OKCancel);

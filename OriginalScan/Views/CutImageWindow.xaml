@@ -98,8 +98,8 @@
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
                     Margin="5,5,5,5">
-                <Canvas x:Name="overlayCanvas">
-                    <Image x:Name="mainImage" Canvas.Top="0" Width="{Binding imageWidth}"/>
+                <Canvas x:Name="overlayCanvas" Width="{Binding imageWidth}" HorizontalAlignment="Center">
+                    <Image x:Name="mainImage" Width="{Binding imageWidth}"/>
                 </Canvas>
             </GroupBox>
         </Grid>

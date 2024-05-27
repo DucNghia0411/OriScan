@@ -944,7 +944,6 @@ namespace OriginalScan
 
             CutImageWindow window = new CutImageWindow(SelectedImage);
             window.CheckImageFormat(SelectedImage);
-            //window.Show();
         }
 
         private void btnCrop_Click(object sender, RoutedEventArgs e)
