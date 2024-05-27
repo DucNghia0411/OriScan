@@ -29,6 +29,8 @@ namespace OriginalScan.Views
         public double _scale { get; set; }
         public double imageWidth { get; set; }
         public double imageHeight { get; set; }
+        public double canvasWidth { get; set; }
+        public double canvasHeight { get; set; }
         private ScannedImage _image { get; }
         private BitmapSource _displayedImage;
         private Stack<BitmapSource> _undoStack = new Stack<BitmapSource>();
@@ -125,6 +127,8 @@ namespace OriginalScan.Views
             _scale = 0.8;
             imageHeight = _displayedImage.Height * _scale;
             imageWidth = _displayedImage.Width * _scale;
+            canvasWidth = imageWidth + 20;
+            canvasHeight = imageHeight + 20;
             image.Source = _displayedImage;
         }
 

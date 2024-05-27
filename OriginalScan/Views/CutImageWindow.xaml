@@ -96,6 +96,7 @@
                     materialDesign:ColorZoneAssist.Background="#00AE72"
                     materialDesign:ColorZoneAssist.Foreground="Black"
                     materialDesign:ColorZoneAssist.Mode="Custom"
+                    Background="LightGray"
                     BorderThickness="2" 
                     Margin="5,5,5,5">
                 <Canvas x:Name="overlayCanvas" Width="{Binding imageWidth}" HorizontalAlignment="Center">

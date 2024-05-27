@@ -47,6 +47,9 @@ namespace OriginalScan.Views
         public double Image2Width { get; }
         public double Image2Height { get; }
 
+        public double canvasWidth { get; }
+        public double canvasHeight { get; }
+
         public double scale { get; }
 
         private bool isDraggingFinal = false;
@@ -83,6 +86,8 @@ namespace OriginalScan.Views
             Image2Height = Source2.Height * scale;
             Image2Width = Source2.Width * scale;
 
+            canvasWidth = Image1Width + Image2Width + 20;
+            canvasHeight = Image1Height + Image2Height + 20;
             Loaded += MainWindow_Loaded;
             DataContext = this;
         }
