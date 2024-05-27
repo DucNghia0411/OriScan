@@ -77,14 +77,14 @@
                     materialDesign:ColorZoneAssist.Foreground="Black"
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
+                    Background="LightGray"
                     Margin="5,5,5,5">
                 <ScrollViewer x:Name="scrollViewer" 
                   HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto">
-                    <Canvas x:Name="canvas" Background="LightGray"
+                    <Canvas x:Name="canvas" Background="LightGray" Width="{Binding canvasWidth}" Height="{Binding canvasHeight}"
                         AllowDrop="True"
-                        Drop="Canvas_Drop"
-                        Height="Auto">
+                        Drop="Canvas_Drop">
                         <Image x:Name="image1" Source="{Binding Source1}"
                            Width="{Binding Image1Width}"
                            Height="{Binding Image1Height}"
@@ -145,14 +145,14 @@
                     materialDesign:ColorZoneAssist.Foreground="Black"
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
+                    Background="LightGray"
                     Margin="5,5,5,5">
                 <ScrollViewer x:Name="scrollViewerFinal" 
                   HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto">
                     <Canvas x:Name="canvasFinal" Background="LightGray"
                             AllowDrop="True"
-                            Drop="CanvasFinal_Drop"
-                            Height="Auto">
+                            Drop="CanvasFinal_Drop">
                         <Image x:Name="mergedImage" 
                                MouseDown="ImageFinal_MouseDown" 
                                MouseMove="ImageFinal_MouseMove" 

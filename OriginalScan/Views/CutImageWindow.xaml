@@ -1,0 +1,108 @@
+﻿<Window x:Class="OriginalScan.Views.CutImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OriginalScan.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Cắt ảnh" Height="700" Width="800"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
+    <Window.Resources>
+        <Style x:Key="ZoomButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="60" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <ToolBarTray Grid.Column="0">
+            <ToolBar
+        ClipToBounds="False"
+        Style="{StaticResource MaterialDesignToolBar}">
+                <Button x:Name="btnConfirmMerge" HorizontalAlignment="Center" VerticalAlignment="Center" Click="SaveImage_Click">
+                    <StackPanel>
+                        <Image Source="\Resource\Icons\diskette.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Lưu
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button x:Name="ExitButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ExitButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/logout.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Quay lại
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+                <Button x:Name="RedoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RedoButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/redo.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Cắt lại
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button x:Name="UndoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="UndoButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/undo.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Hoàn tác
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+                <Button x:Name="CropButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="DrawRectangleButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Images/cuticon.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Cắt
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Header="KHU VỰC CHỈNH SỬA"
+                    FontWeight="Bold"
+                    materialDesign:ColorZoneAssist.Background="#00AE72"
+                    materialDesign:ColorZoneAssist.Foreground="Black"
+                    materialDesign:ColorZoneAssist.Mode="Custom"
+                    Background="LightGray"
+                    BorderThickness="2" 
+                    Margin="5,5,5,5">
+                <Canvas x:Name="overlayCanvas" Width="{Binding imageWidth}" HorizontalAlignment="Center">
+                    <Image x:Name="mainImage" Width="{Binding imageWidth}"/>
+                </Canvas>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

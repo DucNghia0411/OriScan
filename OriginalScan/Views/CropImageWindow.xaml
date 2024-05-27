@@ -219,14 +219,14 @@
                     materialDesign:ColorZoneAssist.Foreground="Black"
                     materialDesign:ColorZoneAssist.Mode="Custom"
                     BorderThickness="2" 
+                    Background="LightGray"
                     Margin="5,5,5,5">
                 <ScrollViewer x:Name="scrollViewer"
                     HorizontalScrollBarVisibility="Auto" 
                     VerticalScrollBarVisibility="Auto">
-                    <Canvas x:Name="canvas" Background="LightGray"
+                    <Canvas x:Name="canvas" Background="LightGray" Width="{Binding canvasWidth}" Height="{Binding canvasHeight}"
                         AllowDrop="True"
-                        Drop="Canvas_Drop"
-                        Height="Auto">
+                        Drop="Canvas_Drop" HorizontalAlignment="Center">
                         <Image x:Name="image" 
                            Width="{Binding imageWidth}"
                            Height="{Binding imageHeight}"
@@ -234,8 +234,7 @@
                            Stretch="Uniform" 
                            MouseDown="Image_MouseDown" 
                            MouseMove="Image_MouseMove" 
-                           MouseUp="Image_MouseUp"
-                           Canvas.Left="200" Canvas.Top="0"/>
+                           MouseUp="Image_MouseUp" HorizontalAlignment="Center"/>
                     </Canvas>
                 </ScrollViewer>
             </GroupBox>

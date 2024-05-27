@@ -235,8 +235,7 @@
                     </Button>
                     <Button x:Name="btnCut" HorizontalAlignment="Center" 
                             VerticalAlignment="Center"
-                            IsEnabled="false"
-                            Click="btnDeleteImages_Click">
+                            IsEnabled="false" Click="btnCut_Click">
                         <StackPanel Margin="-10">
                             <Image Source="/Resource/Icons/cut.png" Width="25" Height="25" />
                         </StackPanel>

@@ -14,10 +14,40 @@ namespace ScanApp.Intergration.ApiClients
 {
     public class TransferApiClient : BaseApiClient, ITransferApiClient
     {
-        private readonly string _apiAddress = "http://192.168.1.15:4003/";
+        //private readonly string _apiAddress = "http://192.168.1.15:4003/";
         //private readonly string _apiAddress = "http://idcag.librasoft.vn/";
+        private readonly string _apiAddress;
 
-        public TransferApiClient() : base() { }
+        public TransferApiClient() : base()
+        {
+            _apiAddress = ReadApiAddress();
+        }
+
+        private string ReadApiAddress()
+        {
+            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "apiAddress.txt");
+            string filePath = "D:\\GitLab\\OriScan\\OriginalScan\\apiAddress.txt";
+
+            string apiAddress = "";
+
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    apiAddress = File.ReadAllText(filePath);
+                }
+                else
+                {
+                    throw new Exception($"Tập tin không tồn tại!");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi đường dẫn: {ex.Message}");
+            }
+
+            return apiAddress;
+        }
 
         public async Task<bool> TransferToPortal(string filePath)
         {

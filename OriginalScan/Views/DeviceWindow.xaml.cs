@@ -121,22 +121,15 @@ namespace OriginalScan.Views
             DateTimeFormatInfo dateTimeFormat = currentCulture.DateTimeFormat;
             string[] allDatePatterns = dateTimeFormat.GetAllDateTimePatterns();
 
-            bool isConverted = false;
-
             foreach (string format in allDatePatterns)
             {
                 DateTime createdDate;
 
                 if (DateTime.TryParseExact(inputDate, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out createdDate))
                 {
-                    formattedDate = createdDate.ToString("dd/MM/yyyy h:mm:ss tt");
-                    isConverted = true;
+                    formattedDate = createdDate.ToString(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern + " " + CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern);
+                    break;
                 }
-            }
-
-            if (!isConverted)
-            {
-                formattedDate = inputDate;
             }
 
             return formattedDate;
