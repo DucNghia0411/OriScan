@@ -2,6 +2,7 @@
 using Notification.Wpf;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
+using OriginalScan.Converters;
 using OriginalScan.Models;
 using System;
 using System.Collections.Generic;
@@ -177,17 +178,6 @@ namespace OriginalScan.Views
             }
         }
 
-        private void SaveImageToOriginalPath(BitmapSource image)
-        {
-            BitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(image));
-
-            using (var fileStream = new FileStream(_image.ImagePath, FileMode.Create))
-            {
-                encoder.Save(fileStream);
-            }
-        }
-
         private void UpdateImageButton_Click(object sender, RoutedEventArgs e)
         {
             UpdateImage();
@@ -199,7 +189,7 @@ namespace OriginalScan.Views
             {
                 try
                 {
-                    SaveImageToOriginalPath(_displayedImage);
+                    BitmapConverter.SaveImageToOriginalPath(_displayedImage, _image.ImagePath);
                 }
                 catch (Exception)
                 {
@@ -210,7 +200,7 @@ namespace OriginalScan.Views
                 MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
                 if (mainWindow != null && mainWindow.SelectedImage != null)
                 {
-                    mainWindow.SelectedImage.bitmapImage = ConvertBitmapSourceToBitmapImage(_displayedImage);
+                    mainWindow.SelectedImage.bitmapImage = BitmapConverter.ConvertBitmapSourceToBitmapImage(_displayedImage);
                 }
 
                 NotificationShow("success", "Lưu hình ảnh thành công!");
@@ -222,25 +212,6 @@ namespace OriginalScan.Views
             _undoStack.Clear();
             _redoStack.Clear();
             this.Close();
-        }
-
-        private BitmapImage ConvertBitmapSourceToBitmapImage(BitmapSource bitmapSource)
-        {
-            var memoryStream = new System.IO.MemoryStream();
-            BitmapEncoder encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-            encoder.Save(memoryStream);
-
-            memoryStream.Position = 0;
-
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memoryStream;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-
-            return bitmapImage;
         }
 
         private void Image_MouseMove(object sender, MouseEventArgs e)

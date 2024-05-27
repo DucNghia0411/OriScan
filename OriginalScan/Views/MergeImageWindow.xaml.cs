@@ -25,6 +25,7 @@ using OriginalScan.Models;
 using ScanApp.Service.Services;
 using FontAwesome5;
 using PdfSharp.Drawing;
+using OriginalScan.Converters;
 
 namespace OriginalScan.Views
 {
@@ -269,39 +270,12 @@ namespace OriginalScan.Views
 
             rtb.Render(visual);
             _mergeImageBitmap = rtb;
-            BitmapImage bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+            BitmapImage bitmapImage = BitmapConverter.ConvertRenderTargetBitmapToBitmapImage(rtb);
 
             double scalePercent = 0.8;
             ScaleTransform scaleTransform = new ScaleTransform(scalePercent, scalePercent);
             TransformedBitmap transformedBitmap = new TransformedBitmap(bitmapImage, scaleTransform);
             mergedImage.Source = transformedBitmap;
-        }
-
-        public BitmapImage ConvertRenderTargetBitmapToBitmapImage(RenderTargetBitmap renderTargetBitmap)
-        {
-            BitmapImage bitmapImage = null;
-
-            if (renderTargetBitmap != null)
-            {
-                JpegBitmapEncoder pngEncoder = new JpegBitmapEncoder();
-                pngEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
-
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    pngEncoder.Save(stream);
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.StreamSource = stream;
-                    bitmapImage.EndInit();
-                    bitmapImage.Freeze();
-                }
-            }
-
-            return bitmapImage;
         }
 
         private void ImageFinal_MouseMove(object sender, MouseEventArgs e)
@@ -508,7 +482,7 @@ namespace OriginalScan.Views
             }
 
             RenderTargetBitmap rtb = _mergeImageBitmap;
-            replaceImage.bitmapImage = ConvertRenderTargetBitmapToBitmapImage(rtb);
+            replaceImage.bitmapImage = BitmapConverter.ConvertRenderTargetBitmapToBitmapImage(rtb);
 
             MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
 

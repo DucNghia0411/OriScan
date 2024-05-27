@@ -919,6 +919,34 @@ namespace OriginalScan
             EnableButtons();
         }
 
+        private void btnCut_Click(object sender, RoutedEventArgs e)
+        {
+            var listSelectedImage = ListImagesSelected;
+
+            if (listSelectedImage == null)
+            {
+                NotificationShow("warning", "Vui lòng chọn 1 hình ảnh để thực hiện chức năng cắt ảnh!");
+                return;
+            }
+
+            if (listSelectedImage.Count != 1)
+            {
+                NotificationShow("warning", "Vui lòng chỉ chọn 1 hình ảnh để thực hiện chức năng cắt ảnh!");
+                return;
+            }
+
+            SelectedImage = listSelectedImage.First();
+            if (SelectedImage == null)
+            {
+                NotificationShow("error", "Hình bạn chọn không tồn tại!");
+                return;
+            }
+
+            CutImageWindow window = new CutImageWindow(SelectedImage);
+            window.CheckImageFormat(SelectedImage);
+            //window.Show();
+        }
+
         private void btnCrop_Click(object sender, RoutedEventArgs e)
         {
             var listSelectedImage = ListImagesSelected;
