@@ -16,11 +16,11 @@ namespace ScanApp.Intergration.ApiClients
     {
         //private readonly string _apiAddress = "http://192.168.1.15:4003/";
         //private readonly string _apiAddress = "http://idcag.librasoft.vn/";
-        private readonly string _apiAddress;
+        public string Api {  get; set; }
 
         public TransferApiClient() : base()
         {
-            _apiAddress = ReadApiAddress();
+            Api = ReadApiAddress();
         }
 
         private string ReadApiAddress()
@@ -49,13 +49,28 @@ namespace ScanApp.Intergration.ApiClients
             return apiAddress;
         }
 
+        public void UpdateApiAddress(string newApiAddress)
+        {
+            //string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "apiAddress.txt");
+            string filePath = "D:\\GitLab\\OriScan\\OriginalScan\\apiAddress.txt";
+            Api = newApiAddress;
+            try
+            {
+                File.WriteAllText(filePath, newApiAddress);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi khi cập nhật tập tin: {ex.Message}");
+            }
+        }
+
         public async Task<bool> TransferToPortal(string filePath)
         {
             try
             {
                 using (var httpClient = new HttpClient())
                 {
-                    httpClient.BaseAddress = new Uri(_apiAddress);
+                    httpClient.BaseAddress = new Uri(Api);
 
                     var fileContent = new StreamContent(File.OpenRead(filePath));
                     fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");

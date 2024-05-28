@@ -317,17 +317,83 @@ namespace OriginalScan.Views
 
         private void IncreaseLeftButton_Click(object sender, RoutedEventArgs e)
         {
-            _leftNumericValue++;
-
-            if(_leftNumericValue < 0)
-                _leftNumericValue = 0;
-
-            UpdateLeftNumericValue();
+            IncreaseLeft(1);
         }
 
         private void DecreaseLeftButton_Click(object sender, RoutedEventArgs e)
         {
-            _leftNumericValue--;
+            DecreaseLeft(1);
+        }
+
+        private void IncreaseRightButton_Click(object sender, RoutedEventArgs e)
+        {
+            IncreaseRight(1);
+        }
+
+        private void DecreaseRightButton_Click(object sender, RoutedEventArgs e)
+        {
+            DecreaseRight(1);
+        }
+
+        private void IncreaseTopButton_Click(object sender, RoutedEventArgs e)
+        {
+            IncreaseTop(1);
+        }
+
+        private void DecreaseTopButton_Click(object sender, RoutedEventArgs e)
+        {
+            DecreaseTop(1);
+        }
+
+        private void IncreaseBottomButton_Click(object sender, RoutedEventArgs e)
+        {
+            IncreaseBottom(1);
+        }
+
+        private void DecreaseBottomButton_Click(object sender, RoutedEventArgs e)
+        {
+            DecreaseBottom(1);
+        }
+
+        private void IncreaseAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            IncreaseBottom(int.Parse(txtAll.Text));
+            IncreaseTop(int.Parse(txtAll.Text));
+            IncreaseLeft(int.Parse(txtAll.Text));
+            IncreaseRight(int.Parse(txtAll.Text));
+        }
+
+        private void DecreaseAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            DecreaseBottom(int.Parse(txtAll.Text));
+            DecreaseTop(int.Parse(txtAll.Text));
+            DecreaseLeft(int.Parse(txtAll.Text));
+            DecreaseRight(int.Parse(txtAll.Text));
+        }
+
+        private void DecreaseBottom(int amount)
+        {
+            _bottomNumericValue -= amount;
+
+            if (_bottomNumericValue < 0)
+                _bottomNumericValue = 0;
+
+            UpdateBottomNumericValue();
+        }
+
+        private void DecreaseTop(int amount)
+        {
+            _topNumericValue -= amount;
+
+            if (_topNumericValue < 0)
+                _topNumericValue = 0;
+
+            UpdateTopNumericValue();
+        }
+
+        private void DecreaseLeft(int amount)
+        {
+            _leftNumericValue -= amount;
 
             if (_leftNumericValue < 0)
                 _leftNumericValue = 0;
@@ -335,9 +401,9 @@ namespace OriginalScan.Views
             UpdateLeftNumericValue();
         }
 
-        private void IncreaseRightButton_Click(object sender, RoutedEventArgs e)
+        private void DecreaseRight(int amount)
         {
-            _rightNumericValue++;
+            _rightNumericValue -= amount;
 
             if (_rightNumericValue < 0)
                 _rightNumericValue = 0;
@@ -345,54 +411,44 @@ namespace OriginalScan.Views
             UpdateRightNumericValue();
         }
 
-        private void DecreaseRightButton_Click(object sender, RoutedEventArgs e)
+        private void IncreaseBottom(int amount)
         {
-            _rightNumericValue--;
+            _bottomNumericValue += amount;
+
+            if (_bottomNumericValue < 0)
+                _bottomNumericValue = 0;
+
+            UpdateBottomNumericValue();
+        }
+
+        private void IncreaseTop(int amount)
+        {
+            _topNumericValue += amount;
+
+            if (_topNumericValue < 0)
+                _topNumericValue = 0;
+
+            UpdateTopNumericValue();
+        }
+
+        private void IncreaseLeft(int amount)
+        {
+            _leftNumericValue += amount;
+
+            if (_leftNumericValue < 0)
+                _leftNumericValue = 0;
+
+            UpdateLeftNumericValue();
+        }
+
+        private void IncreaseRight(int amount)
+        {
+            _rightNumericValue += amount;
 
             if (_rightNumericValue < 0)
                 _rightNumericValue = 0;
 
             UpdateRightNumericValue();
-        }
-
-        private void IncreaseTopButton_Click(object sender, RoutedEventArgs e)
-        {
-            _topNumericValue++;
-
-            if (_topNumericValue < 0)
-                _topNumericValue = 0;
-
-            UpdateTopNumericValue();
-        }
-
-        private void DecreaseTopButton_Click(object sender, RoutedEventArgs e)
-        {
-            _topNumericValue--;
-
-            if (_topNumericValue < 0)
-                _topNumericValue = 0;
-
-            UpdateTopNumericValue();
-        }
-
-        private void IncreaseBottomButton_Click(object sender, RoutedEventArgs e)
-        {
-            _bottomNumericValue++;
-
-            if (_bottomNumericValue < 0)
-                _bottomNumericValue = 0;
-
-            UpdateBottomNumericValue();
-        }
-
-        private void DecreaseBottomButton_Click(object sender, RoutedEventArgs e)
-        {
-            _bottomNumericValue--;
-
-            if (_bottomNumericValue < 0)
-                _bottomNumericValue = 0;
-
-            UpdateBottomNumericValue();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -405,6 +461,14 @@ namespace OriginalScan.Views
             }
                 
             else return;
+        }
+
+        private void txtAll_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

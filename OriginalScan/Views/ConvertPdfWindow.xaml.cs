@@ -56,6 +56,7 @@ namespace OriginalScan.Views
             InitializeComponent();
             this.ResizeMode = ResizeMode.NoResize;
             GetDocumentsByBatch();
+            txtApi.Text = _transferApiClient.Api;
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
@@ -332,6 +333,14 @@ namespace OriginalScan.Views
 
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 var pdfFilePath = System.IO.Path.Combine(userFolderPath, currentDocument.PdfPath);
+
+                if (_transferApiClient.Api.Trim() != txtApi.Text.Trim())
+                {
+                    _transferApiClient.UpdateApiAddress(txtApi.Text);
+                    NotificationShow("success", "Cập nhật đường dẫn mới thành công!");
+
+                    NotificationShow("warning", $"{_transferApiClient.Api}");
+                }
                 bool transferResult = await _transferApiClient.TransferToPortal(pdfFilePath);
 
                 if (transferResult)

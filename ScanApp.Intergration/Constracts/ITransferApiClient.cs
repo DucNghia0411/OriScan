@@ -9,6 +9,8 @@ namespace ScanApp.Intergration.Constracts
 {
     public interface ITransferApiClient
     {
+        string Api { get; set; }
+        void UpdateApiAddress(string newApiAddress);
         Task<bool> TransferToPortal(string filePath);
     }
 }

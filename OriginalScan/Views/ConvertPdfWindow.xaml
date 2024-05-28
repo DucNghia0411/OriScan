@@ -35,12 +35,38 @@
         </Style>
     </Window.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="9*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0"
+            Content="Đường dẫn hiện tại:" 
+            HorizontalAlignment="Left" 
+            Margin="20,10,0,0" 
+            VerticalAlignment="Center"
+            FontSize="14"
+            FontWeight="Bold"/>
+
+            <TextBox Grid.Column="1"
+            x:Name="txtApi"
+            HorizontalAlignment="Left" 
+            Margin="10,10,0,0" 
+            TextWrapping="NoWrap" 
+            FontSize="14"
+            VerticalAlignment="Center" Width="987"/>
+        </Grid>
         <GroupBox Header="DANH SÁCH TÀI LIỆU"
             FontWeight="Bold"
             materialDesign:ColorZoneAssist.Background="#00AE72"
             materialDesign:ColorZoneAssist.Foreground="Black"
             materialDesign:ColorZoneAssist.Mode="Custom"
             BorderThickness="2" 
+            Grid.Row="1"
             Margin="10,10,10,10">
 
             <ListView  x:Name="lstvDocuments" SnapsToDevicePixels="True" ScrollViewer.CanContentScroll="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,5,0" MinWidth="1">
