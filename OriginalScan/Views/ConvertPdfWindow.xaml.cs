@@ -2,6 +2,7 @@
 using Notification.Wpf;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
+using Notification.Wpf.View;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanApp.Common.Common;
@@ -15,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -338,10 +340,10 @@ namespace OriginalScan.Views
                 {
                     _transferApiClient.UpdateApiAddress(txtApi.Text);
                     NotificationShow("success", "Cập nhật đường dẫn mới thành công!");
-
-                    NotificationShow("warning", $"{_transferApiClient.Api}");
                 }
                 bool transferResult = await _transferApiClient.TransferToPortal(pdfFilePath);
+
+                await ShowProgressBar();
 
                 if (transferResult)
                     NotificationShow("success", $"Upload công văn thành công!");
@@ -356,6 +358,40 @@ namespace OriginalScan.Views
                 NotificationShow("error", ex.Message);
                 return;
             }
+        }
+
+        public async Task ShowProgressBar()
+        {
+            using var progress = _notificationManager.ShowProgressBar(
+            "Đang tải lên công văn",
+            false,
+            true,
+            "",
+            false,
+            1,
+            "",
+            false,
+            false, 
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF444444")),
+            new SolidColorBrush(Colors.White),
+            new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF01D328")),
+            null,
+            null,
+            null,
+            true
+        );
+
+            await Task.Run(async () =>
+            {
+                for (var i = 0; i <= 100; i++)
+                {
+                    progress.Cancel.ThrowIfCancellationRequested();
+                    progress.Report((i, $"Tiến độ: {i}%", "Đang tải lên công văn", true));
+                    await Task.Delay(TimeSpan.FromSeconds(0.05), progress.Cancel).ConfigureAwait(false);
+                }
+            }, progress.Cancel).ConfigureAwait(false);
+
+            
         }
     }
 }
