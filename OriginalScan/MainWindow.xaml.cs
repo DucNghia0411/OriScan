@@ -5,8 +5,11 @@ using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
 using NTwain;
 using NTwain.Data;
+using NTwain.Triplets;
+using OriginalScan.Converters;
 using OriginalScan.Models;
 using OriginalScan.Views;
+using OriginalScan.Views.Pages;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using ScanApp.Common.Common;
@@ -41,6 +44,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace OriginalScan
@@ -279,7 +284,7 @@ namespace OriginalScan
 
                 DateTime now = _scanTime;
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string path = Path.Combine(userFolderPath, currentDocument.DocumentPath);
+                string path = System.IO.Path.Combine(userFolderPath, currentDocument.DocumentPath);
                 Directory.CreateDirectory(path);
 
                 if (e.NativeData != IntPtr.Zero)
@@ -308,7 +313,7 @@ namespace OriginalScan
 
                         Guid guid = Guid.NewGuid();
                         string imagesName = now.ToString("yyyyMMddHHmmss") + guid.ToString("N") + ".jpg";
-                        string imagePath = Path.Combine(path, imagesName);
+                        string imagePath = System.IO.Path.Combine(path, imagesName);
                         img.Save(imagePath);
 
                         int totalImages = ListImagesMain.Count;
@@ -757,7 +762,7 @@ namespace OriginalScan
             {
                 if (item is TreeViewItem treeViewItem)
                 {
-                    if ((treeViewItem.Tag.ToString() == Path.GetFileName(folderPath)) || Path.GetFileName(folderPath) == FolderSetting.TempData)
+                    if ((treeViewItem.Tag.ToString() == System.IO.Path.GetFileName(folderPath)) || System.IO.Path.GetFileName(folderPath) == FolderSetting.TempData)
                     {
                         if (!IsTreeViewItemExpanded(treeViewItem))
                         {
@@ -793,7 +798,7 @@ namespace OriginalScan
                 }
 
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string path = Path.Combine(userFolderPath, currentDocument.DocumentPath);
+                string path = System.IO.Path.Combine(userFolderPath, currentDocument.DocumentPath);
 
                 ObservableCollection<ScannedImage> listImages = ListImagesMain;
                 int totalImages = listImages.Count;
@@ -821,7 +826,7 @@ namespace OriginalScan
                     foreach (ScannedImage scannedImage in listImagesNeedToSave)
                     {
                         DateTime now = DateTime.Now;
-                        string imagePath = Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
+                        string imagePath = System.IO.Path.Combine(currentDocument.DocumentPath, scannedImage.ImageName);
 
                         ScanApp.Data.Entities.Image image = new ScanApp.Data.Entities.Image()
                         {
@@ -920,7 +925,7 @@ namespace OriginalScan
         }
 
         private void btnCut_Click(object sender, RoutedEventArgs e)
-        {
+        {         
             var listSelectedImage = ListImagesSelected;
 
             if (listSelectedImage == null)
@@ -941,8 +946,13 @@ namespace OriginalScan
                 NotificationShow("error", "Hình bạn chọn không tồn tại!");
                 return;
             }
+            
+            //_bitmapImage = SelectedImage.bitmapImage;
+            lstvImages.Visibility = Visibility.Hidden;
+            grEditImage.Visibility = Visibility.Visible;
 
-            CutImageWindow window = new CutImageWindow(SelectedImage);
+
+            CutImagePage window = new CutImagePage(SelectedImage);
             window.CheckImageFormat(SelectedImage);
         }
 
@@ -981,6 +991,27 @@ namespace OriginalScan
             if (selectedImage == null) return;
 
             if(!selectedImage.IsSelected)
+            {
+                selectedImage.IsSelected = true;
+                ListImagesSelected.Add(selectedImage);
+            }
+            else
+            {
+                selectedImage.IsSelected = false;
+                ListImagesSelected.Remove(selectedImage);
+            }
+            clickedItem.SelectedItems.Clear();
+        }
+
+        private void ListMiniImages_Click(object sender, RoutedEventArgs e)
+        {
+            var clickedItem = (sender as System.Windows.Controls.ListView);
+            if (clickedItem == null) return;
+
+            ScannedImage? selectedImage = clickedItem.SelectedItem as ScannedImage;
+            if (selectedImage == null) return;
+
+            if (!selectedImage.IsSelected)
             {
                 selectedImage.IsSelected = true;
                 ListImagesSelected.Add(selectedImage);

@@ -1,0 +1,88 @@
+﻿<Page x:Class="OriginalScan.Views.Pages.CutImagePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:OriginalScan.Views.Pages"
+      mc:Ignorable="d"
+      d:Width="auto" d:Height="auto">
+    <Page.Resources>
+        <Style x:Key="ZoomButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="BorderBrush" Value="Black" />
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="60" />
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <ToolBarTray Grid.Column="1" Orientation="Vertical">
+            <ToolBar ClipToBounds="False" Style="{StaticResource MaterialDesignToolBar}">
+                <Button x:Name="btnConfirmMerge" HorizontalAlignment="Center" VerticalAlignment="Center" Click="SaveImage_Click">
+                    <StackPanel>
+                        <Image Source="\Resource\Icons\diskette.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Lưu
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button x:Name="ExitButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ExitButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/logout.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Quay lại
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+                <Button x:Name="RedoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RedoButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/redo.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Cắt lại
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Button x:Name="UndoButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="UndoButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Icons/undo.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Hoàn tác
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+                <Button x:Name="CropButton" HorizontalAlignment="Center" VerticalAlignment="Center" Click="DrawRectangleButton_Click">
+                    <StackPanel>
+                        <Image Source="/Resource/Images/cuticon.png" Width="25" Height="25" />
+                    </StackPanel>
+                    <Button.ToolTip>
+                        <ToolTip HorizontalOffset="15" VerticalOffset="-10">
+                            Cắt
+                        </ToolTip>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <Canvas x:Name="overlayCanvas" HorizontalAlignment="Center" Background="LightGray">
+            <Image x:Name="mainImage" Width="{Binding imageWidth}"/>
+        </Canvas>
+    </Grid>
+</Page>

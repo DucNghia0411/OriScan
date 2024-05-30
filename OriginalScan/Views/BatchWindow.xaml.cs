@@ -71,6 +71,26 @@ namespace OriginalScan.Views
             NotificationConstants.MessagePosition = NotificationPosition.TopRight;
         }
 
+        private void PrintInnerExceptions(Exception ex)
+        {
+            string exceptionList = string.Empty;
+
+            while (ex != null)
+            {
+                exceptionList += ex.Message + "\n";
+                ex = ex.InnerException;
+            }
+
+            if (exceptionList == string.Empty)
+            {
+                NotificationShow("error", ex.Message);
+            }
+            else
+            {
+                NotificationShow("error", exceptionList);
+            }
+        }
+
         private async void CreateBatch_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -136,7 +156,8 @@ namespace OriginalScan.Views
             }
             catch (Exception ex)
             {
-                NotificationShow("error", $"Tạo gói mới thất bại! Có lỗi: {ex.Message}");
+                //NotificationShow("error", $"Tạo gói mới thất bại! Có lỗi: {ex.Message}");
+                PrintInnerExceptions(ex);
                 return;
             }
         }
