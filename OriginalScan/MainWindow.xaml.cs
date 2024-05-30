@@ -918,8 +918,10 @@ namespace OriginalScan
             var firstImage = listSelectedImage[0];
             var secondImage = listSelectedImage[1];
 
-            MergeImageWindow mergeWindow = new MergeImageWindow(firstImage, secondImage, _imageService, _documentService);
-            mergeWindow.ShowDialog();
+            lstvImages.Visibility = Visibility.Hidden;
+            grEditImage.Visibility = Visibility.Visible;
+
+            MainFrame.Navigate(new MergeImagePage(firstImage, secondImage, _imageService, _documentService));
             ReloadTreeViewItem();
             EnableButtons();
         }
@@ -947,7 +949,6 @@ namespace OriginalScan
                 return;
             }
             
-            //_bitmapImage = SelectedImage.bitmapImage;
             lstvImages.Visibility = Visibility.Hidden;
             grEditImage.Visibility = Visibility.Visible;
 
@@ -978,8 +979,11 @@ namespace OriginalScan
                 NotificationShow("error", "Hình bạn chọn không tồn tại!");
                 return;
             }
-            CropImageWindow cropImageWindow = new CropImageWindow(SelectedImage);
-            cropImageWindow.ShowDialog();
+
+            lstvImages.Visibility = Visibility.Hidden;
+            grEditImage.Visibility = Visibility.Visible;
+
+            MainFrame.Navigate(new CropImagePage(SelectedImage));
         }
 
         private void ListImagesMain_Click(object sender, RoutedEventArgs e)

@@ -1,12 +1,11 @@
 ﻿using FontAwesome5;
-using Notification.Wpf;
 using Notification.Wpf.Constants;
 using Notification.Wpf.Controls;
+using Notification.Wpf;
 using OriginalScan.Converters;
 using OriginalScan.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,20 +16,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OriginalScan.Views
+namespace OriginalScan.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for CropImageWindow.xaml
+    /// Interaction logic for CropImagePage.xaml
     /// </summary>
-    public partial class CropImageWindow : Window
+    public partial class CropImagePage : Page
     {
         public double _scale { get; set; }
         public double imageWidth { get; set; }
         public double imageHeight { get; set; }
         public double canvasWidth { get; set; }
-        public double canvasHeight { get; set; }
         private ScannedImage _image { get; }
         private BitmapSource _displayedImage;
         private Stack<BitmapSource> _undoStack = new Stack<BitmapSource>();
@@ -46,7 +45,7 @@ namespace OriginalScan.Views
         private Image? draggedImage;
         private Point offset;
 
-        public CropImageWindow(ScannedImage image)
+        public CropImagePage(ScannedImage image)
         {
             _notificationManager = new NotificationManager();
             InitializeComponent();
@@ -124,11 +123,10 @@ namespace OriginalScan.Views
 
         private void DisplayImage()
         {
-            _scale = 0.8;
+            _scale = 0.5;
             imageHeight = _displayedImage.Height * _scale;
             imageWidth = _displayedImage.Width * _scale;
-            canvasWidth = imageWidth + 20;
-            canvasHeight = imageHeight + 20;
+            canvasWidth = imageWidth + 50;
             image.Source = _displayedImage;
         }
 
@@ -205,6 +203,8 @@ namespace OriginalScan.Views
                 if (mainWindow != null && mainWindow.SelectedImage != null)
                 {
                     mainWindow.SelectedImage.bitmapImage = BitmapConverter.ConvertBitmapSourceToBitmapImage(_displayedImage);
+                    mainWindow.grEditImage.Visibility = Visibility.Collapsed;
+                    mainWindow.lstvImages.Visibility = Visibility.Visible;
                 }
 
                 NotificationShow("success", "Lưu hình ảnh thành công!");
@@ -215,71 +215,6 @@ namespace OriginalScan.Views
             }
             _undoStack.Clear();
             _redoStack.Clear();
-            this.Close();
-        }
-
-        private void Image_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (isDragging && draggedImage != null)
-            {
-                Point mousePos = e.GetPosition(canvas);
-                double offsetX = mousePos.X - offset.X;
-                double offsetY = mousePos.Y - offset.Y;
-
-                double newLeft = Canvas.GetLeft(draggedImage) + offsetX;
-                double newTop = Canvas.GetTop(draggedImage) + offsetY;
-
-                if (offsetY < 0)
-                {
-                    if (newTop < 0)
-                    {
-                        newTop = 0;
-                    }
-                }
-
-                if (offsetX < 0)
-                {
-                    if (newLeft < 0)
-                    {
-                        newLeft = 0;
-                    }
-                }
-
-                Canvas.SetLeft(draggedImage, newLeft);
-                Canvas.SetTop(draggedImage, newTop);
-
-                double rightEdge = newLeft + draggedImage.ActualWidth;
-                double bottomEdge = newTop + draggedImage.ActualHeight;
-
-                if (rightEdge > canvas.ActualWidth)
-                {
-                    canvas.Width = rightEdge;
-                }
-
-                if (bottomEdge > canvas.ActualHeight)
-                {
-                    canvas.Height = bottomEdge;
-                }
-
-                offset = mousePos;
-            }
-        }
-
-        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            isDragging = true;
-            offset = e.GetPosition(canvas);
-            draggedImage = (Image)sender;
-            draggedImage.CaptureMouse();
-        }
-
-        private void Image_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            isDragging = false;
-            if (draggedImage != null)
-            {
-                draggedImage.ReleaseMouseCapture();
-            }
         }
 
         private void Canvas_Drop(object sender, DragEventArgs e)
@@ -457,9 +392,14 @@ namespace OriginalScan.Views
 
             if (Result == MessageBoxResult.Yes)
             {
-                this.Close();
+                MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.lstvImages.Visibility = Visibility.Visible;
+                    mainWindow.grEditImage.Visibility = Visibility.Collapsed;
+                }
             }
-                
+
             else return;
         }
 

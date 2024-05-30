@@ -270,12 +270,8 @@ namespace OriginalScan.Views.Pages
             MainWindow currentWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             if (currentWindow != null)
             {
-                //currentWindow.grEditImage.Visibility = Visibility.Visible;
                 currentWindow.MainFrame.Navigate(new CutImagePage(image));
             }
-            
-            //CutImageWindow window = new CutImageWindow(image);
-            //window.Show();
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
@@ -293,12 +289,13 @@ namespace OriginalScan.Views.Pages
                 if (mainWindow != null && mainWindow.SelectedImage != null)
                 {
                     mainWindow.SelectedImage.bitmapImage = BitmapConverter.ConvertBitmapSourceToBitmapImage(_displayedImage);
+                    mainWindow.grEditImage.Visibility = Visibility.Collapsed;
+                    mainWindow.lstvImages.Visibility = Visibility.Visible;
                 }
 
                 NotificationShow("success", "Lưu ảnh thành công!");
                 _undoStack.Clear();
-                _redoStack.Clear();
-                //this.Close();
+                _redoStack.Clear(); 
             }
             catch (Exception ex)
             {
@@ -350,7 +347,13 @@ namespace OriginalScan.Views.Pages
             {
                 SaveImage();
             }
-            //this.Close();
+
+            MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+            if (mainWindow != null)
+            {
+                mainWindow.lstvImages.Visibility = Visibility.Visible;
+                mainWindow.grEditImage.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

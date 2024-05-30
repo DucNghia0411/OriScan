@@ -81,8 +81,8 @@
             </ToolBar>
         </ToolBarTray>
 
-        <Canvas x:Name="overlayCanvas" HorizontalAlignment="Center" Background="LightGray">
-            <Image x:Name="mainImage" Width="{Binding imageWidth}"/>
+        <Canvas x:Name="overlayCanvas" Background="LightGray" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding imageWidth}" Height="650" Margin="0,30,0,0">
+            <Image x:Name="mainImage" Width="{Binding imageWidth}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Canvas>
     </Grid>
 </Page>

@@ -1,6 +1,10 @@
-﻿using System;
+﻿using FontAwesome5;
+using Notification.Wpf;
+using OriginalScan.Converters;
+using OriginalScan.Models;
+using ScanApp.Service.Constracts;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,30 +13,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
-using MessageBox = System.Windows.Forms.MessageBox;
-using DragEventArgs = System.Windows.DragEventArgs;
-using DataFormats = System.Windows.Forms.DataFormats;
-using Notification.Wpf;
-using ScanApp.Service.Constracts;
-using OriginalScan.Models;
-using ScanApp.Service.Services;
-using FontAwesome5;
-using PdfSharp.Drawing;
-using OriginalScan.Converters;
-
-namespace OriginalScan.Views
+namespace OriginalScan.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for MergeImageWindow.xaml
+    /// Interaction logic for MergeImagePage.xaml
     /// </summary>
-    public partial class MergeImageWindow : Window
+    public partial class MergeImagePage : Page
     {
         private bool isDragging = false;
         private Image? draggedImage;
@@ -41,7 +33,7 @@ namespace OriginalScan.Views
         public ImageSource Source1 { get; }
         public ImageSource Source2 { get; }
 
-        public double Image1Width { get;}
+        public double Image1Width { get; }
         public double Image1Height { get; }
 
         public double Image2Width { get; }
@@ -66,7 +58,7 @@ namespace OriginalScan.Views
         private readonly IDocumentService _documentService;
         private readonly NotificationManager _notificationManager;
 
-        public MergeImageWindow(ScannedImage inputFirstImage, ScannedImage secondImage, IImageService imageService, IDocumentService documentService)
+        public MergeImagePage(ScannedImage inputFirstImage, ScannedImage secondImage, IImageService imageService, IDocumentService documentService)
         {
             this._imageService = imageService;
             this._documentService = documentService;
@@ -77,7 +69,7 @@ namespace OriginalScan.Views
             firstImage = inputFirstImage;
             _secondImage = secondImage;
 
-            scale = 0.4;
+            scale = 0.3;
             Source1 = inputFirstImage.bitmapImage;
             Image1Height = Source1.Height * scale;
             Image1Width = Source1.Width * scale;
@@ -86,8 +78,8 @@ namespace OriginalScan.Views
             Image2Height = Source2.Height * scale;
             Image2Width = Source2.Width * scale;
 
-            canvasWidth = Image1Width + Image2Width + 20;
-            canvasHeight = Image1Height + Image2Height + 20;
+            canvasWidth = Image1Width + Image2Width;
+            canvasHeight = Image1Height + 30;
             Loaded += MainWindow_Loaded;
             DataContext = this;
         }
@@ -159,7 +151,7 @@ namespace OriginalScan.Views
         private void Image_MouseMove(object sender, MouseEventArgs e)
         {
             if (isDragging && draggedImage != null)
-            {   
+            {
                 Point mousePos = e.GetPosition(canvas);
                 double offsetX = mousePos.X - offset.X;
                 double offsetY = mousePos.Y - offset.Y;
@@ -221,7 +213,7 @@ namespace OriginalScan.Views
         private void Image_MouseUp(object sender, MouseButtonEventArgs e)
         {
             isDragging = false;
-            if(draggedImage != null)
+            if (draggedImage != null)
             {
                 draggedImage.ReleaseMouseCapture();
             }
@@ -367,7 +359,24 @@ namespace OriginalScan.Views
             }
         }
 
-        private void ZoomInButton_Click(object sender, RoutedEventArgs e)
+        private void canvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Delta > 0)
+                {
+                    // Lăn lên
+                    ZoomIn();
+                }
+                else if (e.Delta < 0)
+                {
+                    // Lăn xuống
+                    ZoomOut();
+                }
+            }
+        }
+
+        private void ZoomIn()
         {
             image1.Width *= 1.2;
             image1.Height *= 1.2;
@@ -375,7 +384,7 @@ namespace OriginalScan.Views
             image2.Height *= 1.2;
         }
 
-        private void ZoomOutButton_Click(object sender, RoutedEventArgs e)
+        private void ZoomOut()
         {
             image1.Width /= 1.2;
             image1.Height /= 1.2;
@@ -383,18 +392,35 @@ namespace OriginalScan.Views
             image2.Height /= 1.2;
         }
 
-        private void ZoomInFinalButton_Click(object sender, RoutedEventArgs e)
+        private void canvasFinal_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                if (e.Delta > 0)
+                {
+                    // Lăn lên
+                    ZoomInFinal();
+                }
+                else if (e.Delta < 0)
+                {
+                    // Lăn xuống
+                    ZoomOutFinal();
+                }
+            }
+        }
+
+        private void ZoomInFinal()
         {
             double currentScale = GetScaleTransformValue(mergedImage);
-            double newScale = currentScale * 1.1; 
+            double newScale = currentScale * 1.1;
 
             ApplyScaleTransform(newScale);
         }
 
-        private void ZoomOutFinalButton_Click(object sender, RoutedEventArgs e)
+        private void ZoomOutFinal()
         {
             double currentScale = GetScaleTransformValue(mergedImage);
-            double newScale = currentScale * 0.9; 
+            double newScale = currentScale * 0.9;
 
             ApplyScaleTransform(newScale);
         }
@@ -403,7 +429,7 @@ namespace OriginalScan.Views
         {
             if (element.RenderTransform is ScaleTransform scaleTransform)
             {
-                return scaleTransform.ScaleX; 
+                return scaleTransform.ScaleX;
             }
             return 1.0;
         }
@@ -423,7 +449,7 @@ namespace OriginalScan.Views
         private void btnConfirmMerge_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = System.Windows.MessageBox.Show($"Bạn chắc chắn có muốn ghép 2 hình ảnh này lại, thông tin cũ sẽ không được lưu trữ ?", "Xác nhận", MessageBoxButton.OKCancel);
-            if(result == MessageBoxResult.OK)
+            if (result == MessageBoxResult.OK)
             {
                 SaveMergeImage();
             }
@@ -525,7 +551,9 @@ namespace OriginalScan.Views
             mainWindow.GetImagesByDocument(_documentService.SelectedDocument.Id, false);
             mainWindow.ListImagesSelected.Clear();
             NotificationShow("success", $"Ghép ảnh thành công!");
-            this.Close();
+
+            mainWindow.lstvImages.Visibility = Visibility.Visible;
+            mainWindow.grEditImage.Visibility = Visibility.Collapsed;
         }
 
         private void ReSort(int order)
@@ -533,7 +561,7 @@ namespace OriginalScan.Views
             MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
             var listImage = mainWindow.ListImagesMain;
 
-            int orderToRemove  = order - 1;
+            int orderToRemove = order - 1;
             listImage.RemoveAt(orderToRemove);
 
             for (int i = orderToRemove; i < listImage.Count; i++)
@@ -544,14 +572,17 @@ namespace OriginalScan.Views
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_mergeImageBitmap == null) return;
             MessageBoxResult Result = System.Windows.MessageBox.Show($"Bạn có muốn thoát mà không lưu những thay đổi?", "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (Result == MessageBoxResult.Yes)
             {
-                this.Close();
+                MainWindow mainWindow = (MainWindow)System.Windows.Application.Current.MainWindow;
+                if (mainWindow != null)
+                {
+                    mainWindow.lstvImages.Visibility = Visibility.Visible;
+                    mainWindow.grEditImage.Visibility = Visibility.Collapsed;
+                }
             }
-
             else return;
         }
     }

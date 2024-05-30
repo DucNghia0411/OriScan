@@ -25,7 +25,13 @@
     <Compile Update="Views\DocumentDetailWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Pages\CropImagePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Pages\CutImagePage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Pages\MergeImagePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\ProfileSettingWindow.xaml.cs">
@@ -51,22 +57,19 @@
     <Page Update="Views\CreateDocumentWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\CropImageWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\CutImageWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="Views\DeviceWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\DocumentDetailWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\MergeImageWindow.xaml">
+    <Page Update="Views\Pages\CropImagePage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\Pages\CutImagePage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Pages\MergeImagePage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ProfileSettingWindow.xaml">

@@ -354,8 +354,8 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <Grid x:Name="grEditImage" Grid.Row="0" Visibility="Collapsed" Background="LightGray">
-                    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden"/>
+                <Grid x:Name="grEditImage" Grid.Row="0" Visibility="Collapsed" Background="LightGray" Height="650" Width="1280">
+                    <Frame x:Name="MainFrame" NavigationUIVisibility="Hidden" VerticalAlignment="Top"/>
                 </Grid>
                 
                 <ListView x:Name="lstvMiniImages" materialDesign:ListBoxItemAssist.ShowSelection="False" 
