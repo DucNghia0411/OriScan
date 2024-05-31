@@ -42,6 +42,8 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0"
@@ -53,12 +55,60 @@
             FontWeight="Bold"/>
 
             <TextBox Grid.Column="1"
-            x:Name="txtApi"
-            HorizontalAlignment="Left" 
+            x:Name="txtApi" 
             Margin="10,10,0,0" 
             TextWrapping="NoWrap" 
             FontSize="14"
-            VerticalAlignment="Center" Width="987"/>
+            VerticalAlignment="Center"
+            IsEnabled="False"/>
+
+            <Button x:Name="btnEdit"
+            Style="{StaticResource ButtonStyle}"
+            HorizontalAlignment="Right"
+            Click="btnEdit_Click" 
+            Margin="10,15,10,0" 
+            Grid.Column="3"
+            Width="40"
+            Background="Transparent"
+            BorderThickness="0"
+            VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/edit.png" Width="25" Height="25"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="btnConfirm"
+            Style="{StaticResource ButtonStyle}"
+            HorizontalAlignment="Right"
+            Click="btnConfirm_Click" 
+            Margin="10,15,0,0" 
+            Grid.Column="2"
+            Width="40"
+            Visibility="Collapsed"
+            Background="Transparent"
+            BorderThickness="0"
+            VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/checkmark64.png" Width="30" Height="30"/>
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="btnCancel"
+            Style="{StaticResource ButtonStyle}"
+            HorizontalAlignment="Right"
+            Click="btnCancel_Click" 
+            Margin="0,15,10,0" 
+            Grid.Column="3"
+            Width="40"
+            Visibility="Collapsed"
+            Background="Transparent"
+            BorderThickness="0"
+            VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Background="Transparent">
+                    <Image Source="/Resource/Icons/multiply.png" Width="25" Height="25"/>
+                </StackPanel>
+            </Button>
+
         </Grid>
         <GroupBox Header="DANH SÁCH TÀI LIỆU"
             FontWeight="Bold"

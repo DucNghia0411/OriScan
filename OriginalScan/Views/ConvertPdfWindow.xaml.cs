@@ -336,11 +336,6 @@ namespace OriginalScan.Views
                 string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
                 var pdfFilePath = System.IO.Path.Combine(userFolderPath, currentDocument.PdfPath);
 
-                if (_transferApiClient.Api.Trim() != txtApi.Text.Trim())
-                {
-                    _transferApiClient.UpdateApiAddress(txtApi.Text);
-                    NotificationShow("success", "Cập nhật đường dẫn mới thành công!");
-                }
                 bool transferResult = await _transferApiClient.TransferToPortal(pdfFilePath);
 
                 await ShowProgressBar();
@@ -392,6 +387,54 @@ namespace OriginalScan.Views
             }, progress.Cancel).ConfigureAwait(false);
 
             
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            btnEdit.Visibility = Visibility.Visible;
+            btnConfirm.Visibility = Visibility.Collapsed;
+            btnCancel.Visibility = Visibility.Collapsed;
+            txtApi.IsEnabled = false;
+
+            txtApi.Text = _transferApiClient.Api;
+        }
+
+        private void btnConfirm_Click(object sender, RoutedEventArgs e)
+        {
+            if (_transferApiClient.Api.Trim() != txtApi.Text.Trim())
+            {
+                MessageBoxResult apiConfirm = System.Windows.MessageBox.Show("Xác nhận thay đổi đường dẫn tải lên?", "Thông báo!", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (apiConfirm == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _transferApiClient.UpdateApiAddress(txtApi.Text);
+                        NotificationShow("success", "Cập nhật đường dẫn mới thành công!");
+                    }
+                    catch (Exception ex)
+                    {
+                        NotificationShow("error", $"{ex.Message}");
+                        return;
+                    }
+                }
+                else
+                    return;
+            }
+
+            btnEdit.Visibility = Visibility.Visible;
+            btnConfirm.Visibility = Visibility.Collapsed;
+            btnCancel.Visibility = Visibility.Collapsed;
+            txtApi.IsEnabled = false;
+        }
+
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            txtApi.IsEnabled = true;
+
+            btnEdit.Visibility = Visibility.Collapsed;
+            btnConfirm.Visibility = Visibility.Visible;
+            btnCancel.Visibility = Visibility.Visible;
         }
     }
 }

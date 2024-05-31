@@ -12,9 +12,11 @@
     <None Remove="Resource\Icons\cancelwhite.png" />
     <None Remove="Resource\Icons\check-markwhite.png" />
     <None Remove="Resource\Icons\checkmark.png" />
+    <None Remove="Resource\Icons\checkmark64.png" />
     <None Remove="Resource\Icons\closewhite.png" />
     <None Remove="Resource\Icons\cogwheel.png" />
     <None Remove="Resource\Icons\crop.png" />
+    <None Remove="Resource\Icons\cross.png" />
     <None Remove="Resource\Icons\cut.png" />
     <None Remove="Resource\Icons\delete.png" />
     <None Remove="Resource\Icons\diskette.png" />
@@ -80,9 +82,11 @@
     <Resource Include="Resource\Icons\cancelwhite.png" />
     <Resource Include="Resource\Icons\check-markwhite.png" />
     <Resource Include="Resource\Icons\checkmark.png" />
+    <Resource Include="Resource\Icons\checkmark64.png" />
     <Resource Include="Resource\Icons\closewhite.png" />
     <Resource Include="Resource\Icons\cogwheel.png" />
     <Resource Include="Resource\Icons\crop.png" />
+    <Resource Include="Resource\Icons\cross.png" />
     <Resource Include="Resource\Icons\cut.png" />
     <Resource Include="Resource\Icons\delete.png" />
     <Resource Include="Resource\Icons\diskette.png" />
